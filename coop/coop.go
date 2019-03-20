@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"time"
 
-	"gocoop-api/coop/condition"
+	"gocoop-api/coop/conditions"
 	"gocoop-api/raspberry/door"
 
 	"github.com/sirupsen/logrus"
@@ -18,8 +18,8 @@ import (
 
 // Coop represents a chicken coop.
 type Coop struct {
-	openingCondition condition.Condition
-	closingCondition condition.Condition
+	openingCondition conditions.Condition
+	closingCondition conditions.Condition
 	location         *time.Location
 	doors            []*door.Door
 	latitude         float64
@@ -30,7 +30,7 @@ type Coop struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// New returns a new Coop with given configuration file.
+// New returns a new Coop with the given configuration file.
 func New(filename string) (*Coop, error) {
 	var configuration Configuration
 
@@ -53,49 +53,49 @@ func New(filename string) (*Coop, error) {
 	}
 
 	// Create the opening condition
-	var openingCondition condition.Condition
+	var openingCondition conditions.Condition
 	switch configuration.Opening.Mode {
 	case "time_based":
 		h, m, err := parseTime(configuration.Opening.Value)
 		if err != nil {
-			return nil, fmt.Errorf("Error while parsing the time for the opening condition : %s", err)
+			return nil, fmt.Errorf("Error while parsing the time for the opening conditions : %s", err)
 		}
 
-		openingCondition = condition.NewTimeBasedCondition(h, m, loc)
+		openingCondition = conditions.NewTimeBasedCondition(h, m, loc)
 
 		break
 	case "sun_based":
 		// Parse the duration
 		duration, err := time.ParseDuration(configuration.Opening.Value)
 		if err != nil {
-			return nil, fmt.Errorf("Error when parsing the duration for the opening condition : %s", err)
+			return nil, fmt.Errorf("Error when parsing the duration for the opening conditions : %s", err)
 		}
 
-		openingCondition = condition.NewSunBasedCondition(duration, configuration.Latitude, configuration.Longitude, loc)
+		openingCondition = conditions.NewSunBasedCondition(duration, configuration.Latitude, configuration.Longitude, loc)
 
 		break
 	}
 
 	// Create the closing condition
-	var closingCondition condition.Condition
+	var closingCondition conditions.Condition
 	switch configuration.Closing.Mode {
 	case "time_based":
 		h, m, err := parseTime(configuration.Closing.Value)
 		if err != nil {
-			return nil, fmt.Errorf("Error while parsing the time for the opening condition : %s", err)
+			return nil, fmt.Errorf("Error while parsing the time for the opening conditions : %s", err)
 		}
 
-		closingCondition = condition.NewTimeBasedCondition(h, m, loc)
+		closingCondition = conditions.NewTimeBasedCondition(h, m, loc)
 
 		break
 	case "sun_based":
 		// Parse the duration
 		duration, err := time.ParseDuration(configuration.Closing.Value)
 		if err != nil {
-			return nil, fmt.Errorf("Error when parsing the duration for the opening condition : %s", err)
+			return nil, fmt.Errorf("Error when parsing the duration for the opening conditions : %s", err)
 		}
 
-		closingCondition = condition.NewSunBasedCondition(duration, configuration.Latitude, configuration.Longitude, loc)
+		closingCondition = conditions.NewSunBasedCondition(duration, configuration.Latitude, configuration.Longitude, loc)
 
 		break
 	}
@@ -187,10 +187,10 @@ func (coop *Coop) Check() {
 //------------------------------------------------------------------------------
 
 func (coop *Coop) shouldBeClosed(date time.Time) bool {
-	// Get the closing time from the condition
+	// Get the closing time from the conditions
 	closingTime := coop.closingCondition.GetTime()
 
-	// Get the opening time from the condition
+	// Get the opening time from the conditions
 	openingTime := coop.openingCondition.GetTime()
 
 	// Check the time
@@ -202,10 +202,10 @@ func (coop *Coop) shouldBeClosed(date time.Time) bool {
 }
 
 func (coop *Coop) shouldBeOpened(date time.Time) bool {
-	// Get the closing time from the condition
+	// Get the closing time from the conditions
 	closingTime := coop.closingCondition.GetTime()
 
-	// Get the opening time from the condition
+	// Get the opening time from the conditions
 	openingTime := coop.openingCondition.GetTime()
 
 	// Check the time

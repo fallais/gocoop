@@ -1,4 +1,4 @@
-package condition
+package conditions
 
 import (
 	"testing"

@@ -19,7 +19,7 @@ The main objective is to protect the chickens against the hungry **fox**. To do 
 
 I use the `Nextrox 37mm 12V 15RPM`. I chose this motor because of its torque : **250 N*cm**
 
-### The interface
+### The motor driver
 
 I use the `L293D`. It is capable of handling two motors.
 
@@ -29,9 +29,9 @@ I use the `L293D`. It is capable of handling two motors.
 
 Here are the GPIO pins that are used :
 
-- 23 : Input 1
-- 24 : Input 2
-- 25 : Enable 1
+- 23 : Input 1 (L293D)
+- 24 : Input 2 (L293D)
+- 25 : Enable 1 (L293D)
 
 ## Is it tested ?
 

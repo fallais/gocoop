@@ -44,8 +44,8 @@ func (ctrl *MiscController) Hello(w http.ResponseWriter, r *http.Request) {
 func (ctrl *MiscController) Configuration(w http.ResponseWriter, r *http.Request) {
 	// Prepare the data
 	data := protocols.Configuration{
-		Latitude:  shared.Config.Latitude,
-		Longitude: shared.Config.Longitude,
+		Latitude:  shared.Latitude,
+		Longitude: shared.Longitude,
 	}
 
 	// Execute the template

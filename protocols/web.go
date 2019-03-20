@@ -1,5 +1,9 @@
 package protocols
 
+import (
+	"time"
+)
+
 // APIControllerResponse is the structure template for API
 type APIControllerResponse struct {
 	ErrorID          string `json:"error_id"`
@@ -15,9 +19,13 @@ type HelloResponse struct {
 
 // Configuration contains the result of the Configuration.
 type Configuration struct {
-	SMTPServer          string  `json:"smtp_server"`
 	Latitude            float64 `json:"latitude"`
 	Longitude           float64 `json:"longitude"`
 	MinutesAfterSunrise string  `json:"minutes_after_sunrise"`
 	MinutesAfterSunset  string  `json:"minutes_after_sunset"`
+}
+
+type Sun struct {
+	Today     time.Time
+	Yesterday time.Time
 }

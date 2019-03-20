@@ -25,6 +25,9 @@ const (
 	DoorClosing Status = "Closing"
 	// DoorUnknown when it is unknown.
 	DoorUnknown Status = "Unknown"
+
+	// DoorDefault is the default status when starting.
+	DoorDefault Status = DoorUnknown
 )
 
 // Door is a door used with a motor.
@@ -49,7 +52,7 @@ func New() *Door {
 		motor1Enable: 25,
 		waitOpen:     65 * time.Second,
 		waitClose:    60 * time.Second,
-		status:       DoorClosed,
+		status:       DoorDefault,
 	}
 }
 

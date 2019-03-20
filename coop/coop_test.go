@@ -4,15 +4,15 @@ import (
 	"testing"
 	"time"
 
-	"gocoop-api/coop/condition"
+	"gocoop-api/coop/conditions"
 )
 
 const latitude = 43.525776
 const longitude = 1.327727
 
 func TestShouldBeClosed(t *testing.T) {
-	openingCondition := condition.NewTimeBasedCondition(8, 30, time.UTC)
-	closingCondition := condition.NewTimeBasedCondition(18, 30, time.UTC)
+	openingCondition := conditions.NewTimeBasedCondition(8, 30, time.UTC)
+	closingCondition := conditions.NewTimeBasedCondition(18, 30, time.UTC)
 
 	c := &Coop{
 		openingCondition: openingCondition,
@@ -39,8 +39,8 @@ func TestShouldBeClosed(t *testing.T) {
 }
 
 func TestShouldBeOpened(t *testing.T) {
-	openingCondition := condition.NewTimeBasedCondition(8, 30, time.UTC)
-	closingCondition := condition.NewTimeBasedCondition(18, 30, time.UTC)
+	openingCondition := conditions.NewTimeBasedCondition(8, 30, time.UTC)
+	closingCondition := conditions.NewTimeBasedCondition(18, 30, time.UTC)
 
 	c := &Coop{
 		openingCondition: openingCondition,

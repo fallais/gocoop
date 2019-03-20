@@ -6,9 +6,8 @@ import (
 
 	"gocoop-api/protocols"
 	"gocoop-api/services"
+	"gocoop-api/shared"
 	"gocoop-api/utils"
-	//"goji.io/pat"
-	//"github.com/sirupsen/logrus"
 )
 
 //------------------------------------------------------------------------------
@@ -38,12 +37,12 @@ func NewWeatherController(s services.WeatherService) *WeatherController {
 // GetSunrise of today
 func (ctrl *WeatherController) GetSunrise(w http.ResponseWriter, r *http.Request) {
 	// GetSunrise of today
-	nextSunrise := ctrl.weatherService.GetSunrise(time.Now())
+	nextSunrise := ctrl.weatherService.GetSunrise(shared.Latitude, shared.Longitude)
 
 	// GetSunrise of yesterday
-	yesterdaySunrise := ctrl.weatherService.GetSunrise(time.Now().AddDate(0, 0, -1))
+	yesterdaySunrise := ctrl.weatherService.CalcSunrise(time.Now().AddDate(0, 0, -1), shared.Latitude, shared.Longitude)
 
-	sunrise := &protocols.Sunrise{
+	sunrise := &protocols.Sun{
 		Today:     nextSunrise,
 		Yesterday: yesterdaySunrise,
 	}
@@ -54,12 +53,12 @@ func (ctrl *WeatherController) GetSunrise(w http.ResponseWriter, r *http.Request
 
 // GetSunset of today
 func (ctrl *WeatherController) GetSunset(w http.ResponseWriter, r *http.Request) {
-	nextSunset := ctrl.weatherService.GetSunset(time.Now())
+	nextSunset := ctrl.weatherService.GetSunset(shared.Latitude, shared.Longitude)
 
 	// GetSunset of yesterday
-	yesterdaySunset := ctrl.weatherService.GetSunset(time.Now().AddDate(0, 0, -1))
+	yesterdaySunset := ctrl.weatherService.CalcSunset(time.Now().AddDate(0, 0, -1), shared.Latitude, shared.Longitude)
 
-	sunset := &protocols.Sunset{
+	sunset := &protocols.Sun{
 		Today:     nextSunset,
 		Yesterday: yesterdaySunset,
 	}

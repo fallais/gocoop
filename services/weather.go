@@ -3,8 +3,6 @@ package services
 import (
 	"time"
 
-	"gocoop-api/shared"
-
 	"github.com/cpucycle/astrotime"
 )
 
@@ -28,21 +26,21 @@ func NewWeatherService() WeatherService {
 //------------------------------------------------------------------------------
 
 // GetSunrise of today
-func (service *weatherService) GetSunrise(date time.Time) time.Time {
-	return astrotime.NextSunrise(date, shared.Config.Latitude, shared.Config.Longitude)
+func (service *weatherService) GetSunrise(latitude, longitude float64) time.Time {
+	return astrotime.NextSunrise(time.Now(), latitude, longitude)
 }
 
 // GetSunset of today
-func (service *weatherService) GetSunset(date time.Time) time.Time {
-	return astrotime.NextSunset(date, shared.Config.Latitude, shared.Config.Longitude)
+func (service *weatherService) GetSunset(latitude, longitude float64) time.Time {
+	return astrotime.NextSunset(time.Now(), latitude, longitude)
 }
 
 // CalcSunrise of today
-func (service *weatherService) CalcSunrise(date time.Time) time.Time {
-	return astrotime.CalcSunrise(date, shared.Config.Latitude, shared.Config.Longitude)
+func (service *weatherService) CalcSunrise(date time.Time, latitude, longitude float64) time.Time {
+	return astrotime.CalcSunrise(date, latitude, longitude)
 }
 
 // CalcSunset of today
-func (service *weatherService) CalcSunset(date time.Time) time.Time {
-	return astrotime.CalcSunset(date, shared.Config.Latitude, shared.Config.Longitude)
+func (service *weatherService) CalcSunset(date time.Time, latitude, longitude float64) time.Time {
+	return astrotime.CalcSunset(date, latitude, longitude)
 }

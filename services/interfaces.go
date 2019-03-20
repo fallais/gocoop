@@ -12,10 +12,10 @@ import (
 
 // WeatherService is the interface
 type WeatherService interface {
-	GetSunrise(time.Time) time.Time
-	GetSunset(time.Time) time.Time
-	CalcSunrise(time.Time) time.Time
-	CalcSunset(time.Time) time.Time
+	GetSunrise(float64, float64) time.Time
+	GetSunset(float64, float64) time.Time
+	CalcSunrise(time.Time, float64, float64) time.Time
+	CalcSunset(time.Time, float64, float64) time.Time
 }
 
 // DoorService is the interface
