@@ -23,7 +23,7 @@ I use the `Nextrox 37mm 12V 15RPM`. I chose this motor because of its torque : *
 
 I use the `L293D`. It is capable of handling two motors.
 
-![L293D](https://github.com/fallais/gocoop/blob/master/L293D.jpg)
+![L293D](https://github.com/fallais/gocoop/blob/master/assets/L293D.jpg)
 
 ### The GPIO pins
 
