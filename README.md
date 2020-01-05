@@ -39,6 +39,11 @@ Sure, chickens deserv the best ! The fox is **mercyless** !
 
 ## Usage
 
+### Docker
+
+Pull the image : `docker pull fallais/gocoop`
+Run the image : ``
+
 ### Configuration
 
 The configuration file must be as follow :
