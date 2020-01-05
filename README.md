@@ -1,6 +1,6 @@
 # GoCoop
 
-![Coop](https://github.com/fallais/gocoop/blob/master/coop.png)
+![Coop](https://github.com/fallais/gocoop/blob/master/assets/coop.png)
 
 **GoCoop** is a tool written in **Go** that helps you to manage your chicken coop !
 
