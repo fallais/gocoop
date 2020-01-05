@@ -77,6 +77,12 @@ func Run(cmd *cobra.Command, args []string) {
 	logrus.Infoln("Successfully initialized the middlewares")
 
 	// Define the routes for Web
+	fs := http.FileServer(http.Dir("web"))
+	root.Handle(pat.Get("/"), fs)
+	root.Handle(pat.Get("/app/*"), fs)
+	root.Handle(pat.Get("/static/*"), fs)
+
+	// Define the routes for API
 	root.HandleFunc(pat.Get("/api"), miscCtrl.Hello)
 	root.HandleFunc(pat.Get("/api/v1/configuration"), miscCtrl.Configuration)
 	root.HandleFunc(pat.Get("/api/v1/door"), coopCtrl.Status)

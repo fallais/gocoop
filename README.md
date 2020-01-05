@@ -6,7 +6,7 @@
 
 ## Objectives
 
-The main objective is to protect the chickens against the hungry **fox**. To do so, we need to automaticaly open and close the door of the chicken coop, with two options :
+The main objective is to protect the chickens against the hungry **fox** or the **greedy weasel**. To do so, we need to automaticaly open and close the door of the chicken coop, with two options :
 
 - Fixed time (for example *08h30*)
 - Regarding the sunset and sunrise (for example *30min after sunrise*)
@@ -43,19 +43,15 @@ Sure, chickens deserv the best ! The fox is **mercyless** !
 
 The configuration file must be as follow :
 
-```json
-{
-  "latitude": 42.525776,
-  "longitude": 2.327727,
-  "opening": {
-    "mode": "time_based",
-    "value": "08h00"
-  },
-  "closing": {
-    "mode": "sun_based",
-    "value": "-30m"
-  }
-}
+```yaml
+latitude: 42.525776
+longitude: 2.327727
+opening:
+  mode: "time_based"
+  value: "08h00"
+closing:
+  mode: "sun_based"
+  value: "-30m"
 ```
 
 #### Modes and values

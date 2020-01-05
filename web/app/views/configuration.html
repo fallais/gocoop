@@ -1,0 +1,43 @@
+<!-- Header -->
+<div class="col-xs-12">
+    <h1 class="page-header">Configuration</h1>
+</div>
+  
+  <!-- Form -->
+  <div class="col-xs-12">
+    <form>
+      <fieldset>
+          <legend><i class="fa fa-calendar" aria-hidden="true"></i> Settings</legend>
+  
+          <!-- SMTP -->
+          <div class="form-group">
+            <label for="smtp_server" class="control-label">SMTP server</label>
+            <input type="text" class="form-control" id="smtp_server" ng-model="configuration.smtp_server" disabled />
+          </div>
+
+          <!-- Latitude -->
+          <div class="form-group">
+            <label for="latitude" class="control-label">Latitude</label>
+            <input type="text" class="form-control" id="latitude" ng-model="configuration.latitude" disabled />
+          </div>
+
+          <!-- Longitude -->
+          <div class="form-group">
+            <label for="longitude" class="control-label">Longitude</label>
+            <input type="text" class="form-control" id="longitude" ng-model="configuration.longitude" disabled />
+          </div>
+
+          <!-- Minutes After Sunrise -->
+          <div class="form-group">
+            <label for="minutes_after_sunrise" class="control-label">Minutes After Sunrise</label>
+            <input type="text" class="form-control" id="minutes_after_sunrise" ng-model="configuration.minutes_after_sunrise" disabled />
+          </div>
+
+          <!-- Minutes After Sunset -->
+          <div class="form-group">
+            <label for="minutes_after_sunset" class="control-label">Minutes After Sunset</label>
+            <input type="text" class="form-control" id="minutes_after_sunset" ng-model="configuration.minutes_after_sunset" disabled />
+          </div>
+      </fieldset>     
+    </form>
+  </div>

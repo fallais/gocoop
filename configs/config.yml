@@ -1,5 +1,5 @@
-latitude: "42.525776"
-longitude: "2.327727"
+latitude: 42.525776
+longitude: 2.327727
 opening:
   mode: "time_based"
   value: "08h00"
