@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"gocoop-api/coop/conditions"
+	"gocoop/coop/conditions"
 )
 
 const latitude = 43.525776

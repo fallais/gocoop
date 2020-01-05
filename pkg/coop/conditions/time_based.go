@@ -9,10 +9,9 @@ import (
 //------------------------------------------------------------------------------
 
 type timeBasedCondition struct {
-	mode     string
-	hours    int
-	minutes  int
-	location *time.Location
+	mode    string
+	hours   int
+	minutes int
 }
 
 //------------------------------------------------------------------------------
@@ -20,11 +19,10 @@ type timeBasedCondition struct {
 //------------------------------------------------------------------------------
 
 // NewTimeBasedCondition returns a new TimeBasedCondition.
-func NewTimeBasedCondition(hours, minutes int, location *time.Location) Condition {
+func NewTimeBasedCondition(hours, minutes int) Condition {
 	return &timeBasedCondition{
-		hours:    hours,
-		minutes:  minutes,
-		location: location,
+		hours:   hours,
+		minutes: minutes,
 	}
 }
 
@@ -34,7 +32,7 @@ func NewTimeBasedCondition(hours, minutes int, location *time.Location) Conditio
 
 // GetTime returns the time based on the conditions.
 func (c *timeBasedCondition) GetTime() time.Time {
-	return time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), c.hours, c.minutes, 0, 0, c.location)
+	return time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), c.hours, c.minutes, 0, 0, time.Local)
 }
 
 // GetNextTime returns the next time based on the conditions (the day after).

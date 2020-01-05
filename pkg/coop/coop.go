@@ -1,15 +1,13 @@
 package coop
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"time"
 
-	"gocoop-api/coop/conditions"
-	"gocoop-api/raspberry/door"
+	"gocoop/pkg/coop/conditions"
 
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 //------------------------------------------------------------------------------
@@ -21,7 +19,7 @@ type Coop struct {
 	openingCondition conditions.Condition
 	closingCondition conditions.Condition
 	location         *time.Location
-	doors            []*door.Door
+	doors            []*Door
 	latitude         float64
 	longitude        float64
 }
@@ -30,87 +28,67 @@ type Coop struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// New returns a new Coop with the given configuration file.
-func New(filename string) (*Coop, error) {
-	var configuration Configuration
-
-	// Read configuration file
-	file, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, fmt.Errorf("Error while reading the configuration file : %s", err)
-	}
-
-	// Unmarshal configuration file
-	err = json.Unmarshal(file, &configuration)
-	if err != nil {
-		return nil, fmt.Errorf("Error while unmarshalling the configuration : %s", err)
-	}
-
-	// Load the location
-	loc, err := time.LoadLocation("Europe/Paris")
-	if err != nil {
-		return nil, fmt.Errorf("Failed to load location : %s", err)
-	}
-
+// New returns a new Coop.
+func New() (*Coop, error) {
 	// Create the opening condition
 	var openingCondition conditions.Condition
-	switch configuration.Opening.Mode {
+
+	switch viper.GetString("opening.mode") {
 	case "time_based":
-		h, m, err := parseTime(configuration.Opening.Value)
+		h, m, err := parseTime(viper.GetString("opening.value"))
 		if err != nil {
 			return nil, fmt.Errorf("Error while parsing the time for the opening conditions : %s", err)
 		}
 
-		openingCondition = conditions.NewTimeBasedCondition(h, m, loc)
+		openingCondition = conditions.NewTimeBasedCondition(h, m)
 
 		break
 	case "sun_based":
 		// Parse the duration
-		duration, err := time.ParseDuration(configuration.Opening.Value)
+		duration, err := time.ParseDuration(viper.GetString("opening.value"))
 		if err != nil {
 			return nil, fmt.Errorf("Error when parsing the duration for the opening conditions : %s", err)
 		}
 
-		openingCondition = conditions.NewSunBasedCondition(duration, configuration.Latitude, configuration.Longitude, loc)
+		openingCondition = conditions.NewSunBasedCondition(duration, viper.GetFloat64("latitude"), viper.GetFloat64("longitude"))
 
 		break
 	}
 
 	// Create the closing condition
 	var closingCondition conditions.Condition
-	switch configuration.Closing.Mode {
+	switch viper.GetString("closing.mode") {
 	case "time_based":
-		h, m, err := parseTime(configuration.Closing.Value)
+		h, m, err := parseTime(viper.GetString("closing.value"))
 		if err != nil {
 			return nil, fmt.Errorf("Error while parsing the time for the opening conditions : %s", err)
 		}
 
-		closingCondition = conditions.NewTimeBasedCondition(h, m, loc)
+		closingCondition = conditions.NewTimeBasedCondition(h, m)
 
 		break
 	case "sun_based":
 		// Parse the duration
-		duration, err := time.ParseDuration(configuration.Closing.Value)
+		duration, err := time.ParseDuration(viper.GetString("closing.value"))
 		if err != nil {
 			return nil, fmt.Errorf("Error when parsing the duration for the opening conditions : %s", err)
 		}
 
-		closingCondition = conditions.NewSunBasedCondition(duration, configuration.Latitude, configuration.Longitude, loc)
+		closingCondition = conditions.NewSunBasedCondition(duration, viper.GetFloat64("latitude"), viper.GetFloat64("longitude"))
 
 		break
 	}
 
 	// Create the doors
-	var doors []*door.Door
-	door := door.New()
+	var doors []*Door
+	door := NewDoor()
 	doors = append(doors, door)
 
 	return &Coop{
 		openingCondition: openingCondition,
 		closingCondition: closingCondition,
-		location:         loc,
-		latitude:         configuration.Latitude,
-		longitude:        configuration.Longitude,
+		latitude:         viper.GetFloat64("latitude"),
+		longitude:        viper.GetFloat64("longitude"),
 		doors:            doors,
 	}, nil
 }
@@ -118,6 +96,21 @@ func New(filename string) (*Coop, error) {
 //------------------------------------------------------------------------------
 // Functions
 //------------------------------------------------------------------------------
+
+// Status returns the status of the chicken coop.
+func (coop *Coop) Status() Status {
+	return Unknown
+}
+
+// Open opens the chicken coop.
+func (coop *Coop) Open() error {
+	return nil
+}
+
+// Close closes the chicken coop.
+func (coop *Coop) Close() error {
+	return nil
+}
 
 // Check performs a check for al the doors of the chicken coop.
 func (coop *Coop) Check() {
@@ -134,14 +127,14 @@ func (coop *Coop) Check() {
 
 		// Process the status
 		switch status {
-		case door.DoorUnknown:
+		case DoorUnknown:
 			logrus.Infoln("The door is in unknown status, set the status first !")
 			break
-		case door.DoorOpening:
-		case door.DoorClosing:
+		case DoorOpening:
+		case DoorClosing:
 			logrus.Infoln("The door is already being used, waiting")
 			break
-		case door.DoorClosed:
+		case DoorClosed:
 			if coop.shouldBeOpened(time.Now().UTC()) {
 				logrus.WithFields(logrus.Fields{
 					"status":       status,
@@ -160,7 +153,7 @@ func (coop *Coop) Check() {
 			}
 
 			break
-		case door.DoorOpened:
+		case DoorOpened:
 			if coop.shouldBeClosed(time.Now().UTC()) {
 				// Close the door
 				err := d.Close()

@@ -1,9 +1,9 @@
-package door
+package coop
 
 import (
 	"time"
 
-	"github.com/nathan-osman/go-rpigpio"
+	rpi "github.com/nathan-osman/go-rpigpio"
 	"github.com/sirupsen/logrus"
 )
 
@@ -11,41 +11,22 @@ import (
 // Structure
 //------------------------------------------------------------------------------
 
-// Status is the status of the door.
-type Status string
-
-const (
-	// DoorOpened when the door is opened.
-	DoorOpened Status = "Opened"
-	// DoorClosed when the door is closed.
-	DoorClosed Status = "Closed"
-	// DoorOpening when the door is opening.
-	DoorOpening Status = "Opening"
-	// DoorClosing when the door is closing.
-	DoorClosing Status = "Closing"
-	// DoorUnknown when it is unknown.
-	DoorUnknown Status = "Unknown"
-
-	// DoorDefault is the default status when starting.
-	DoorDefault Status = DoorUnknown
-)
-
-// Door is a door used with a motor.
+// Door is a physical door manipulated with a motor.
 type Door struct {
 	motor1A      int
 	motor1B      int
 	motor1Enable int
 	waitOpen     time.Duration
 	waitClose    time.Duration
-	status       Status
+	status       DoorStatus
 }
 
 //------------------------------------------------------------------------------
 // Factory
 //------------------------------------------------------------------------------
 
-// New returns a new Door.
-func New() *Door {
+// NewDoor returns a new Door.
+func NewDoor() *Door {
 	return &Door{
 		motor1A:      23,
 		motor1B:      24,
@@ -61,7 +42,7 @@ func New() *Door {
 //------------------------------------------------------------------------------
 
 // GetStatus returns the status of the door.
-func (d *Door) GetStatus() Status {
+func (d *Door) GetStatus() DoorStatus {
 	return d.status
 }
 

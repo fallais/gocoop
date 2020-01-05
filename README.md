@@ -1,8 +1,8 @@
 # GoCoop
 
-![Coop](https://github.com/fallais/gocoop-api/blob/master/coop.png)
+![Coop](https://github.com/fallais/gocoop/blob/master/coop.png)
 
-**GoCoop** is a tool written in **Go** that helps you to open and close the door of your chicken coop !
+**GoCoop** is a tool written in **Go** that helps you to manage your chicken coop !
 
 ## Objectives
 
@@ -23,7 +23,7 @@ I use the `Nextrox 37mm 12V 15RPM`. I chose this motor because of its torque : *
 
 I use the `L293D`. It is capable of handling two motors.
 
-![L293D](https://github.com/fallais/gocoop-api/blob/master/L293D.jpg)
+![L293D](https://github.com/fallais/gocoop/blob/master/L293D.jpg)
 
 ### The GPIO pins
 

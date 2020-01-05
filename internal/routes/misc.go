@@ -3,9 +3,9 @@ package routes
 import (
 	"net/http"
 
-	"gocoop-api/protocols"
-	"gocoop-api/shared"
-	"gocoop-api/utils"
+	"gocoop/internal/protocols"
+	"gocoop/internal/shared"
+	"gocoop/internal/utils"
 )
 
 //------------------------------------------------------------------------------

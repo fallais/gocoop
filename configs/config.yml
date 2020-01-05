@@ -1,0 +1,8 @@
+latitude: "42.525776"
+longitude: "2.327727"
+opening:
+  mode: "time_based"
+  value: "08h00"
+closing:
+  mode: "sun_based"
+  value: "-30m"
