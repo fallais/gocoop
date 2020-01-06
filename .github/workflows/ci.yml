@@ -16,6 +16,16 @@ jobs:
           fetch-depth: 1
           path: go/src
 
+      - name: Debug
+        run: |
+          pwd
+          echo ${HOME}
+          echo ${GITHUB_WORKSPACE}
+          echo ${GOPATH}
+          echo ${GOROOT}
+        env:
+          GOPATH: /home/runner/work/fallais/go
+
       - name: Get dependencies
         run: go get -v -t -d ./...
         env:
