@@ -74,7 +74,6 @@ func Run(cmd *cobra.Command, args []string) {
 	logrus.Infoln("Successfully initialized the Web controllers")
 
 	// Initialize CRON
-	c.Check()
 	cr := cron.New()
 	cr.AddFunc("@every 5m", c.Check)
 	cr.Start()
@@ -85,12 +84,6 @@ func Run(cmd *cobra.Command, args []string) {
 	// Middlewares
 	root.Use(corsMiddleware)
 	root.Use(xRequestIDMiddleware)
-
-	// Define the routes for static files
-	fs := http.FileServer(http.Dir(viper.GetString("static_dir")))
-	root.Handle(pat.Get("/"), fs)
-	//root.Handle(pat.Get("/app/*"), fs)
-	//root.Handle(pat.Get("/static/*"), fs)
 
 	// Unauthenticated route
 	root.HandleFunc(pat.Post("/api/v1/login"), jwtCtrl.Login)
@@ -108,7 +101,11 @@ func Run(cmd *cobra.Command, args []string) {
 	authenticated.HandleFunc(pat.Post("/api/v1/coop/close"), coopCtrl.Close)
 
 	// Merge the muxes
-	root.Handle(pat.New("/*"), authenticated)
+	root.Handle(pat.New("/api/*"), authenticated)
+
+	// Static files
+	fs := http.FileServer(http.Dir(viper.GetString("static_dir")))
+	root.Handle(pat.Get("/*"), fs)
 
 	// Handlers
 	http.Handle("/", root)

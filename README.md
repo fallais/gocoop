@@ -6,7 +6,7 @@
 
 ## Objectives
 
-The main objective is to protect the chickens against the hungry **fox** or the **greedy weasel**. To do so, we need to automaticaly open and close the door of the chicken coop, with two options :
+The main objective is to protect the chickens against the **hungry fox** or the **greedy weasel**. To do so, we need to automaticaly open and close the door of the chicken coop, with two options :
 
 - Fixed time (for example *08h30*)
 - Regarding the sunset and sunrise (for example *30min after sunrise*)

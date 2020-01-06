@@ -235,37 +235,3 @@ func (coop *Coop) Check() {
 
 	logrus.Infoln("Coop has been checked")
 }
-
-//------------------------------------------------------------------------------
-// Helpers
-//------------------------------------------------------------------------------
-
-func (coop *Coop) shouldBeClosed(date time.Time) bool {
-	// Get the closing time from the conditions
-	closingTime := coop.closingCondition.GetTime()
-
-	// Get the opening time from the conditions
-	openingTime := coop.openingCondition.GetTime()
-
-	// Check the time
-	if date.Before(openingTime) || date.After(closingTime) {
-		return true
-	}
-
-	return false
-}
-
-func (coop *Coop) shouldBeOpened(date time.Time) bool {
-	// Get the closing time from the conditions
-	closingTime := coop.closingCondition.GetTime()
-
-	// Get the opening time from the conditions
-	openingTime := coop.openingCondition.GetTime()
-
-	// Check the time
-	if date.After(openingTime) && date.Before(closingTime) {
-		return true
-	}
-
-	return false
-}
