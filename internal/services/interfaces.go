@@ -10,7 +10,8 @@ import (
 
 // CoopService is the interface
 type CoopService interface {
-	Status() coop.Status
+	GetStatus() coop.Status
+	UpdateStatus(string) error
 	Open() error
 	Close() error
 }

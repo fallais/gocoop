@@ -1,4 +1,4 @@
-package coop
+package door
 
 import (
 	"time"
@@ -18,7 +18,6 @@ type Door struct {
 	motor1Enable int
 	waitOpen     time.Duration
 	waitClose    time.Duration
-	status       DoorStatus
 }
 
 //------------------------------------------------------------------------------
@@ -33,18 +32,12 @@ func NewDoor() *Door {
 		motor1Enable: 25,
 		waitOpen:     65 * time.Second,
 		waitClose:    60 * time.Second,
-		status:       DoorDefault,
 	}
 }
 
 //------------------------------------------------------------------------------
 // Functions
 //------------------------------------------------------------------------------
-
-// GetStatus returns the status of the door.
-func (d *Door) GetStatus() DoorStatus {
-	return d.status
-}
 
 // Open the door
 func (d *Door) Open() error {
@@ -86,9 +79,6 @@ func (d *Door) Open() error {
 	}
 	defer pinMotor1Enable.Close()
 
-	// Update the status of the door
-	d.status = DoorOpening
-
 	// Set the motor rotation
 	logrus.Infoln("Set the motor rotation")
 	pinMotor1A.Write(rpi.HIGH)
@@ -110,14 +100,6 @@ func (d *Door) Open() error {
 	pinMotor1Enable.Close()
 	pinMotor1A.Close()
 	pinMotor1B.Close()
-
-	// Check if the door as been stopped
-	if d.status == DoorUnknown {
-		return nil
-	}
-
-	// Update the status of the door
-	d.status = DoorOpened
 
 	logrus.Infoln("Door has been opened")
 
@@ -152,9 +134,6 @@ func (d *Door) Close() error {
 	}
 	defer pinMotor1Enable.Close()
 
-	// Update the status of the door
-	d.status = DoorClosing
-
 	// Set the motor rotation
 	logrus.Infoln("Set the motor rotation")
 	pinMotor1A.Write(rpi.LOW)
@@ -176,14 +155,6 @@ func (d *Door) Close() error {
 	pinMotor1Enable.Close()
 	pinMotor1A.Close()
 	pinMotor1B.Close()
-
-	// Check if the door as been stopped
-	if d.status == DoorUnknown {
-		return nil
-	}
-
-	// Update the status of the door
-	d.status = DoorClosed
 
 	logrus.Infoln("Door has been closed")
 
@@ -228,9 +199,6 @@ func (d *Door) Stop() error {
 	pinMotor1Enable.Close()
 	pinMotor1A.Close()
 	pinMotor1B.Close()
-
-	// Update the status of the door
-	d.status = DoorUnknown
 
 	logrus.Infoln("Door has been stopped")
 

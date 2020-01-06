@@ -16,9 +16,10 @@ RUN $(npm bin)/ng build --prod --extract-css false
 # Final
 FROM armhf/ubuntu
 LABEL maintainer="francois.allais@hotmail.com"
-COPY --from=golang-builder /go/src/gocoop /usr/bin/gocoop
-COPY --from=angular-builder /app/dist /usr/bin/frontend
+RUN mkdir -p /app/backend /app/frontend 
+COPY --from=golang-builder /go/src/gocoop /app/backend/
+COPY --from=angular-builder /app/dist/ /app/frontend/
 USER nobody:nobody
-WORKDIR /
-ENTRYPOINT [ "/usr/bin/gocoop" ]
+WORKDIR /app
+ENTRYPOINT [ "/app/backend/gocoop" ]
 CMD [ "--help" ]

@@ -15,6 +15,7 @@ import { NavComponent } from './components/misc/nav/nav.component';
 
 // Services
 import { AuthService } from './services/auth.service';
+import { CoopService } from './services/coop.service';
 
 // Vendor
 import { LoadingBarModule } from '@ngx-loading-bar/core';
@@ -58,6 +59,7 @@ export function tokenGetter() {
   providers: [
     Title,
     AuthGuard,
+    CoopService,
     AuthService,
     {
       provide: HTTP_INTERCEPTORS,

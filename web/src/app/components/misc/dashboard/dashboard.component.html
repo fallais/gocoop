@@ -1,17 +1,25 @@
 <div class="container">
   <div class="row mt-4">
-    <div class="col-12">
-     <h2>Dashboard</h2>
-    </div>
-
     <div class="col-4 col-xs-12">
       <div class="card bg-light">
-        <div class="card-body text-center pb-0">
-          <p class="text-center"><i class="fa fa-sign-out fa-5x ng-class:{ 'text-success': door == 'CLOSED', 'text-danger': door == 'OPENED' };" aria-hidden="true"></i></p>
-          <p class="text-center">{{ door }}</p>
+        <div class="card-header">
+          <h5 class="card-title">Coop</h5>
+        </div>
+        <div class="card-body pb-0">
+          
+
+          <p class="text-center"><i class="fa fa-sign-out fa-5x" aria-hidden="true"></i></p>
+          <p class="text-center">{{ coopStatus }}</p>
           <p class="text-center">
-            <button class="btn btn-sm btn-default" ng-click="openDoor()" ng-disabled="door == 'OPENED'">Open <i class="fa fa-spinner fa-pulse" aria-hidden="true" ng-if="doorOpeningLoading"></i></button>
-            <button class="btn btn-sm btn-default" ng-click="closeDoor()" ng-disabled="door == 'CLOSED'">Close <i class="fa fa-spinner fa-pulse" aria-hidden="true" ng-if="doorClosingLoading"></i></button>
+            <button class="btn btn-success mr-2" (click)="open()">Open</button>
+            <button class="btn btn-danger" (click)="close()">Close</button><br />
+            
+          </p>
+        </div>
+        <div class="card-footer" *ngIf="coopStatus == 'unknown'">
+          <p class="text-center">
+              <button class="btn btn-dark mr-2" (click)="updateStatus('opened')">Set as opened</button>
+              <button class="btn btn-dark" (click)="updateStatus('closed')">Set as closed</button>
           </p>
         </div>
       </div>

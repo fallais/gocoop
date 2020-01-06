@@ -70,7 +70,6 @@ func Run(cmd *cobra.Command, args []string) {
 	// Initialize Web controllers
 	logrus.Infoln("Initializing the Web controllers")
 	coopCtrl := routes.NewCoopController(coopService)
-	miscCtrl := routes.NewMiscController()
 	jwtCtrl := routes.NewJwtController(jwtService, viper.GetString("gui_username"), viper.GetString("gui_password"))
 	logrus.Infoln("Successfully initialized the Web controllers")
 
@@ -101,9 +100,12 @@ func Run(cmd *cobra.Command, args []string) {
 	// Authenticated routes
 	authenticated := goji.SubMux()
 	authenticated.Use(jwtMiddleware)
-	authenticated.HandleFunc(pat.Get("/api/v1/configuration"), miscCtrl.Configuration)
-	authenticated.HandleFunc(pat.Get("/api/v1/door"), coopCtrl.Status)
-	authenticated.HandleFunc(pat.Get("/api/v1/door/use"), coopCtrl.Use)
+	//authenticated.HandleFunc(pat.Get("/api/v1/coop"), coopCtrl.Get)
+	//authenticated.HandleFunc(pat.Post("/api/v1/coop"), coopCtrl.Update)
+	authenticated.HandleFunc(pat.Get("/api/v1/coop/status"), coopCtrl.GetStatus)
+	authenticated.HandleFunc(pat.Post("/api/v1/coop/status"), coopCtrl.UpdateStatus)
+	authenticated.HandleFunc(pat.Post("/api/v1/coop/open"), coopCtrl.Open)
+	authenticated.HandleFunc(pat.Post("/api/v1/coop/close"), coopCtrl.Close)
 
 	// Merge the muxes
 	root.Handle(pat.New("/*"), authenticated)

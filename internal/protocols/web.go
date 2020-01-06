@@ -1,5 +1,9 @@
 package protocols
 
+type Status struct {
+	Status string `json:"status"`
+}
+
 // APIControllerResponse is the response for API.
 type APIControllerResponse struct {
 	ErrorID          string `json:"error_id,omitempty"`

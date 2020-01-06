@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 
 	"gocoop/internal/protocols"
 	"gocoop/internal/services"
+	"gocoop/internal/utils"
 
 	"github.com/alioygur/gores"
 	"github.com/sirupsen/logrus"
@@ -35,73 +35,86 @@ func NewCoopController(coopService services.CoopService) *CoopController {
 // Routes
 //------------------------------------------------------------------------------
 
-// Status of the coop
-func (ctrl *CoopController) Status(w http.ResponseWriter, r *http.Request) {
+// GetStatus returns the status of the coop
+func (ctrl *CoopController) GetStatus(w http.ResponseWriter, r *http.Request) {
 	// Get the status of the coop
-	status := ctrl.coopService.Status()
+	status := ctrl.coopService.GetStatus()
 
 	// Response
 	gores.JSON(w, http.StatusOK, status)
 }
 
-// Use the coop
-func (ctrl *CoopController) Use(w http.ResponseWriter, r *http.Request) {
-	// Retreive the parameters
-	action := r.URL.Query().Get("action")
+// UpdateStatus updates of the coop
+func (ctrl *CoopController) UpdateStatus(w http.ResponseWriter, r *http.Request) {
+	var input protocols.Status
 
-	// Process the action
-	switch action {
-	case "open":
-		err := ctrl.coopService.Open()
-		if err != nil {
-			logrus.Errorln(err)
-
-			// Prepare the data
-			data := protocols.APIControllerResponse{
-				ErrorID:          "DOOR/USE/001",
-				ErrorMessage:     "Error when opening the coop",
-				ErrorDescription: fmt.Sprint(err),
-			}
-
-			// Execute the template
-			gores.JSON(w, http.StatusNotAcceptable, data)
-			return
+	// Parse the request
+	err := utils.ParseRequest(r, &input)
+	if err != nil {
+		response := &protocols.APIControllerResponse{
+			ErrorMessage: "Unable to parse the request",
 		}
 
-		// Execute the template
-		gores.JSON(w, http.StatusNoContent, nil)
-		break
+		// Publish the respons
+		gores.JSON(w, http.StatusNotAcceptable, response)
+		return
+	}
 
-	case "close":
-		err := ctrl.coopService.Close()
-		if err != nil {
-			logrus.Errorln(err)
-
-			// Prepare the data
-			data := protocols.APIControllerResponse{
-				ErrorMessage:     "Error when closing the coop",
-				ErrorDescription: err.Error(),
-			}
-
-			// Execute the template
-			gores.JSON(w, http.StatusNotAcceptable, data)
-			return
+	// Update the status of the coop
+	err = ctrl.coopService.UpdateStatus(input.Status)
+	if err != nil {
+		response := &protocols.APIControllerResponse{
+			ErrorMessage: "Unable to update the status",
 		}
 
-		// Execute the template
-		gores.JSON(w, http.StatusNoContent, nil)
-		break
+		// Publish the respons
+		gores.JSON(w, http.StatusInternalServerError, response)
+		return
+	}
 
-	default:
-		logrus.Errorln("The action is not correct")
+	// Response
+	gores.JSON(w, http.StatusNoContent, nil)
+}
+
+// Open the coop
+func (ctrl *CoopController) Open(w http.ResponseWriter, r *http.Request) {
+	err := ctrl.coopService.Open()
+	if err != nil {
+		logrus.Errorln(err)
 
 		// Prepare the data
 		data := protocols.APIControllerResponse{
-			ErrorMessage: "The action is not correct",
+			ErrorMessage:     "Error when opening the coop",
+			ErrorDescription: err.Error(),
 		}
 
 		// Execute the template
 		gores.JSON(w, http.StatusNotAcceptable, data)
 		return
 	}
+
+	// Execute the template
+	gores.JSON(w, http.StatusNoContent, nil)
+
+}
+
+// Close the coop
+func (ctrl *CoopController) Close(w http.ResponseWriter, r *http.Request) {
+	err := ctrl.coopService.Close()
+	if err != nil {
+		logrus.Errorln(err)
+
+		// Prepare the data
+		data := protocols.APIControllerResponse{
+			ErrorMessage:     "Error when closing the coop",
+			ErrorDescription: err.Error(),
+		}
+
+		// Execute the template
+		gores.JSON(w, http.StatusNotAcceptable, data)
+		return
+	}
+
+	// Execute the template
+	gores.JSON(w, http.StatusNoContent, nil)
 }
