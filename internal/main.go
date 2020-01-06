@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
+	"time"
 
+	"gocoop/internal/cache"
 	"gocoop/internal/routes"
 	"gocoop/internal/services"
 	"gocoop/internal/system/middleware"
@@ -44,21 +46,32 @@ func Run(cmd *cobra.Command, args []string) {
 		logrus.WithError(err).Fatalln("Error while creating the coop instance")
 	}
 
+	// Initialize cache
+	logrus.Infoln("Initializing the Redis cache")
+	store, err := cache.NewRedisCache(viper.GetString("general.redis_host"), viper.GetString("general.redis_password"), 12*time.Hour)
+	if err != nil {
+		logrus.WithError(err).Fatalln("Error when initializing connection to Redis cache")
+	}
+	logrus.Infoln("Successfully initialized the Redis cache")
+
 	// Initialize the middlewares
 	logrus.Infoln("Initializing the middlewares")
 	corsMiddleware := middleware.Cors()
 	xRequestIDMiddleware := middleware.XRequestID()
+	jwtMiddleware := middleware.JWT(store, viper.GetString("general.private_key"))
 	logrus.Infoln("Successfully initialized the middlewares")
 
 	// Initialize Web controllers
 	logrus.Infoln("Initializing the services")
 	coopService := services.NewCoopService(c)
+	jwtService := services.NewJwtService(store, viper.GetString("general.private_key"))
 	logrus.Infoln("Successfully initialized the services")
 
 	// Initialize Web controllers
 	logrus.Infoln("Initializing the Web controllers")
 	coopCtrl := routes.NewCoopController(coopService)
 	miscCtrl := routes.NewMiscController()
+	jwtCtrl := routes.NewJwtController(jwtService, viper.GetString("gui_username"), viper.GetString("gui_password"))
 	logrus.Infoln("Successfully initialized the Web controllers")
 
 	// Initialize CRON
@@ -71,22 +84,32 @@ func Run(cmd *cobra.Command, args []string) {
 	root := goji.NewMux()
 
 	// Middlewares
-	logrus.Infoln("Initializing the middlewares")
 	root.Use(corsMiddleware)
 	root.Use(xRequestIDMiddleware)
-	logrus.Infoln("Successfully initialized the middlewares")
+
+	// Unauthenticated route
+	root.HandleFunc(pat.Post("/api/v1/login"), jwtCtrl.Login)
+	root.HandleFunc(pat.Get("/api/v1/refresh"), jwtCtrl.Refresh)
+	root.HandleFunc(pat.Get("/api/v1/logout"), jwtCtrl.Logout)
+
+	// Authenticated routes
+	authenticated := goji.SubMux()
+	authenticated.Use(jwtMiddleware)
+	authenticated.HandleFunc(pat.Get("/api/v1/configuration"), miscCtrl.Configuration)
+	authenticated.HandleFunc(pat.Get("/api/v1/door"), coopCtrl.Status)
+	authenticated.HandleFunc(pat.Get("/api/v1/door/use"), coopCtrl.Use)
+
+	// Merge the muxes
+	root.Handle(pat.New("/*"), authenticated)
+
+	// Handlers
+	http.Handle("/", root)
 
 	// Define the routes for Web
-	fs := http.FileServer(http.Dir("web"))
-	root.Handle(pat.Get("/"), fs)
-	root.Handle(pat.Get("/app/*"), fs)
-	root.Handle(pat.Get("/static/*"), fs)
-
-	// Define the routes for API
-	root.HandleFunc(pat.Get("/api"), miscCtrl.Hello)
-	root.HandleFunc(pat.Get("/api/v1/configuration"), miscCtrl.Configuration)
-	root.HandleFunc(pat.Get("/api/v1/door"), coopCtrl.Status)
-	root.HandleFunc(pat.Get("/api/v1/door/use"), coopCtrl.Use)
+	/* 	fs := http.FileServer(http.Dir("web"))
+	   	root.Handle(pat.Get("/"), fs)
+	   	root.Handle(pat.Get("/app/*"), fs)
+	   	root.Handle(pat.Get("/static/*"), fs) */
 
 	// Serve
 	logrus.Infoln("Starting the Web server")
