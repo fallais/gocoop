@@ -48,7 +48,7 @@ func Run(cmd *cobra.Command, args []string) {
 
 	// Initialize cache
 	logrus.Infoln("Initializing the Redis cache")
-	store, err := cache.NewRedisCache(viper.GetString("redis_host"), viper.GetString("redis_password"), 12*time.Hour)
+	store, err := cache.NewRedisCache(viper.GetString("general.redis_host"), viper.GetString("general.redis_password"), 12*time.Hour)
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error when initializing connection to Redis cache")
 	}
@@ -70,12 +70,12 @@ func Run(cmd *cobra.Command, args []string) {
 	// Initialize Web controllers
 	logrus.Infoln("Initializing the Web controllers")
 	coopCtrl := routes.NewCoopController(coopService)
-	jwtCtrl := routes.NewJwtController(jwtService, viper.GetString("gui_username"), viper.GetString("gui_password"))
+	jwtCtrl := routes.NewJwtController(jwtService, viper.GetString("general.gui_username"), viper.GetString("general.gui_password"))
 	logrus.Infoln("Successfully initialized the Web controllers")
 
 	// Initialize CRON
 	cr := cron.New()
-	cr.AddFunc("@every 5m", c.Check)
+	cr.AddFunc("@every 1m", c.Check)
 	cr.Start()
 
 	// Create a new Goji multiplexer
@@ -94,7 +94,6 @@ func Run(cmd *cobra.Command, args []string) {
 	authenticated := goji.SubMux()
 	authenticated.Use(jwtMiddleware)
 	authenticated.HandleFunc(pat.Get("/api/v1/coop"), coopCtrl.Get)
-	//authenticated.HandleFunc(pat.Post("/api/v1/coop"), coopCtrl.Update)
 	authenticated.HandleFunc(pat.Get("/api/v1/coop/status"), coopCtrl.GetStatus)
 	authenticated.HandleFunc(pat.Post("/api/v1/coop/status"), coopCtrl.UpdateStatus)
 	authenticated.HandleFunc(pat.Post("/api/v1/coop/open"), coopCtrl.Open)
@@ -102,10 +101,6 @@ func Run(cmd *cobra.Command, args []string) {
 
 	// Merge the muxes
 	root.Handle(pat.New("/*"), authenticated)
-
-	// Static files
-	/* 	fs := http.FileServer(http.Dir(viper.GetString("static_dir")))
-	   	root.Handle(pat.Get("/*"), fs) */
 
 	// Handlers
 	http.Handle("/", root)

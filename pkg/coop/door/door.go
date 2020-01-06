@@ -13,11 +13,11 @@ import (
 
 // Door is a physical door manipulated with a motor.
 type Door struct {
-	motor1A      int
-	motor1B      int
-	motor1Enable int
-	waitOpen     time.Duration
-	waitClose    time.Duration
+	motor1A         int
+	motor1B         int
+	motor1Enable    int
+	openingDuration time.Duration
+	closingDuration time.Duration
 }
 
 //------------------------------------------------------------------------------
@@ -25,13 +25,13 @@ type Door struct {
 //------------------------------------------------------------------------------
 
 // NewDoor returns a new Door.
-func NewDoor() *Door {
+func NewDoor(openingDuration, closingDuration time.Duration) *Door {
 	return &Door{
-		motor1A:      23,
-		motor1B:      24,
-		motor1Enable: 25,
-		waitOpen:     65 * time.Second,
-		waitClose:    60 * time.Second,
+		motor1A:         23,
+		motor1B:         24,
+		motor1Enable:    25,
+		openingDuration: openingDuration,
+		closingDuration: closingDuration,
 	}
 }
 
@@ -89,8 +89,8 @@ func (d *Door) Open() error {
 	pinMotor1Enable.Write(rpi.HIGH)
 
 	// Wait
-	logrus.Infoln("Wait for", d.waitOpen)
-	time.Sleep(d.waitOpen)
+	logrus.Infoln("Wait for", d.openingDuration)
+	time.Sleep(d.openingDuration)
 
 	// Disable the motor
 	logrus.Infoln("Disable the motor")
@@ -144,8 +144,8 @@ func (d *Door) Close() error {
 	pinMotor1Enable.Write(rpi.HIGH)
 
 	// Wait
-	logrus.Infoln("Wait for", d.waitClose)
-	time.Sleep(d.waitClose)
+	logrus.Infoln("Wait for", d.closingDuration)
+	time.Sleep(d.closingDuration)
 
 	// Disable the motor
 	logrus.Infoln("Disable the motor")

@@ -52,17 +52,24 @@ Deploy with a `docker-compose`.
 The configuration file must be as follow :
 
 ```yaml
-latitude: 42.525776
-longitude: 2.327727
-gui_username: admin
-gui_password: admin
-static_dir: /app/frontend
-opening:
-  mode: "time_based"
-  value: "08h00"
-closing:
-  mode: "sun_based"
-  value: "-30m"
+general:
+  gui_username: admin
+  gui_password: admin
+  private_key: myK3yIsAwesome!
+  redis_host: localhost:6379
+  redis_password: 
+coop:
+  latitude: 42.525776
+  longitude: 2.327727
+  opening:
+    mode: "time_based"
+    value: "08h00"
+  closing:
+    mode: "sun_based"
+    value: "-30m"
+door:
+  openening_duration: "65s"
+  closing_duration: "60s"
 ```
 
 #### Modes and values

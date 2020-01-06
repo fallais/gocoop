@@ -76,7 +76,7 @@ func New() (*Coop, error) {
 			return nil, fmt.Errorf("Error when parsing the duration for the opening condition : %s", err)
 		}
 
-		closingCondition = conditions.NewSunBasedCondition(duration, viper.GetFloat64("latitude"), viper.GetFloat64("longitude"))
+		closingCondition = conditions.NewSunBasedCondition(duration, viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
 
 		break
 	}
@@ -87,7 +87,7 @@ func New() (*Coop, error) {
 		latitude:         viper.GetFloat64("latitude"),
 		longitude:        viper.GetFloat64("longitude"),
 		status:           Unknown,
-		door:             door.NewDoor(),
+		door:             door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.opening_duration")),
 	}, nil
 }
 
