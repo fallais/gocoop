@@ -23,8 +23,13 @@ jobs:
 
       - name: Build
         run: go build -v .
+      
+      - name: Build the Docker image
+        run: docker build -t gocoop -f build/docker/backend.Dockerfile .
   
   docker:
-    runs:
-      using: 'docker'
-      image: 'build/docker/backend.Dockerfile'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Build the Docker image
+      run: docker build .
