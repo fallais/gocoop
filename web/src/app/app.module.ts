@@ -24,6 +24,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { JwtModule } from "@auth0/angular-jwt";
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import { CoopGetComponent } from './components/coop/coop-get/coop-get.component';
 
 export function tokenGetter() {
   return localStorage.getItem("access_token");
@@ -34,7 +35,8 @@ export function tokenGetter() {
     AppComponent,
     LoginComponent,
     DashboardComponent,
-    NavComponent
+    NavComponent,
+    CoopGetComponent
   ],
   imports: [
     BrowserModule,

@@ -1,25 +1,28 @@
 <div class="container">
+  <div class="row mt-4" *ngIf="coopStatus == 'unknown'">
+      <div class="col-12">
+        <div class="alert alert-warning">
+          <p>The status of the coop is <b>unknown</b>, you must set the status before opening or closing it.</p>
+          <p class="text-center">
+            <button class="btn btn-secondary mr-2" (click)="updateStatus('opened')">Set as opened</button>
+            <button class="btn btn-secondary" (click)="updateStatus('closed')">Set as closed</button>
+          </p>
+        </div>
+      </div>
+  </div>
+
   <div class="row mt-4">
     <div class="col-4 col-xs-12">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Coop</h5>
         </div>
-        <div class="card-body pb-0">
-          
-
+        <div class="card-body">
           <p class="text-center"><i class="fa fa-sign-out fa-5x" aria-hidden="true"></i></p>
-          <p class="text-center">{{ coopStatus }}</p>
+          <p class="text-center text-capitalize">{{ coopStatus }}</p>
           <p class="text-center">
             <button class="btn btn-success mr-2" (click)="open()">Open</button>
             <button class="btn btn-danger" (click)="close()">Close</button><br />
-            
-          </p>
-        </div>
-        <div class="card-footer" *ngIf="coopStatus == 'unknown'">
-          <p class="text-center">
-              <button class="btn btn-dark mr-2" (click)="updateStatus('opened')">Set as opened</button>
-              <button class="btn btn-dark" (click)="updateStatus('closed')">Set as closed</button>
           </p>
         </div>
       </div>

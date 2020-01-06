@@ -1,7 +1,7 @@
 <nav class="navbar navbar-dark navbar-expand-lg mt-0" *ngIf="isAuthenticated()">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/">
-      <img height="30" src="assets/images/gocoop.png" alt="GoCoop" /> Watcher
+      <img height="30" src="assets/images/gocoop.png" alt="GoCoop" />  GoCoop
     </a>
     <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       <span class="navbar-toggler-icon"></span>
@@ -11,6 +11,9 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
           <a class="nav-link" routerLink="/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/coop">Coop</a>
         </li>
       </ul>
       <span class="navbar-text">

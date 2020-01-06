@@ -4,6 +4,14 @@ type Status struct {
 	Status string `json:"status"`
 }
 
+// CoopResponse is the response for coop.
+type CoopResponse struct {
+	OpeningCondition map[string]string `json:"opening_condition"`
+	ClosingCondition map[string]string `json:"closing_condition"`
+	Latitude         float64           `json:"latitude"`
+	Longitude        float64           `json:"longitude"`
+}
+
 // APIControllerResponse is the response for API.
 type APIControllerResponse struct {
 	ErrorID          string `json:"error_id,omitempty"`

@@ -2,22 +2,24 @@
 
 ![Coop](https://github.com/fallais/gocoop/blob/master/assets/coop.png)
 
-**GoCoop** is a tool written in **Go** that helps you to manage your chicken coop !
+**GoCoop** is a tool written in **Go** and **Angular** that helps you to manage your chicken coop !
 
 ## Objectives
 
 The main objective is to protect the chickens against the **hungry fox** or the **greedy weasel**. To do so, we need to automaticaly open and close the door of the chicken coop, with two options :
 
-- Fixed time (for example *08h30*)
-- Regarding the sunset and sunrise (for example *30min after sunrise*)
+- At a fixed time (for example *08h30*)
+- Based on the sunset and sunrise (for example *30min after sunrise*)
 
-> The chickens always go to sleep at sunset. You know the sentence : **go to bed with the chickens**.
+> If you worry about using the sun based condition, be sure that the chickens always go to sleep at sunset. As the sentence says : **go to bed with the chickens**.
 
 ## Components
 
 ### The motor
 
 I use the `Nextrox 37mm 12V 15RPM`. I chose this motor because of its torque : **250 N*cm**
+
+![Nextrox](https://github.com/fallais/gocoop/blob/master/assets/nextrox.jpg)
 
 ### The motor driver
 
@@ -41,8 +43,9 @@ Sure, chickens deserv the best ! The fox is **mercyless** !
 
 ### Docker
 
-Pull the image : `docker pull fallais/gocoop`
-Run the image : ``
+Build the image for backend : `docker build -t gocoop -f build/docker/backend.Dockerfile`.  
+Build the image for frontend : `docker build -t gocoop-frontend -f build/docker/frontend.Dockerfile`.  
+Deploy with a `docker-compose`.
 
 ### Configuration
 

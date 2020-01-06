@@ -13,6 +13,10 @@ export class CoopService {
     private http: HttpClient
   ) {}
 
+  get(): Observable<any> {
+    return this.http.get<any>(this.coopURL);
+  }
+
   getStatus(): Observable<string> {
     return this.http.get<string>(this.coopURL + '/status');
   }

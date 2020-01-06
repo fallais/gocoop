@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
        console.log(err)
 
         // Notify
-        this.notificationService.error('Error while listing the customers', err.error, {
+        this.notificationService.error('Error while getting the status', err.error.error_description, {
           timeOut: 5000,
           showProgressBar: true,
           pauseOnHover: true,
@@ -46,12 +46,13 @@ export class DashboardComponent implements OnInit {
     this.coopService.updateStatus(s).subscribe(
       (resp: string) => {
         this.coopStatus = resp;
+        this.getStatus();
       },
       err => {
        console.log(err)
 
         // Notify
-        this.notificationService.error('Error while listing the customers', err.error, {
+        this.notificationService.error('Error while updating the status', err.error.error_description, {
           timeOut: 5000,
           showProgressBar: true,
           pauseOnHover: true,
@@ -63,9 +64,7 @@ export class DashboardComponent implements OnInit {
 
   open(): void {
     this.coopService.open().subscribe(
-      (resp: string) => {
-        
-      },
+      (resp: string) => {},
       err => {
        console.log(err)
 
@@ -82,14 +81,12 @@ export class DashboardComponent implements OnInit {
 
   close(): void {
     this.coopService.close().subscribe(
-      (resp: string) => {
-        
-      },
+      (resp: string) => {},
       err => {
        console.log(err)
 
         // Notify
-        this.notificationService.error('Error while closing the coop', err.error, {
+        this.notificationService.error('Error while closing the coop', err.error.error_description, {
           timeOut: 5000,
           showProgressBar: true,
           pauseOnHover: true,

@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-12">
+      <h4>Coop</h4>
+    </div>
+
+    <div class="col-12 mt-4">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Configuration</h5>
+        </div>
+        <div class="card-body">
+          <p>Opening : {{ coop?.opening_condition.mode }} ({{ coop?.opening_condition.value }})</p>
+          <p>Closing : {{ coop?.closing_condition.mode }} ({{ coop?.closing_condition.value }})</p>
+          <p>Latitude : {{ coop?.latitude }}</p>
+          <p>Longitude : {{ coop?.longitude }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-12 mt-4">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Status</h5>
+        </div>
+        <div class="card-body">
+          <p>Status : {{ coopStatus }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

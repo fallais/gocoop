@@ -2,6 +2,7 @@ package coop
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"gocoop/pkg/coop/conditions"
@@ -23,6 +24,7 @@ type Coop struct {
 	status           Status
 	latitude         float64
 	longitude        float64
+	sync.Mutex
 }
 
 //------------------------------------------------------------------------------
@@ -96,7 +98,26 @@ func New() (*Coop, error) {
 
 // GetStatus returns the status of the chicken coop.
 func (coop *Coop) GetStatus() Status {
+	coop.Lock()
+	defer coop.Unlock()
+
 	return coop.status
+}
+
+// GetOpeningCondition returns the opening condition of the chicken coop.
+func (coop *Coop) GetOpeningCondition() conditions.Condition {
+	coop.Lock()
+	defer coop.Unlock()
+
+	return coop.openingCondition
+}
+
+// GetClosingCondition returns the closing condition of the chicken coop.
+func (coop *Coop) GetClosingCondition() conditions.Condition {
+	coop.Lock()
+	defer coop.Unlock()
+
+	return coop.closingCondition
 }
 
 // UpdateStatus updates the status of the chicken coop.
