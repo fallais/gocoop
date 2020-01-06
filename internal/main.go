@@ -75,7 +75,7 @@ func Run(cmd *cobra.Command, args []string) {
 
 	// Initialize CRON
 	cr := cron.New()
-	cr.AddFunc("@every 1m", c.Check)
+	cr.AddFunc("@every 15s", c.Check)
 	cr.Start()
 
 	// Create a new Goji multiplexer

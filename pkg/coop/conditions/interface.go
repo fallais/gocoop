@@ -6,6 +6,8 @@ import (
 
 // Condition is an opening or a closing condition.
 type Condition interface {
-	GetTime() time.Time
-	GetNextTime() time.Time
+	GetOpeningTime() time.Time
+	//GetNextOpeningTime() time.Time
+	GetClosingTime() time.Time
+	//GetNextClosingTime() time.Time
 }

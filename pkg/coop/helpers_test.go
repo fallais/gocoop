@@ -4,15 +4,15 @@ import (
 	"testing"
 	"time"
 
-	"gocoop/pkg/coop/conditions"
+	"gocoop/pkg/coop/conditions/timebased"
 )
 
 const latitude = 43.525776
 const longitude = 1.327727
 
 func TestShouldBeClosed(t *testing.T) {
-	openingCondition := conditions.NewTimeBasedCondition(8, 30)
-	closingCondition := conditions.NewTimeBasedCondition(18, 30)
+	openingCondition := timebased.NewTimeBasedCondition(8, 30)
+	closingCondition := timebased.NewTimeBasedCondition(18, 30)
 
 	c := &Coop{
 		openingCondition: openingCondition,
@@ -38,8 +38,8 @@ func TestShouldBeClosed(t *testing.T) {
 }
 
 func TestShouldBeOpened(t *testing.T) {
-	openingCondition := conditions.NewTimeBasedCondition(8, 30)
-	closingCondition := conditions.NewTimeBasedCondition(18, 30)
+	openingCondition := timebased.NewTimeBasedCondition(8, 30)
+	closingCondition := timebased.NewTimeBasedCondition(18, 30)
 
 	c := &Coop{
 		openingCondition: openingCondition,
@@ -84,6 +84,13 @@ func TestParseTime(t *testing.T) {
 	}
 	if m != 30 {
 		t.Errorf("Minutes should be 30")
+		t.Fail()
+	}
+
+	t3 := "DDhEE"
+	h, m, err = parseTime(t3)
+	if err == nil {
+		t.Errorf("Should raise an error")
 		t.Fail()
 	}
 }

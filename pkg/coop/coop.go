@@ -2,10 +2,11 @@ package coop
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
 	"gocoop/pkg/coop/conditions"
+	"gocoop/pkg/coop/conditions/sunbased"
+	"gocoop/pkg/coop/conditions/timebased"
 	"gocoop/pkg/coop/door"
 
 	"github.com/sirupsen/logrus"
@@ -24,7 +25,6 @@ type Coop struct {
 	status           Status
 	latitude         float64
 	longitude        float64
-	sync.Mutex
 }
 
 //------------------------------------------------------------------------------
@@ -35,50 +35,54 @@ type Coop struct {
 func New() (*Coop, error) {
 	// Create the opening condition
 	var openingCondition conditions.Condition
-	switch viper.GetString("opening.mode") {
+	switch viper.GetString("coop.opening.mode") {
 	case "time_based":
-		h, m, err := parseTime(viper.GetString("opening.value"))
+		h, m, err := parseTime(viper.GetString("coop.opening.value"))
 		if err != nil {
 			return nil, fmt.Errorf("Error while parsing the time for the opening condition : %s", err)
 		}
 
-		openingCondition = conditions.NewTimeBasedCondition(h, m)
+		openingCondition = timebased.NewTimeBasedCondition(h, m)
 
 		break
 	case "sun_based":
 		// Parse the duration
-		duration, err := time.ParseDuration(viper.GetString("opening.value"))
+		duration, err := time.ParseDuration(viper.GetString("coop.opening.value"))
 		if err != nil {
 			return nil, fmt.Errorf("Error when parsing the duration for the opening condition : %s", err)
 		}
 
-		openingCondition = conditions.NewSunBasedCondition(duration, viper.GetFloat64("latitude"), viper.GetFloat64("longitude"))
+		openingCondition = sunbased.NewSunBasedCondition(duration, viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
 
 		break
+	default:
+		return nil, fmt.Errorf("error with the opening mode: %s", viper.GetString("coop.opening.mode"))
 	}
 
 	// Create the closing condition
 	var closingCondition conditions.Condition
-	switch viper.GetString("closing.mode") {
+	switch viper.GetString("coop.closing.mode") {
 	case "time_based":
-		h, m, err := parseTime(viper.GetString("closing.value"))
+		h, m, err := parseTime(viper.GetString("coop.closing.value"))
 		if err != nil {
-			return nil, fmt.Errorf("Error while parsing the time for the opening condition : %s", err)
+			return nil, fmt.Errorf("Error while parsing the time for the closing condition : %s", err)
 		}
 
-		closingCondition = conditions.NewTimeBasedCondition(h, m)
+		closingCondition = timebased.NewTimeBasedCondition(h, m)
 
 		break
 	case "sun_based":
 		// Parse the duration
-		duration, err := time.ParseDuration(viper.GetString("closing.value"))
+		duration, err := time.ParseDuration(viper.GetString("coop.closing.value"))
 		if err != nil {
-			return nil, fmt.Errorf("Error when parsing the duration for the opening condition : %s", err)
+			return nil, fmt.Errorf("Error when parsing the duration for the closing condition : %s", err)
 		}
 
-		closingCondition = conditions.NewSunBasedCondition(duration, viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
+		closingCondition = sunbased.NewSunBasedCondition(duration, viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
 
 		break
+	default:
+		return nil, fmt.Errorf("error with the closing mode: %s", viper.GetString("closing.mode"))
 	}
 
 	return &Coop{
@@ -87,7 +91,7 @@ func New() (*Coop, error) {
 		latitude:         viper.GetFloat64("latitude"),
 		longitude:        viper.GetFloat64("longitude"),
 		status:           Unknown,
-		door:             door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.opening_duration")),
+		door:             door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration")),
 	}, nil
 }
 
@@ -97,25 +101,16 @@ func New() (*Coop, error) {
 
 // GetStatus returns the status of the chicken coop.
 func (coop *Coop) GetStatus() Status {
-	coop.Lock()
-	defer coop.Unlock()
-
 	return coop.status
 }
 
 // GetOpeningCondition returns the opening condition of the chicken coop.
 func (coop *Coop) GetOpeningCondition() conditions.Condition {
-	coop.Lock()
-	defer coop.Unlock()
-
 	return coop.openingCondition
 }
 
 // GetClosingCondition returns the closing condition of the chicken coop.
 func (coop *Coop) GetClosingCondition() conditions.Condition {
-	coop.Lock()
-	defer coop.Unlock()
-
 	return coop.closingCondition
 }
 
@@ -197,7 +192,11 @@ func (coop *Coop) Close() error {
 
 // Check performs a check of the door of the chicken coop.
 func (coop *Coop) Check() {
-	logrus.Infoln("Checking the coop")
+	logrus.WithFields(logrus.Fields{
+		"status":       coop.status,
+		"opening_time": coop.openingCondition.GetOpeningTime(),
+		"closing_time": coop.closingCondition.GetClosingTime(),
+	}).Infoln("Checking the coop")
 
 	// Process the status
 	switch coop.status {
@@ -214,8 +213,8 @@ func (coop *Coop) Check() {
 		if coop.shouldBeOpened(time.Now()) {
 			logrus.WithFields(logrus.Fields{
 				"status":       coop.status,
-				"opening_time": coop.openingCondition.GetTime(),
-				"closing_time": coop.closingCondition.GetTime(),
+				"opening_time": coop.openingCondition.GetOpeningTime(),
+				"closing_time": coop.closingCondition.GetClosingTime(),
 			}).Warnln("The coop should be opened")
 
 			// Open the coop
@@ -233,8 +232,8 @@ func (coop *Coop) Check() {
 		if coop.shouldBeClosed(time.Now()) {
 			logrus.WithFields(logrus.Fields{
 				"status":       coop.status,
-				"opening_time": coop.openingCondition.GetTime(),
-				"closing_time": coop.closingCondition.GetTime(),
+				"opening_time": coop.openingCondition.GetOpeningTime(),
+				"closing_time": coop.closingCondition.GetClosingTime(),
 			}).Warnln("The coop should be closed")
 
 			// Close the coop
@@ -253,5 +252,9 @@ func (coop *Coop) Check() {
 		return
 	}
 
-	logrus.Infoln("Coop has been checked")
+	logrus.WithFields(logrus.Fields{
+		"status":       coop.status,
+		"opening_time": coop.openingCondition.GetOpeningTime(),
+		"closing_time": coop.closingCondition.GetClosingTime(),
+	}).Infoln("Coop has been checked")
 }

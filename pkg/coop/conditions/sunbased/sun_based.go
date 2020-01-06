@@ -1,7 +1,9 @@
-package conditions
+package sunbased
 
 import (
 	"time"
+
+	"gocoop/pkg/coop/conditions"
 
 	"github.com/cpucycle/astrotime"
 )
@@ -12,7 +14,6 @@ import (
 
 // A sun based condition is based on the sunrise or the sunset, with an offset.
 type sunBasedCondition struct {
-	mode      string
 	offset    time.Duration
 	latitude  float64
 	longitude float64
@@ -23,7 +24,7 @@ type sunBasedCondition struct {
 //------------------------------------------------------------------------------
 
 // NewSunBasedCondition returns a new SunBasedCondition.
-func NewSunBasedCondition(offset time.Duration, latitude, longitude float64) Condition {
+func NewSunBasedCondition(offset time.Duration, latitude, longitude float64) conditions.Condition {
 	return &sunBasedCondition{
 		offset:    offset,
 		latitude:  latitude,
@@ -35,12 +36,12 @@ func NewSunBasedCondition(offset time.Duration, latitude, longitude float64) Con
 // Functions
 //------------------------------------------------------------------------------
 
-// GetTime
-func (c *sunBasedCondition) GetTime() time.Time {
+// GetOpeningTime
+func (c *sunBasedCondition) GetOpeningTime() time.Time {
 	return astrotime.CalcSunrise(time.Now(), c.latitude, c.longitude).Add(c.offset)
 }
 
-// GetNextTime
-func (c *sunBasedCondition) GetNextTime() time.Time {
-	return c.GetTime().AddDate(0, 0, 1)
+// GetClosingTime
+func (c *sunBasedCondition) GetClosingTime() time.Time {
+	return astrotime.CalcSunset(time.Now(), c.latitude, c.longitude).Add(c.offset)
 }

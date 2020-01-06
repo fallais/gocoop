@@ -12,7 +12,7 @@ coop:
     value: "08h00"
   closing:
     mode: "sun_based"
-    value: "-30m"
+    value: "30m"
 door:
   openening_duration: "65s"
   closing_duration: "60s"

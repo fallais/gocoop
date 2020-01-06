@@ -8,14 +8,15 @@ import (
 )
 
 func (coop *Coop) shouldBeClosed(date time.Time) bool {
-	// Get the closing time from the conditions
-	closingTime := coop.closingCondition.GetTime()
+	// Check if the date if before the opening time (it is the morning)
+	openingTime := coop.openingCondition.GetOpeningTime()
+	if date.Before(openingTime) {
+		return true
+	}
 
-	// Get the opening time from the conditions
-	openingTime := coop.openingCondition.GetTime()
-
-	// Check the time
-	if date.Before(openingTime) || date.After(closingTime) {
+	// Check if the date is after the closing time (it is the evening)
+	closingTime := coop.closingCondition.GetClosingTime()
+	if date.After(closingTime) {
 		return true
 	}
 
@@ -23,18 +24,19 @@ func (coop *Coop) shouldBeClosed(date time.Time) bool {
 }
 
 func (coop *Coop) shouldBeOpened(date time.Time) bool {
-	// Get the closing time from the conditions
-	closingTime := coop.closingCondition.GetTime()
-
-	// Get the opening time from the conditions
-	openingTime := coop.openingCondition.GetTime()
-
-	// Check the time
-	if date.After(openingTime) && date.Before(closingTime) {
-		return true
+	// Check if the date is before the opening time
+	openingTime := coop.openingCondition.GetOpeningTime()
+	if date.Before(openingTime) {
+		return false
 	}
 
-	return false
+	// Check if the date is after the closing time
+	closingTime := coop.closingCondition.GetClosingTime()
+	if date.After(closingTime) {
+		return false
+	}
+
+	return true
 }
 
 // parseTime returns the hours and minutes with given string.
