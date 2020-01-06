@@ -182,26 +182,26 @@ func (coop *Coop) Check() {
 	// Process the status
 	switch coop.status {
 	case Unknown:
-		logrus.Infoln("The status is unknown, set the status first !")
+		logrus.Warningln("The status is unknown, skipping")
 		break
 	case Opening:
-		logrus.Infoln("The coop is opening")
+		logrus.Infoln("The coop is opening, skipping")
 		break
 	case Closing:
-		logrus.Infoln("The coop is closing")
+		logrus.Infoln("The coop is closing, skipping")
 		break
 	case Closed:
-		if coop.shouldBeOpened(time.Now().UTC()) {
+		if coop.shouldBeOpened(time.Now()) {
 			logrus.WithFields(logrus.Fields{
 				"status":       coop.status,
 				"opening_time": coop.openingCondition.GetTime(),
 				"closing_time": coop.closingCondition.GetTime(),
 			}).Warnln("The coop should be opened")
 
-			// Open the door
-			err := coop.door.Open()
+			// Open the coop
+			err := coop.Open()
 			if err != nil {
-				logrus.Errorf("error while opening the door: %s", err)
+				logrus.Errorf("error while opening the coop: %s", err)
 				return
 			}
 
@@ -210,21 +210,21 @@ func (coop *Coop) Check() {
 
 		break
 	case Opened:
-		if coop.shouldBeClosed(time.Now().UTC()) {
+		if coop.shouldBeClosed(time.Now()) {
 			logrus.WithFields(logrus.Fields{
 				"status":       coop.status,
 				"opening_time": coop.openingCondition.GetTime(),
 				"closing_time": coop.closingCondition.GetTime(),
 			}).Warnln("The coop should be closed")
 
-			// Close the door
-			err := coop.door.Close()
+			// Close the coop
+			err := coop.Close()
 			if err != nil {
-				logrus.Errorf("Error when closing the door : %s", err)
+				logrus.Errorf("Error when closing the coop: %s", err)
 				return
 			}
 
-			logrus.Infoln("The door has been closed")
+			logrus.Infoln("The coop has been closed")
 		}
 
 		break
