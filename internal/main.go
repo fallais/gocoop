@@ -87,6 +87,12 @@ func Run(cmd *cobra.Command, args []string) {
 	root.Use(corsMiddleware)
 	root.Use(xRequestIDMiddleware)
 
+	// Define the routes for static files
+	fs := http.FileServer(http.Dir(viper.GetString("static_dir")))
+	root.Handle(pat.Get("/"), fs)
+	//root.Handle(pat.Get("/app/*"), fs)
+	//root.Handle(pat.Get("/static/*"), fs)
+
 	// Unauthenticated route
 	root.HandleFunc(pat.Post("/api/v1/login"), jwtCtrl.Login)
 	root.HandleFunc(pat.Get("/api/v1/refresh"), jwtCtrl.Refresh)
@@ -104,12 +110,6 @@ func Run(cmd *cobra.Command, args []string) {
 
 	// Handlers
 	http.Handle("/", root)
-
-	// Define the routes for Web
-	/* 	fs := http.FileServer(http.Dir("web"))
-	   	root.Handle(pat.Get("/"), fs)
-	   	root.Handle(pat.Get("/app/*"), fs)
-	   	root.Handle(pat.Get("/static/*"), fs) */
 
 	// Serve
 	logrus.Infoln("Starting the Web server")
