@@ -1,0 +1,21 @@
+<nav class="navbar navbar-dark navbar-expand-lg mt-0" *ngIf="isAuthenticated()">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">
+      <img height="30" src="assets/images/gocoop.png" alt="GoCoop" /> Watcher
+    </a>
+    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard">Dashboard</a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        <button class="btn btn-sm btn-secondary" (click)="onLogout()"><i class="fa fa-sign-out" aria-hidden="true"></i> Sign out</button>
+      </span>
+    </div>
+  </div>
+</nav>
