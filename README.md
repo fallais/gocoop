@@ -46,6 +46,9 @@ The configuration file must be as follow :
 ```yaml
 latitude: 42.525776
 longitude: 2.327727
+gui_username: admin
+gui_password: admin
+static_dir: /app/frontend
 opening:
   mode: "time_based"
   value: "08h00"
