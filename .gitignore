@@ -1,3 +1,9 @@
 gocoop.exe
 gocoop
-configuration.json
+
+# Frontend
+web/dist
+web/tmp
+web/out-tsc
+web/bazel-out
+web/node_modules

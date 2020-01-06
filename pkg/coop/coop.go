@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gocoop/pkg/coop/conditions"
+	"gocoop/pkg/coop/door"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -18,8 +19,8 @@ import (
 type Coop struct {
 	openingCondition conditions.Condition
 	closingCondition conditions.Condition
-	location         *time.Location
-	doors            []*Door
+	door             *door.Door
+	status           Status
 	latitude         float64
 	longitude        float64
 }
@@ -79,17 +80,13 @@ func New() (*Coop, error) {
 		break
 	}
 
-	// Create the doors
-	var doors []*Door
-	door := NewDoor()
-	doors = append(doors, door)
-
 	return &Coop{
 		openingCondition: openingCondition,
 		closingCondition: closingCondition,
 		latitude:         viper.GetFloat64("latitude"),
 		longitude:        viper.GetFloat64("longitude"),
-		doors:            doors,
+		status:           Unknown,
+		door:             door.NewDoor(),
 	}, nil
 }
 
@@ -97,82 +94,146 @@ func New() (*Coop, error) {
 // Functions
 //------------------------------------------------------------------------------
 
-// Status returns the status of the chicken coop.
-func (coop *Coop) Status() Status {
-	return Unknown
+// GetStatus returns the status of the chicken coop.
+func (coop *Coop) GetStatus() Status {
+	return coop.status
+}
+
+// UpdateStatus updates the status of the chicken coop.
+func (coop *Coop) UpdateStatus(status string) error {
+	switch status {
+	case "opened":
+		coop.status = Opened
+	case "closed":
+		coop.status = Closed
+	default:
+		return fmt.Errorf("bad status")
+	}
+
+	return nil
 }
 
 // Open opens the chicken coop.
 func (coop *Coop) Open() error {
+	switch coop.status {
+	case Unknown:
+		return fmt.Errorf("cannot open the coop because the status unknown")
+	case Opened:
+		return fmt.Errorf("coop is already opened")
+	case Opening:
+		return fmt.Errorf("coop is already opening")
+	case Closing:
+		return fmt.Errorf("coop is already closing")
+	}
+
+	// Update the status of the coop
+	coop.status = Opening
+
+	// Open the door
+	err := coop.door.Open()
+	if err != nil {
+		// Update the status of the coop
+		coop.status = Unknown
+
+		return fmt.Errorf("error while opening the door: %s", err)
+	}
+
+	// Update the status of the coop
+	coop.status = Opened
+
 	return nil
 }
 
 // Close closes the chicken coop.
 func (coop *Coop) Close() error {
+	switch coop.status {
+	case Unknown:
+		return fmt.Errorf("cannot open the coop because the status unknown")
+	case Closed:
+		return fmt.Errorf("coop is already closed")
+	case Opening:
+		return fmt.Errorf("coop is already opening")
+	case Closing:
+		return fmt.Errorf("coop is already closing")
+	}
+
+	// Update the status of the coop
+	coop.status = Closing
+
+	// Close the door
+	err := coop.door.Close()
+	if err != nil {
+		// Update the status of the coop
+		coop.status = Unknown
+
+		return fmt.Errorf("error while opening the door: %s", err)
+	}
+
+	// Update the status of the coop
+	coop.status = Closed
+
 	return nil
 }
 
-// Check performs a check for al the doors of the chicken coop.
+// Check performs a check of the door of the chicken coop.
 func (coop *Coop) Check() {
-	logrus.Infoln("Checking the doors of the coop")
+	logrus.Infoln("Checking the coop")
 
-	// Check the doors
-	for _, d := range coop.doors {
-		// Get the status of the door
-		logrus.Infoln("Getting the status of the door")
-		status := d.GetStatus()
-		logrus.WithFields(logrus.Fields{
-			"status": status,
-		}).Infoln("Successfully got the status of the door")
+	// Process the status
+	switch coop.status {
+	case Unknown:
+		logrus.Infoln("The status is unknown, set the status first !")
+		break
+	case Opening:
+		logrus.Infoln("The coop is opening")
+		break
+	case Closing:
+		logrus.Infoln("The coop is closing")
+		break
+	case Closed:
+		if coop.shouldBeOpened(time.Now().UTC()) {
+			logrus.WithFields(logrus.Fields{
+				"status":       coop.status,
+				"opening_time": coop.openingCondition.GetTime(),
+				"closing_time": coop.closingCondition.GetTime(),
+			}).Warnln("The coop should be opened")
 
-		// Process the status
-		switch status {
-		case DoorUnknown:
-			logrus.Infoln("The door is in unknown status, set the status first !")
-			break
-		case DoorOpening:
-		case DoorClosing:
-			logrus.Infoln("The door is already being used, waiting")
-			break
-		case DoorClosed:
-			if coop.shouldBeOpened(time.Now().UTC()) {
-				logrus.WithFields(logrus.Fields{
-					"status":       status,
-					"opening_time": coop.openingCondition.GetTime(),
-					"closing_time": coop.closingCondition.GetTime(),
-				}).Warnln("The door should be opened")
-
-				// Open the door
-				err := d.Open()
-				if err != nil {
-					logrus.Errorf("Error when opening the door : %s", err)
-					return
-				}
-
-				logrus.Infoln("The door has been opened")
+			// Open the door
+			err := coop.door.Open()
+			if err != nil {
+				logrus.Errorf("error while opening the door: %s", err)
+				return
 			}
 
-			break
-		case DoorOpened:
-			if coop.shouldBeClosed(time.Now().UTC()) {
-				// Close the door
-				err := d.Close()
-				if err != nil {
-					logrus.Errorf("Error when closing the door : %s", err)
-					return
-				}
-
-				logrus.Infoln("The door has been closed")
-			}
-
-			break
-		default:
-			logrus.Errorf("Wrong status for the door : %s", status)
-			return
+			logrus.Infoln("The coop has been opened")
 		}
+
+		break
+	case Opened:
+		if coop.shouldBeClosed(time.Now().UTC()) {
+			logrus.WithFields(logrus.Fields{
+				"status":       coop.status,
+				"opening_time": coop.openingCondition.GetTime(),
+				"closing_time": coop.closingCondition.GetTime(),
+			}).Warnln("The coop should be closed")
+
+			// Close the door
+			err := coop.door.Close()
+			if err != nil {
+				logrus.Errorf("Error when closing the door : %s", err)
+				return
+			}
+
+			logrus.Infoln("The door has been closed")
+		}
+
+		break
+	default:
+		logrus.Errorf("Wrong status for the coop : %s", coop.status)
+		return
 	}
 
-	logrus.Infoln("Doors of the coop has been checked")
+	logrus.Infoln("Coop has been checked")
 }
 
 //------------------------------------------------------------------------------

@@ -5,17 +5,17 @@ type Status string
 
 const (
 	// Opened when the coop is opened.
-	Opened Status = "Opened"
+	Opened Status = "opened"
 
 	// Closed when the coop is closed.
-	Closed Status = "Closed"
+	Closed Status = "closed"
 
 	// Opening when the coop is opening.
-	Opening Status = "Opening"
+	Opening Status = "opening"
 
 	// Closing when the coop is closing.
-	Closing Status = "Closing"
+	Closing Status = "closing"
 
 	// Unknown when it is unknown.
-	Unknown Status = "Unknown"
+	Unknown Status = "unknown"
 )

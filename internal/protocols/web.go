@@ -1,14 +1,25 @@
 package protocols
 
-import (
-	"time"
-)
+type Status struct {
+	Status string `json:"status"`
+}
 
-// APIControllerResponse is the structure template for API
+// APIControllerResponse is the response for API.
 type APIControllerResponse struct {
-	ErrorID          string `json:"error_id"`
-	ErrorMessage     string `json:"error_message"`
-	ErrorDescription string `json:"error_description"`
+	ErrorID          string `json:"error_id,omitempty"`
+	ErrorMessage     string `json:"error_message,omitempty"`
+	ErrorDescription string `json:"error_description,omitempty"`
+}
+
+// JWToken ...
+type JWToken struct {
+	Token string `json:"token,omitempty"`
+}
+
+// JWTokenRequest ...
+type JWTokenRequest struct {
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
 }
 
 // HelloResponse contains the result of the Hello request.
@@ -23,9 +34,4 @@ type Configuration struct {
 	Longitude           float64 `json:"longitude"`
 	MinutesAfterSunrise string  `json:"minutes_after_sunrise"`
 	MinutesAfterSunset  string  `json:"minutes_after_sunset"`
-}
-
-type Sun struct {
-	Today     time.Time
-	Yesterday time.Time
 }
