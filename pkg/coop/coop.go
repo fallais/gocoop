@@ -35,12 +35,11 @@ type Coop struct {
 func New() (*Coop, error) {
 	// Create the opening condition
 	var openingCondition conditions.Condition
-
 	switch viper.GetString("opening.mode") {
 	case "time_based":
 		h, m, err := parseTime(viper.GetString("opening.value"))
 		if err != nil {
-			return nil, fmt.Errorf("Error while parsing the time for the opening conditions : %s", err)
+			return nil, fmt.Errorf("Error while parsing the time for the opening condition : %s", err)
 		}
 
 		openingCondition = conditions.NewTimeBasedCondition(h, m)
@@ -50,7 +49,7 @@ func New() (*Coop, error) {
 		// Parse the duration
 		duration, err := time.ParseDuration(viper.GetString("opening.value"))
 		if err != nil {
-			return nil, fmt.Errorf("Error when parsing the duration for the opening conditions : %s", err)
+			return nil, fmt.Errorf("Error when parsing the duration for the opening condition : %s", err)
 		}
 
 		openingCondition = conditions.NewSunBasedCondition(duration, viper.GetFloat64("latitude"), viper.GetFloat64("longitude"))
@@ -64,7 +63,7 @@ func New() (*Coop, error) {
 	case "time_based":
 		h, m, err := parseTime(viper.GetString("closing.value"))
 		if err != nil {
-			return nil, fmt.Errorf("Error while parsing the time for the opening conditions : %s", err)
+			return nil, fmt.Errorf("Error while parsing the time for the opening condition : %s", err)
 		}
 
 		closingCondition = conditions.NewTimeBasedCondition(h, m)
@@ -74,7 +73,7 @@ func New() (*Coop, error) {
 		// Parse the duration
 		duration, err := time.ParseDuration(viper.GetString("closing.value"))
 		if err != nil {
-			return nil, fmt.Errorf("Error when parsing the duration for the opening conditions : %s", err)
+			return nil, fmt.Errorf("Error when parsing the duration for the opening condition : %s", err)
 		}
 
 		closingCondition = conditions.NewSunBasedCondition(duration, viper.GetFloat64("latitude"), viper.GetFloat64("longitude"))

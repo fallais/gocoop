@@ -37,7 +37,7 @@ Here are the GPIO pins that are used :
 
 ## Is it tested ?
 
-Sure, chickens deserv the best ! The fox is **mercyless** !
+Sure, chickens deserv the best ! The fox is **mercyless** ! I have been using it for more than one year at home, it has never failed since.
 
 ## Usage
 
