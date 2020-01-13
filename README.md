@@ -35,9 +35,9 @@ Here are the GPIO pins that are used :
 - 24 : connected to the **Input 2** of the **L293D**
 - 25 : connected to the **Enable 1** of the **L293D**
 
-The GPIO of the **Raspberry 3** are located as follow :
+The GPIO of my **Raspberry 3 B+** are located as follow :
 
-![GPIO](https://github.com/fallais/gocoop/blob/master/assets/gpio-1.jpg)
+![GPIO](https://github.com/fallais/gocoop/blob/master/assets/gpio.png)
 
 ## Is it tested ?
 
