@@ -84,3 +84,9 @@ Two modes are available :
   - Value must be something like **HHhMM** : `08h00`
 - Sun based (based on the sunrise and sunset) : `sun_based`
   - Value must be a valid Golang duration : `45m`
+
+## Production ready
+
+It is actually also used by a friend who have 160 chickens. Below an overview of how it looks like.
+
+![Door](https://github.com/fallais/gocoop/blob/master/assets/door.jpg)
