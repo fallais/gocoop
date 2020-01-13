@@ -31,9 +31,13 @@ I use the `L293D`. It is capable of handling two motors.
 
 Here are the GPIO pins that are used :
 
-- 23 : Input 1 (L293D)
-- 24 : Input 2 (L293D)
-- 25 : Enable 1 (L293D)
+- 23 : connected to the **Input 1** of the **L293D**
+- 24 : connected to the **Input 2** of the **L293D**
+- 25 : connected to the **Enable 1** of the **L293D**
+
+The GPIO of the **Raspberry 3** are located as follow :
+
+![GPIO](https://github.com/fallais/gocoop/blob/master/assets/gpio-1.jpg)
 
 ## Is it tested ?
 

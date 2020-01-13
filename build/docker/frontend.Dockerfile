@@ -9,7 +9,7 @@ RUN $(npm bin)/ng build --prod --extract-css false
 # Caddy
 FROM elswork/arm-caddy
 LABEL maintainer="francois.allais@hotmail.com"
-COPY --from=build /app/dist/watcher-frontend/ /srv/
+COPY --from=build /app/dist/gocoop/ /srv/
 COPY ./Caddyfile /etc/Caddyfile
 EXPOSE 2015
 CMD ["--conf", "/etc/Caddyfile", "--log", "stdout"]
