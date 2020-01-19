@@ -26,8 +26,7 @@ jobs:
       -
         name: Run Buildx
         run: |
-          cd build/docker && \
           docker buildx build \
             --platform linux/arm/v7 \
             --output "type=image,push=false" \
-            --file ./Dockerfile .
+            --file ./build/docker/Dockerfile .
