@@ -15,9 +15,8 @@ RUN npm install
 RUN $(npm bin)/ng build --prod --extract-css false
 
 # Ubuntu
-FROM arm32v7/ubuntu
+FROM ubuntu
 LABEL maintainer="francois.allais@hotmail.com"
-RUN mkdir -p /app
 COPY --from=builder-golang /go/src/gocoop /usr/bin/gocoop
 COPY --from=builder-angular /app/dist/gocoop/ /srv/
 RUN apt-get update && \
