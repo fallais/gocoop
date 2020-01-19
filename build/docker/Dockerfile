@@ -1,5 +1,5 @@
 # Build (Golang)
-FROM golang as builder-golang
+FROM golang:latest as builder-golang
 WORKDIR /go/src/gocoop
 ADD . /go/src/gocoop
 RUN env GOOS=linux GOARCH=arm GOARM=7
@@ -15,7 +15,7 @@ RUN npm install
 RUN $(npm bin)/ng build --prod --extract-css false
 
 # Ubuntu
-FROM ubuntu
+FROM ubuntu:latest
 LABEL maintainer="francois.allais@hotmail.com"
 COPY --from=builder-golang /go/src/gocoop /usr/bin/gocoop
 COPY --from=builder-angular /app/dist/gocoop/ /srv/
