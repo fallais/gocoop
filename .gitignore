@@ -1,7 +1,4 @@
-gocoop.exe
-gocoop
-
-# Frontend
+*.exe
 web/dist
 web/tmp
 web/out-tsc

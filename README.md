@@ -43,13 +43,33 @@ The GPIO of my **Raspberry 3 B+** are located as follow :
 
 Sure, chickens deserv the best ! The fox is **mercyless** ! I have been using it for more than one year at home, it has never failed since.
 
+## Installation
+
+First, I installed **raspbian-lite** on the Raspberry.  
+Then, I updated all the packages.  
+Finally, I installed **docker** with the convenience script.
+
+The Raspberry is ready to run the Docker container.
+
 ## Usage
 
 ### Docker
 
-Build the image for backend : `docker build -t gocoop -f build/docker/backend.Dockerfile`.  
-Build the image for frontend : `docker build -t gocoop-frontend -f build/docker/frontend.Dockerfile`.  
 Deploy with a `docker-compose`.
+
+```yaml
+version: "3"
+services:
+  redis:
+    image: redis
+    container_image: redis
+    restart: always
+
+  coop:
+    image: fallais/gocoop
+    container_image: gocoop
+    restart: always
+```
 
 ### Configuration
 
