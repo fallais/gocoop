@@ -47,7 +47,8 @@ Sure, chickens deserv the best ! The fox is **mercyless** ! I have been using it
 
 First, I installed **raspbian-lite** on the Raspberry.  
 Then, I updated all the packages.  
-Finally, I installed **docker** with the convenience script.
+Finally, I installed **docker** with the convenience script.  
+And, a basic **logrotate** configuration.
 
 The Raspberry is ready to run the Docker container.
 
