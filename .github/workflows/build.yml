@@ -23,9 +23,11 @@ jobs:
             --platform linux/arm/v7 \
             --tag docker.io/fallais/gocoop \
             --output "type=image,push=false" \
-            --file ./build/docker/Dockerfile .
+            --file ./build/docker/Dockerfile . && \
+          docker images
       
       - name: Publish to Registry
         run: |
+          docker images && \
           docker login -u=${{ secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }} && \
           docker push docker.io/fallais/gocoop
