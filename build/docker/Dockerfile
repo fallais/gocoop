@@ -10,7 +10,7 @@ RUN go build -o /go/bin/gocoop
 FROM node:latest as builder-angular
 LABEL maintainer="francois.allais@hotmail.com"
 WORKDIR /app
-COPY ./ /app/
+COPY ./web/ /app/
 RUN npm install
 RUN $(npm bin)/ng build --prod --extract-css false
 
