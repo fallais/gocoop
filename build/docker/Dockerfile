@@ -12,7 +12,7 @@ LABEL maintainer="francois.allais@hotmail.com"
 WORKDIR /app
 COPY ./ /app/
 RUN npm install
-RUN $(npm bin)/ng build --prod --extract-css false
+RUN npm run build --prod --extract-css false
 
 # Ubuntu
 FROM arm32v7/ubuntu
