@@ -1,7 +1,8 @@
 # Build (Golang)
-FROM arm32v7/golang as builder-golang
+FROM golang as builder-golang
 WORKDIR /go/src/gocoop
 ADD . /go/src/gocoop
+RUN env GOOS=linux GOARCH=arm GOARM=7
 RUN go get -d -v ./...
 RUN go build -o /go/bin/gocoop
 
