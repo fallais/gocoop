@@ -1,5 +1,5 @@
 # Build (Golang)
-FROM arm32v7/golang:latest as builder-golang
+FROM arm32v7/golang as builder-golang
 WORKDIR /go/src/gocoop
 ADD . /go/src/gocoop
 RUN go get -d -v ./...
