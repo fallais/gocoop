@@ -139,6 +139,6 @@ Two modes are available :
 
 ## Production ready
 
-It is actually also used by a friend who have 160 chickens. Below an overview of how it looks like.
+It is actually also used by a friend who have **160 chickens**. Below an overview of how it looks like.
 
 ![Door](https://github.com/fallais/gocoop/blob/master/assets/door.jpg)
