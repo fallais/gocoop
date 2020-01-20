@@ -17,11 +17,13 @@ RUN $(npm bin)/ng build --prod --extract-css false
 # Ubuntu
 FROM ubuntu:latest
 LABEL maintainer="francois.allais@hotmail.com"
-COPY --from=builder-golang /go/src/gocoop /usr/bin/gocoop
+COPY --from=builder-golang /go/bin/gocoop /usr/bin/gocoop
 COPY --from=builder-angular /app/dist/gocoop/ /srv/
-RUN apt-get update && \
-    apt-get install -y supervisor && \
-    curl https://getcaddy.com | bash -s personal
-COPY entrypoint.sh entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 COPY Caddyfile /etc/Caddyfile
-CMD ./entrypoint.sh
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl https://getcaddy.com | bash -s personal && \
+    chmod +x /entrypoint.sh
+WORKDIR /
+ENTRYPOINT ["/entrypoint.sh"]
