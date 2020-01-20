@@ -43,12 +43,22 @@ func NewSunBasedCondition(o string, latitude, longitude float64) (conditions.Con
 // Functions
 //------------------------------------------------------------------------------
 
-// GetOpeningTime
-func (c *sunBasedCondition) GetOpeningTime() time.Time {
+// OpeningTime
+func (c *sunBasedCondition) OpeningTime() time.Time {
 	return astrotime.CalcSunrise(time.Now(), c.latitude, c.longitude).Add(c.offset)
 }
 
-// GetClosingTime
-func (c *sunBasedCondition) GetClosingTime() time.Time {
+// ClosingTime
+func (c *sunBasedCondition) ClosingTime() time.Time {
 	return astrotime.CalcSunset(time.Now(), c.latitude, c.longitude).Add(c.offset)
+}
+
+// Mode returns the mode of the condition.
+func (c *sunBasedCondition) Mode() string {
+	return "sun_based"
+}
+
+// Value returns the value of the condition.
+func (c *sunBasedCondition) Value() string {
+	return c.offset.String()
 }

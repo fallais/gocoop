@@ -15,15 +15,41 @@
     <div class="col-4 col-xs-12">
       <div class="card bg-light">
         <div class="card-header">
-          <h5 class="card-title">Coop</h5>
+          <h5 class="card-title">Coop's door <i class="fa fa-sign-out pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
-          <p class="text-center"><i class="fa fa-sign-out fa-5x" aria-hidden="true"></i></p>
-          <p class="text-center text-capitalize">{{ coopStatus }}</p>
+          <p class="text-center text-large text-capitalize">{{ coopStatus }}</p>
           <p class="text-center">
             <button class="btn btn-success mr-2" (click)="open()">Open</button>
             <button class="btn btn-danger" (click)="close()">Close</button><br />
           </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-4 col-xs-12">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Position <i class="fa fa-map-marker pull-right" aria-hidden="true"></i></h5>
+        </div>
+        <div class="card-body">
+          <p class="text-center"><b>Lat.</b> {{ coop.latitude }} | <b>Long.</b> {{ coop.longitude }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-4 col-xs-12">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Conditions <i class="fa fa-check-circle-o pull-right" aria-hidden="true"></i></h5>
+        </div>
+        <div class="card-body">
+          <h5>Opening</h5>
+          <p><b>Mode</b> : {{ coop.opening_condition.mode }}</p>
+          <p><b>Value</b> : {{ coop.opening_condition.value }}</p>
+          <h5 class="mt-4">Closing</h5>
+          <p><b>Mode</b> : {{ coop.closing_condition.mode }}</p>
+          <p><b>Value</b> : {{ coop.closing_condition.value }}</p>
         </div>
       </div>
     </div>

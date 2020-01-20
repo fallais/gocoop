@@ -10,6 +10,7 @@ type CoopResponse struct {
 	ClosingCondition map[string]string `json:"closing_condition"`
 	Latitude         float64           `json:"latitude"`
 	Longitude        float64           `json:"longitude"`
+	Status           string            `json:"string"`
 }
 
 // APIControllerResponse is the response for API.

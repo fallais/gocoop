@@ -38,12 +38,22 @@ func NewTimeBasedCondition(t string) (conditions.Condition, error) {
 // Functions
 //------------------------------------------------------------------------------
 
-// GetOpeningTime returns the time based on the conditions.
-func (c *timeBasedCondition) GetOpeningTime() time.Time {
+// OpeningTime returns the time based on the conditions.
+func (c *timeBasedCondition) OpeningTime() time.Time {
 	return time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), c.hours, c.minutes, 0, 0, time.Local)
 }
 
-// GetClosingTime returns the time based on the conditions.
-func (c *timeBasedCondition) GetClosingTime() time.Time {
-	return c.GetOpeningTime()
+// ClosingTime returns the time based on the conditions.
+func (c *timeBasedCondition) ClosingTime() time.Time {
+	return c.OpeningTime()
+}
+
+// Mode returns the mode of the condition.
+func (c *timeBasedCondition) Mode() string {
+	return "time_based"
+}
+
+// Value returns the value of the condition.
+func (c *timeBasedCondition) Value() string {
+	return fmt.Sprintf("%02dh%02d", c.hours, c.minutes)
 }

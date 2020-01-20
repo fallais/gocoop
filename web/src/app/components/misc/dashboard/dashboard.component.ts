@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CoopService } from '../../../services/coop.service';
 import { NotificationsService } from 'angular2-notifications';
+import { Coop } from '../../../models/coop';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,6 +10,7 @@ import { NotificationsService } from 'angular2-notifications';
 })
 export class DashboardComponent implements OnInit {
   coopStatus: string = ""
+  coop: Coop;
 
   constructor(
     private coopService: CoopService,
@@ -17,6 +19,24 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.getStatus();
+    this.get();
+  }
+
+  get(): void {
+    this.coopService.get().subscribe(
+      (resp: Coop) => {
+        this.coop = resp;
+      },
+      err => {
+        // Notify
+        this.notificationService.error('Error while getting the coop configuration', err.error.error_description, {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      });
   }
 
   getStatus(): void {
@@ -25,8 +45,6 @@ export class DashboardComponent implements OnInit {
         this.coopStatus = resp;
       },
       err => {
-       console.log(err)
-
         // Notify
         this.notificationService.error('Error while getting the status', err.error.error_description, {
           timeOut: 5000,
@@ -64,10 +82,17 @@ export class DashboardComponent implements OnInit {
 
   open(): void {
     this.coopService.open().subscribe(
-      (resp: string) => {},
+      (resp: string) => {
+        // Notify
+        this.notificationService.success('Door is opening', '', {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      },
       err => {
-       console.log(err)
-
         // Notify
         this.notificationService.error('Error while opening the coop', err.error.error_description, {
           timeOut: 5000,
@@ -81,10 +106,17 @@ export class DashboardComponent implements OnInit {
 
   close(): void {
     this.coopService.close().subscribe(
-      (resp: string) => {},
+      (resp: string) => {
+        // Notify
+        this.notificationService.success('Door is closing', '', {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      },
       err => {
-       console.log(err)
-
         // Notify
         this.notificationService.error('Error while closing the coop', err.error.error_description, {
           timeOut: 5000,

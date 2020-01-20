@@ -9,7 +9,6 @@ import (
 
 	"github.com/alioygur/gores"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 //------------------------------------------------------------------------------
@@ -38,12 +37,22 @@ func NewCoopController(coopService services.CoopService) *CoopController {
 
 // Get returns the coop.
 func (ctrl *CoopController) Get(w http.ResponseWriter, r *http.Request) {
+	// Get the coop
+	coop := ctrl.coopService.Get()
+
 	// Prepare the response
 	response := &protocols.CoopResponse{
-		OpeningCondition: viper.GetStringMapString("opening"),
-		ClosingCondition: viper.GetStringMapString("closing"),
-		Latitude:         viper.GetFloat64("latitude"),
-		Longitude:        viper.GetFloat64("longitude"),
+		OpeningCondition: map[string]string{
+			"mode":  coop.OpeningCondition().Mode(),
+			"value": coop.OpeningCondition().Value(),
+		},
+		ClosingCondition: map[string]string{
+			"mode":  coop.ClosingCondition().Mode(),
+			"value": coop.ClosingCondition().Value(),
+		},
+		Latitude:  coop.Latitude(),
+		Longitude: coop.Longitude(),
+		Status:    string(coop.Status()),
 	}
 
 	// Response

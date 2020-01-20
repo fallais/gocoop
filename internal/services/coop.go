@@ -39,9 +39,14 @@ func NewCoopService(coop *coop.Coop) CoopService {
 // Services
 //------------------------------------------------------------------------------
 
+// Get returns the the coop.
+func (service *coopService) Get() *coop.Coop {
+	return service.coop
+}
+
 // GetStatus returns the status of the coop.
 func (service *coopService) GetStatus() coop.Status {
-	return service.coop.GetStatus()
+	return service.coop.Status()
 }
 
 // UpdateStatus updates the status of the coop.
@@ -52,7 +57,7 @@ func (service *coopService) UpdateStatus(status string) error {
 // Open the Coop
 func (service *coopService) Open() error {
 	// Get the status of the coop
-	status := service.coop.GetStatus()
+	status := service.coop.Status()
 
 	// Check if coop is opened
 	if status == coop.Opened {
@@ -70,7 +75,7 @@ func (service *coopService) Open() error {
 // Close the Coop
 func (service *coopService) Close() error {
 	// Get the status of the coop
-	status := service.coop.GetStatus()
+	status := service.coop.Status()
 
 	// Check if coop is closed
 	if status == coop.Closed {

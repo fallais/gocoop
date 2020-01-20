@@ -44,7 +44,10 @@ func Run(cmd *cobra.Command, args []string) {
 		logrus.WithError(err).Fatalln("Error when reading configuration data")
 	}
 
-	opts := coop.Options{}
+	opts := coop.Options{
+		Latitude:  viper.GetFloat64("coop.latitude"),
+		Longitude: viper.GetFloat64("coop.longitude"),
+	}
 
 	// Create the opening condition
 	logrus.WithFields(logrus.Fields{
