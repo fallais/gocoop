@@ -21,8 +21,8 @@ func TestGetOpeningTime(t *testing.T) {
 		t.Fatal("should not error")
 	}
 
-	if tbc.GetOpeningTime() != time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 8, 0, 0, 0, time.Local) {
-		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", tbc.GetOpeningTime(), time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 8, 0, 0, 0, time.Local))
+	if tbc.OpeningTime() != time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 8, 0, 0, 0, time.Local) {
+		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", tbc.OpeningTime(), time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 8, 0, 0, 0, time.Local))
 	}
 }
 
@@ -32,7 +32,7 @@ func TestGetClosingTime(t *testing.T) {
 		t.Fatal("should not error")
 	}
 
-	if tbc.GetClosingTime() != time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 18, 30, 0, 0, time.Local) {
-		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", tbc.GetOpeningTime(), time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 18, 30, 0, 0, time.Local))
+	if tbc.ClosingTime() != time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 18, 30, 0, 0, time.Local) {
+		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", tbc.ClosingTime(), time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 18, 30, 0, 0, time.Local))
 	}
 }

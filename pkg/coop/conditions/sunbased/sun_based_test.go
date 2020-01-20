@@ -24,8 +24,8 @@ func TestGetOpeningTime(t *testing.T) {
 	}
 	sunrise := astrotime.CalcSunrise(time.Now(), latitude, longitude)
 
-	if sbc.GetOpeningTime() != sunrise.Add(45*time.Minute) {
-		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", sbc.GetOpeningTime(), sunrise.Add(45*time.Minute))
+	if sbc.OpeningTime() != sunrise.Add(45*time.Minute) {
+		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", sbc.OpeningTime(), sunrise.Add(45*time.Minute))
 	}
 }
 
@@ -36,7 +36,7 @@ func TestGetClosingTime(t *testing.T) {
 	}
 	sunset := astrotime.CalcSunset(time.Now(), latitude, longitude)
 
-	if sbc.GetClosingTime() != sunset.Add(-45*time.Minute) {
-		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", sbc.GetClosingTime(), sunset.Add(-45*time.Minute))
+	if sbc.ClosingTime() != sunset.Add(-45*time.Minute) {
+		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", sbc.ClosingTime(), sunset.Add(-45*time.Minute))
 	}
 }
