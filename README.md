@@ -43,6 +43,16 @@ The GPIO of my **Raspberry 3 B+** are located as follow :
 
 Sure, chickens deserv the best ! The fox is **mercyless** ! I have been using it for more than one year at home, it has never failed since.
 
+## Interface
+
+It also comes with an interface to manage the coop.
+
+Protected by a login.  
+![Login](https://github.com/fallais/gocoop/blob/master/assets/login.png)
+
+With a dashboard.  
+![dashboard](https://github.com/fallais/gocoop/blob/master/assets/dashboard.png)
+
 ## Installation
 
 First, I installed **raspbian-lite** on the Raspberry.  
