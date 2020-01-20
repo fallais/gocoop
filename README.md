@@ -41,11 +41,11 @@ The GPIO of my **Raspberry 3 B+** are located as follow :
 
 ## Is it tested ?
 
-Sure, chickens deserv the best ! The fox is **mercyless** ! I have been using it for more than one year at home, it has never failed since.
+Sure, I tried to do my best to add package tests because chickens deserv the best ! Moreover, I have been using it for more than one year at home, it has never failed since the begining.
 
 ## Interface
 
-It also comes with an interface to manage the coop.
+It also comes with an interface built with **Angular** to manage the coop.
 
 Protected by a login.  
 ![Login](https://github.com/fallais/gocoop/blob/master/assets/login.png)
