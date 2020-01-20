@@ -65,12 +65,33 @@ services:
     image: redis
     container_image: redis
     restart: always
+    networks:
+      main:
+        aliases:
+          - redis
 
-  coop:
+  gocoop:
     image: fallais/gocoop
     container_image: gocoop
     restart: always
+    volumes:
+      - ./config.yml:/usr/bin/config.yml
+    ports:
+      - 80:2015
+    networks:
+      main:
+        aliases:
+          - gocoop
+
+networks:
+  main:
+    driver: bridge
 ```
+
+#### Parameters
+
+- config.yml : mandtory
+- port : mandatory
 
 ### Configuration
 
