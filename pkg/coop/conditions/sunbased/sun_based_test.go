@@ -10,22 +10,33 @@ import (
 const latitude = 43.525776
 const longitude = 1.327727
 
+func TestSunBasedCondition(t *testing.T) {
+	_, err := NewSunBasedCondition("faya", latitude, longitude)
+	if err == nil {
+		t.Fatal("should error")
+	}
+}
+
 func TestGetOpeningTime(t *testing.T) {
-	offset := 45 * time.Minute
-	sbc := NewSunBasedCondition(offset, latitude, longitude)
+	sbc, err := NewSunBasedCondition("45m", latitude, longitude)
+	if err != nil {
+		t.Fatalf("should not error")
+	}
 	sunrise := astrotime.CalcSunrise(time.Now(), latitude, longitude)
 
-	if sbc.GetOpeningTime() != sunrise.Add(offset) {
-		t.Errorf("Time is incorrect ! Should be : %s. It is : %s", sbc.GetOpeningTime(), sunrise.Add(offset))
-		t.Fail()
+	if sbc.GetOpeningTime() != sunrise.Add(45*time.Minute) {
+		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", sbc.GetOpeningTime(), sunrise.Add(45*time.Minute))
 	}
+}
 
-	offset = -45 * time.Minute
-	sbc = NewSunBasedCondition(offset, latitude, longitude)
-	sunrise = astrotime.CalcSunrise(time.Now(), latitude, longitude)
+func TestGetClosingTime(t *testing.T) {
+	sbc, err := NewSunBasedCondition("-45m", latitude, longitude)
+	if err != nil {
+		t.Fatalf("should not error")
+	}
+	sunset := astrotime.CalcSunset(time.Now(), latitude, longitude)
 
-	if sbc.GetOpeningTime() != sunrise.Add(offset) {
-		t.Errorf("Time is incorrect ! Should be : %s. It is : %s", sbc.GetOpeningTime(), sunrise.Add(offset))
-		t.Fail()
+	if sbc.GetClosingTime() != sunset.Add(-45*time.Minute) {
+		t.Fatalf("Time is incorrect ! Should be : %s. It is : %s", sbc.GetClosingTime(), sunset.Add(-45*time.Minute))
 	}
 }

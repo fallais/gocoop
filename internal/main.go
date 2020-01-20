@@ -11,6 +11,9 @@ import (
 	"gocoop/internal/services"
 	"gocoop/internal/system/middleware"
 	"gocoop/pkg/coop"
+	"gocoop/pkg/coop/conditions/sunbased"
+	"gocoop/pkg/coop/conditions/timebased"
+	"gocoop/pkg/coop/door"
 
 	"github.com/robfig/cron"
 	"github.com/sirupsen/logrus"
@@ -20,6 +23,7 @@ import (
 	"goji.io/pat"
 )
 
+// Run is a convenient function for Cobra.
 func Run(cmd *cobra.Command, args []string) {
 	// Flags
 	configFile, err := cmd.Flags().GetString("config_file")
@@ -40,8 +44,69 @@ func Run(cmd *cobra.Command, args []string) {
 		logrus.WithError(err).Fatalln("Error when reading configuration data")
 	}
 
+	opts := coop.Options{}
+
+	// Create the opening condition
+	logrus.WithFields(logrus.Fields{
+		"mode":  viper.GetString("coop.opening.mode"),
+		"value": viper.GetString("coop.opening.value"),
+	}).Infoln("Creating the opening condition")
+	switch viper.GetString("coop.opening.mode") {
+	case "time_based":
+		openingCondition, err := timebased.NewTimeBasedCondition(viper.GetString("coop.opening.value"))
+		if err != nil {
+			logrus.WithError(err).Fatalln("Error while creating the opening condition")
+		}
+
+		opts.OpeningCondition = openingCondition
+	case "sun_based":
+		openingCondition, err := sunbased.NewSunBasedCondition(viper.GetString("coop.opening.value"), viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
+		if err != nil {
+			logrus.WithError(err).Fatalln("Error while creating the opening condition")
+		}
+
+		opts.OpeningCondition = openingCondition
+	default:
+		logrus.WithError(err).Fatalf("error with the opening mode: %s", viper.GetString("coop.opening.mode"))
+	}
+	logrus.WithFields(logrus.Fields{
+		"mode":  viper.GetString("coop.opening.mode"),
+		"value": viper.GetString("coop.opening.value"),
+	}).Infoln("Successfully created the opening condition")
+
+	// Create the closing condition
+	logrus.WithFields(logrus.Fields{
+		"mode":  viper.GetString("coop.closing.mode"),
+		"value": viper.GetString("coop.closing.value"),
+	}).Infoln("Creating the closing condition")
+	switch viper.GetString("coop.closing.mode") {
+	case "time_based":
+		closingCondition, err := timebased.NewTimeBasedCondition(viper.GetString("coop.closing.value"))
+		if err != nil {
+			logrus.WithError(err).Fatalln("Error when creating the closing condition")
+		}
+
+		opts.ClosingCondition = closingCondition
+	case "sun_based":
+		closingCondition, err := sunbased.NewSunBasedCondition(viper.GetString("coop.closing.value"), viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
+		if err != nil {
+			logrus.WithError(err).Fatalln("Error when creating the closing condition")
+		}
+
+		opts.ClosingCondition = closingCondition
+	default:
+		logrus.WithError(err).Fatalf("error with the closing mode: %s", viper.GetString("coop.closing.mode"))
+	}
+	logrus.WithFields(logrus.Fields{
+		"mode":  viper.GetString("coop.closing.mode"),
+		"value": viper.GetString("coop.closing.value"),
+	}).Infoln("Successfully created the closing condition")
+
+	// Door
+	opts.Door = door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration"))
+
 	// Create the coop instance
-	c, err := coop.New()
+	c, err := coop.New(opts)
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error while creating the coop instance")
 	}

@@ -1,6 +1,7 @@
 package timebased
 
 import (
+	"fmt"
 	"time"
 
 	"gocoop/pkg/coop/conditions"
@@ -21,11 +22,16 @@ type timeBasedCondition struct {
 //------------------------------------------------------------------------------
 
 // NewTimeBasedCondition returns a new TimeBasedCondition.
-func NewTimeBasedCondition(hours, minutes int) conditions.Condition {
-	return &timeBasedCondition{
-		hours:   hours,
-		minutes: minutes,
+func NewTimeBasedCondition(t string) (conditions.Condition, error) {
+	h, m, err := parseTime(t)
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing the time for the opening condition : %s", err)
 	}
+
+	return &timeBasedCondition{
+		hours:   h,
+		minutes: m,
+	}, nil
 }
 
 //------------------------------------------------------------------------------

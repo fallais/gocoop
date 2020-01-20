@@ -1,6 +1,7 @@
 package sunbased
 
 import (
+	"fmt"
 	"time"
 
 	"gocoop/pkg/coop/conditions"
@@ -24,12 +25,18 @@ type sunBasedCondition struct {
 //------------------------------------------------------------------------------
 
 // NewSunBasedCondition returns a new SunBasedCondition.
-func NewSunBasedCondition(offset time.Duration, latitude, longitude float64) conditions.Condition {
+func NewSunBasedCondition(o string, latitude, longitude float64) (conditions.Condition, error) {
+	// Parse the duration
+	offset, err := time.ParseDuration(o)
+	if err != nil {
+		return nil, fmt.Errorf("Error when parsing the duration for the closing condition : %s", err)
+	}
+
 	return &sunBasedCondition{
 		offset:    offset,
 		latitude:  latitude,
 		longitude: longitude,
-	}
+	}, nil
 }
 
 //------------------------------------------------------------------------------

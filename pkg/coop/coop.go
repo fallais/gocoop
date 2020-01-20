@@ -5,8 +5,6 @@ import (
 	"time"
 
 	"gocoop/pkg/coop/conditions"
-	"gocoop/pkg/coop/conditions/sunbased"
-	"gocoop/pkg/coop/conditions/timebased"
 	"gocoop/pkg/coop/door"
 
 	"github.com/sirupsen/logrus"
@@ -32,64 +30,12 @@ type Coop struct {
 //------------------------------------------------------------------------------
 
 // New returns a new Coop.
-func New() (*Coop, error) {
-	// Create the opening condition
-	var openingCondition conditions.Condition
-	switch viper.GetString("coop.opening.mode") {
-	case "time_based":
-		h, m, err := parseTime(viper.GetString("coop.opening.value"))
-		if err != nil {
-			return nil, fmt.Errorf("Error while parsing the time for the opening condition : %s", err)
-		}
-
-		openingCondition = timebased.NewTimeBasedCondition(h, m)
-
-		break
-	case "sun_based":
-		// Parse the duration
-		duration, err := time.ParseDuration(viper.GetString("coop.opening.value"))
-		if err != nil {
-			return nil, fmt.Errorf("Error when parsing the duration for the opening condition : %s", err)
-		}
-
-		openingCondition = sunbased.NewSunBasedCondition(duration, viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
-
-		break
-	default:
-		return nil, fmt.Errorf("error with the opening mode: %s", viper.GetString("coop.opening.mode"))
-	}
-
-	// Create the closing condition
-	var closingCondition conditions.Condition
-	switch viper.GetString("coop.closing.mode") {
-	case "time_based":
-		h, m, err := parseTime(viper.GetString("coop.closing.value"))
-		if err != nil {
-			return nil, fmt.Errorf("Error while parsing the time for the closing condition : %s", err)
-		}
-
-		closingCondition = timebased.NewTimeBasedCondition(h, m)
-
-		break
-	case "sun_based":
-		// Parse the duration
-		duration, err := time.ParseDuration(viper.GetString("coop.closing.value"))
-		if err != nil {
-			return nil, fmt.Errorf("Error when parsing the duration for the closing condition : %s", err)
-		}
-
-		closingCondition = sunbased.NewSunBasedCondition(duration, viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
-
-		break
-	default:
-		return nil, fmt.Errorf("error with the closing mode: %s", viper.GetString("closing.mode"))
-	}
-
+func New(opts Options) (*Coop, error) {
 	return &Coop{
-		openingCondition: openingCondition,
-		closingCondition: closingCondition,
-		latitude:         viper.GetFloat64("latitude"),
-		longitude:        viper.GetFloat64("longitude"),
+		openingCondition: opts.OpeningCondition,
+		closingCondition: opts.ClosingCondition,
+		latitude:         opts.Latitude,
+		longitude:        opts.Longitude,
 		status:           Unknown,
 		door:             door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration")),
 	}, nil
@@ -249,7 +195,7 @@ func (coop *Coop) Check() {
 		break
 	default:
 		logrus.Errorf("Wrong status for the coop : %s", coop.status)
-		return
+		break
 	}
 
 	logrus.WithFields(logrus.Fields{
