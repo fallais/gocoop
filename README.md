@@ -142,3 +142,7 @@ Two modes are available :
 It is actually also used by a friend who have **160 chickens**. Below an overview of how it looks like.
 
 ![Door](https://github.com/fallais/gocoop/blob/master/assets/door.jpg)
+
+## Licence
+
+I do not set any licence as of now. Please do not use code for commercial purpose, instead, contact me and we could work together. Chickens are against money problems..
