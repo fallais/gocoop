@@ -13,7 +13,7 @@ import (
 	"gocoop/pkg/coop"
 	"gocoop/pkg/coop/conditions/sunbased"
 	"gocoop/pkg/coop/conditions/timebased"
-	"gocoop/pkg/coop/door"
+	"gocoop/pkg/door"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

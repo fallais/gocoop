@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"gocoop/pkg/coop/conditions"
-	"gocoop/pkg/coop/door"
+	"gocoop/pkg/door"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"

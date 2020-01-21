@@ -2,7 +2,7 @@ package coop
 
 import (
 	"gocoop/pkg/coop/conditions"
-	"gocoop/pkg/coop/door"
+	"gocoop/pkg/door"
 )
 
 // Options are the options for the coop.
