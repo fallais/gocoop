@@ -24,7 +24,7 @@ type sunBasedCondition struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// NewSunBasedCondition returns a new SunBasedCondition.
+// NewSunBasedCondition returns a new Condition.
 func NewSunBasedCondition(o string, latitude, longitude float64) (conditions.Condition, error) {
 	// Parse the duration
 	offset, err := time.ParseDuration(o)

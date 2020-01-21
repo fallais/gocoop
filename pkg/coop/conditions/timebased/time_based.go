@@ -21,7 +21,7 @@ type timeBasedCondition struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// NewTimeBasedCondition returns a new TimeBasedCondition.
+// NewTimeBasedCondition returns a new Condition.
 func NewTimeBasedCondition(t string) (conditions.Condition, error) {
 	h, m, err := parseTime(t)
 	if err != nil {

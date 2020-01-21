@@ -13,6 +13,14 @@ func TestTimeBasedCondition(t *testing.T) {
 	if err == nil {
 		t.Fatal("should error")
 	}
+
+	tbc, _ := NewTimeBasedCondition("08h00")
+	if tbc.Mode() != "time_based" {
+		t.Fatalf("should be time_based, it is %s", tbc.Mode())
+	}
+	if tbc.Value() != "08h00" {
+		t.Fatalf("should be 08h00, it is %s", tbc.Value())
+	}
 }
 
 func TestGetOpeningTime(t *testing.T) {

@@ -15,6 +15,14 @@ func TestSunBasedCondition(t *testing.T) {
 	if err == nil {
 		t.Fatal("should error")
 	}
+
+	sbc, _ := NewSunBasedCondition("45m", latitude, longitude)
+	if sbc.Mode() != "sun_based" {
+		t.Fatalf("should be sun_based, it is %s", sbc.Mode())
+	}
+	if sbc.Value() != "45m0s" {
+		t.Fatalf("should be 45m0s, it is %s", sbc.Value())
+	}
 }
 
 func TestGetOpeningTime(t *testing.T) {
