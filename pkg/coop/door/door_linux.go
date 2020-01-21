@@ -2,6 +2,7 @@
 package door
 
 import (
+	"fmt"
 	"time"
 
 	rpi "github.com/nathan-osman/go-rpigpio"
@@ -52,7 +53,7 @@ func (d *Door) Open() error {
 	}).Infoln("Open the pin")
 	pinMotor1A, err := rpi.OpenPin(d.motor1A, rpi.OUT)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while opening the pin: %s", err)
 	}
 	defer pinMotor1A.Close()
 
@@ -64,7 +65,7 @@ func (d *Door) Open() error {
 	}).Infoln("Open the pin")
 	pinMotor1B, err := rpi.OpenPin(d.motor1B, rpi.OUT)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while opening the pin: %s", err)
 	}
 	defer pinMotor1B.Close()
 
@@ -76,7 +77,7 @@ func (d *Door) Open() error {
 	}).Infoln("Open the pin")
 	pinMotor1Enable, err := rpi.OpenPin(d.motor1Enable, rpi.OUT)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while opening the pin: %s", err)
 	}
 	defer pinMotor1Enable.Close()
 
@@ -115,7 +116,7 @@ func (d *Door) Close() error {
 	logrus.Infoln("Open the pin", d.motor1A, "in OUT mode")
 	pinMotor1A, err := rpi.OpenPin(d.motor1A, rpi.OUT)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while opening the pin: %s", err)
 	}
 	defer pinMotor1A.Close()
 
@@ -123,7 +124,7 @@ func (d *Door) Close() error {
 	logrus.Infoln("Open the pin", d.motor1B, "in OUT mode")
 	pinMotor1B, err := rpi.OpenPin(d.motor1B, rpi.OUT)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while opening the pin: %s", err)
 	}
 	defer pinMotor1B.Close()
 
@@ -131,7 +132,7 @@ func (d *Door) Close() error {
 	logrus.Infoln("Open the pin", d.motor1Enable, "in OUT mode")
 	pinMotor1Enable, err := rpi.OpenPin(d.motor1Enable, rpi.OUT)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while opening the pin: %s", err)
 	}
 	defer pinMotor1Enable.Close()
 
