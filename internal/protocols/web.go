@@ -10,7 +10,7 @@ type CoopResponse struct {
 	ClosingCondition map[string]string `json:"closing_condition"`
 	Latitude         float64           `json:"latitude"`
 	Longitude        float64           `json:"longitude"`
-	Status           string            `json:"string"`
+	Status           string            `json:"status"`
 }
 
 // APIControllerResponse is the response for API.
@@ -35,12 +35,4 @@ type JWTokenRequest struct {
 type HelloResponse struct {
 	Message string `json:"message"`
 	Version string `json:"version"`
-}
-
-// Configuration contains the result of the Configuration.
-type Configuration struct {
-	Latitude            float64 `json:"latitude"`
-	Longitude           float64 `json:"longitude"`
-	MinutesAfterSunrise string  `json:"minutes_after_sunrise"`
-	MinutesAfterSunset  string  `json:"minutes_after_sunset"`
 }

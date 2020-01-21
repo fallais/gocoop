@@ -17,12 +17,15 @@ export class CoopGetComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getStatus();
     this.get();
   }
 
-  getStatus(): void {
-    this.coopService.getStatus().subscribe(
+  updateStatus(status): void {
+    var s = {
+      status: status
+    }
+
+    this.coopService.updateStatus(s).subscribe(
       (resp: string) => {
         this.coopStatus = resp;
       },
@@ -30,7 +33,7 @@ export class CoopGetComponent implements OnInit {
        console.log(err)
 
         // Notify
-        this.notificationService.error('Error while getting the status', err.error.error_description, {
+        this.notificationService.error('Error while updating the status', err.error.error_description, {
           timeOut: 5000,
           showProgressBar: true,
           pauseOnHover: true,

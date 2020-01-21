@@ -27,6 +27,8 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootswatch/dist/cyborg/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/weather-icons/css/weather-icons.css",
+              "node_modules/weather-icons/css/weather-icons-wind.css",
               "src/styles.css"
             ],
             "scripts": []

@@ -23,6 +23,7 @@ type Coop struct {
 	status           Status
 	latitude         float64
 	longitude        float64
+	ticker           *time.Ticker
 }
 
 //------------------------------------------------------------------------------
@@ -31,19 +32,32 @@ type Coop struct {
 
 // New returns a new Coop.
 func New(opts Options) (*Coop, error) {
-	return &Coop{
+	c := &Coop{
 		openingCondition: opts.OpeningCondition,
 		closingCondition: opts.ClosingCondition,
 		latitude:         opts.Latitude,
 		longitude:        opts.Longitude,
 		status:           Unknown,
 		door:             door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration")),
-	}, nil
+		ticker:           time.NewTicker(5 * time.Second),
+	}
+
+	// Watch the clock
+	go c.watch()
+
+	return c, nil
+
 }
 
 //------------------------------------------------------------------------------
 // Functions
 //------------------------------------------------------------------------------
+
+func (coop *Coop) watch() {
+	for range coop.ticker.C {
+		go coop.Check()
+	}
+}
 
 // Status returns the status of the chicken coop.
 func (coop *Coop) Status() Status {

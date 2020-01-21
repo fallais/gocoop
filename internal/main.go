@@ -15,7 +15,6 @@ import (
 	"gocoop/pkg/coop/conditions/timebased"
 	"gocoop/pkg/coop/door"
 
-	"github.com/robfig/cron"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -140,11 +139,6 @@ func Run(cmd *cobra.Command, args []string) {
 	coopCtrl := routes.NewCoopController(coopService)
 	jwtCtrl := routes.NewJwtController(jwtService, viper.GetString("general.gui_username"), viper.GetString("general.gui_password"))
 	logrus.Infoln("Successfully initialized the Web controllers")
-
-	// Initialize CRON
-	cr := cron.New()
-	cr.AddFunc("@every 15s", c.Check)
-	cr.Start()
 
 	// Create a new Goji multiplexer
 	root := goji.NewMux()

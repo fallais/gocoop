@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"gocoop/internal/protocols"
-	"gocoop/internal/shared"
 	"gocoop/internal/utils"
 )
 
@@ -32,20 +31,8 @@ func NewMiscController() *MiscController {
 func (ctrl *MiscController) Hello(w http.ResponseWriter, r *http.Request) {
 	// Prepare the data
 	data := protocols.HelloResponse{
-		Message: "Go Coop API",
-		Version: "1",
-	}
-
-	// Execute the template
-	utils.JSONResponse(w, http.StatusOK, data)
-}
-
-// Configuration is the actual configuration
-func (ctrl *MiscController) Configuration(w http.ResponseWriter, r *http.Request) {
-	// Prepare the data
-	data := protocols.Configuration{
-		Latitude:  shared.Latitude,
-		Longitude: shared.Longitude,
+		Message: "gocoop",
+		Version: "1.0.0",
 	}
 
 	// Execute the template

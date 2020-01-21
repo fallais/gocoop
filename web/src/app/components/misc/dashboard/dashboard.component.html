@@ -1,44 +1,38 @@
 <div class="container">
-  <div class="row mt-4" *ngIf="coopStatus == 'unknown'">
+  <div class="row mt-4" *ngIf="coop?.status == 'unknown'">
       <div class="col-12">
         <div class="alert alert-warning">
-          <p>The status of the coop is <b>unknown</b>, you must set the status before opening or closing it.</p>
-          <p class="text-center">
-            <button class="btn btn-secondary mr-2" (click)="updateStatus('opened')">Set as opened</button>
-            <button class="btn btn-secondary" (click)="updateStatus('closed')">Set as closed</button>
-          </p>
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i> The status of the coop is <b>unknown</b>, you must set the status before opening or closing it. Go the the <a routerLink="/coop">configuration page</a>.
         </div>
       </div>
   </div>
 
   <div class="row mt-4">
-    <div class="col-4 col-xs-12">
+    <div class="card-columns">
+
       <div class="card bg-light">
         <div class="card-header">
-          <h5 class="card-title">Coop's door <i class="fa fa-sign-out pull-right" aria-hidden="true"></i></h5>
+          <h5 class="card-title">Status <i class="fa fa-sign-out pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
-          <p class="text-center text-large text-capitalize">{{ coopStatus }}</p>
+          <p class="text-center text-large text-capitalize">{{ coop?.status }}</p>
           <p class="text-center">
-            <button class="btn btn-success mr-2" (click)="open()">Open</button>
-            <button class="btn btn-danger" (click)="close()">Close</button><br />
+            <button class="btn btn-success mr-2" (click)="open()" [disabled]="coop.status == 'unknown'">Open</button>
+            <button class="btn btn-danger" (click)="close()" [disabled]="coop.status == 'unknown'">Close</button><br />
           </p>
         </div>
       </div>
-    </div>
 
-    <div class="col-4 col-xs-12">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Position <i class="fa fa-map-marker pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
           <p class="text-center"><b>Lat.</b> {{ coop.latitude }} | <b>Long.</b> {{ coop.longitude }}</p>
+          <p class="text-center"><a href="https://www.google.com/maps/search/?api=1&query={{ coop.latitude }},{{ coop.longitude }}" target="_blank">See on Maps <i class="fa fa-external-link" aria-hidden="true"></i></a></p>
         </div>
       </div>
-    </div>
 
-    <div class="col-4 col-xs-12">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Conditions <i class="fa fa-check-circle-o pull-right" aria-hidden="true"></i></h5>
@@ -50,6 +44,20 @@
           <h5 class="mt-4">Closing</h5>
           <p><b>Mode</b> : {{ coop.closing_condition.mode }}</p>
           <p><b>Value</b> : {{ coop.closing_condition.value }}</p>
+        </div>
+      </div>
+
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Weather <i class="fa fa-cloud pull-right" aria-hidden="true"></i></h5>
+        </div>
+        <div class="card-body">
+          <p class="text-center text-very-large mb-0">
+            <wi name="{{ weather | weatherIcon }}"></wi>
+          </p>
+          <p class="text-center text-large">
+            {{ weather?.main.temp }} °C
+          </p>
         </div>
       </div>
     </div>

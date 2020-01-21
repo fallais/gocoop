@@ -25,6 +25,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { JwtModule } from "@auth0/angular-jwt";
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { CoopGetComponent } from './components/coop/coop-get/coop-get.component';
+import { WeatherService } from './services/weather.service';
+import { WeatherIconPipe } from './pipes/weather-icon.pipe';
+import { WeatherIconsModule } from 'ngx-icons';
 
 export function tokenGetter() {
   return localStorage.getItem("access_token");
@@ -36,7 +39,8 @@ export function tokenGetter() {
     LoginComponent,
     DashboardComponent,
     NavComponent,
-    CoopGetComponent
+    CoopGetComponent,
+    WeatherIconPipe
   ],
   imports: [
     BrowserModule,
@@ -45,6 +49,7 @@ export function tokenGetter() {
     HttpClientModule,
     ReactiveFormsModule,
     NgbModule,
+    WeatherIconsModule,
     LoadingBarRouterModule,
     LoadingBarHttpClientModule,
     LoadingBarModule,
@@ -62,6 +67,7 @@ export function tokenGetter() {
     Title,
     AuthGuard,
     CoopService,
+    WeatherService,
     AuthService,
     {
       provide: HTTP_INTERCEPTORS,

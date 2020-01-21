@@ -5,8 +5,8 @@ general:
   redis_host: localhost:6379
   redis_password: 
 coop:
-  latitude: 42.525776
-  longitude: 2.327727
+  latitude: 43.388352
+  longitude: 1.277914
   opening:
     mode: "time_based"
     value: "08h00"

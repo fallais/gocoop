@@ -1,13 +1,13 @@
 <div class="container">
   <div class="row mt-4">
     <div class="col-12">
-      <h4>Coop</h4>
+      <h4>Configuration</h4>
     </div>
 
     <div class="col-12 mt-4">
       <div class="card bg-light">
         <div class="card-header">
-          <h5 class="card-title">Configuration</h5>
+          <h5 class="card-title">Coop</h5>
         </div>
         <div class="card-body">
           <p>Opening : {{ coop?.opening_condition.mode }} ({{ coop?.opening_condition.value }})</p>
@@ -24,7 +24,11 @@
           <h5 class="card-title">Status</h5>
         </div>
         <div class="card-body">
-          <p>Status : {{ coopStatus }}</p>
+          <p>Status : {{ coop.status }}</p>
+          <p class="text-center" *ngIf="coop.status == 'unknown'">
+            <button class="btn btn-secondary mr-2" (click)="updateStatus('opened')">Set as opened</button>
+            <button class="btn btn-secondary" (click)="updateStatus('closed')">Set as closed</button>
+          </p>
         </div>
       </div>
     </div>

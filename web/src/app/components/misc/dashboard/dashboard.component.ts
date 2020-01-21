@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CoopService } from '../../../services/coop.service';
 import { NotificationsService } from 'angular2-notifications';
+import { WeatherService } from '../../../services/weather.service';
 import { Coop } from '../../../models/coop';
+import { WeatherResponse } from 'src/app/models/weather';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,17 +11,31 @@ import { Coop } from '../../../models/coop';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  coopStatus: string = ""
   coop: Coop;
+  weather: WeatherResponse;
 
   constructor(
     private coopService: CoopService,
+    private weatherService: WeatherService,
     private notificationService: NotificationsService
   ) { }
 
   ngOnInit() {
-    this.getStatus();
     this.get();
+    this.getWeather();
+  }
+
+  getWeather(): void {
+    this.coopService.get().subscribe(resp => {
+      this.weatherService.get(resp.latitude, resp.longitude, "a4e6ca400a6006140999a787fdc13883").subscribe(
+        (resp: WeatherResponse) => {
+          this.weather = resp;
+        },
+        err => {
+          console.log(err)
+        }
+      )
+    });      
   }
 
   get(): void {
@@ -30,47 +46,6 @@ export class DashboardComponent implements OnInit {
       err => {
         // Notify
         this.notificationService.error('Error while getting the coop configuration', err.error.error_description, {
-          timeOut: 5000,
-          showProgressBar: true,
-          pauseOnHover: true,
-          clickToClose: false,
-          clickIconToClose: true
-        });
-      });
-  }
-
-  getStatus(): void {
-    this.coopService.getStatus().subscribe(
-      (resp: string) => {
-        this.coopStatus = resp;
-      },
-      err => {
-        // Notify
-        this.notificationService.error('Error while getting the status', err.error.error_description, {
-          timeOut: 5000,
-          showProgressBar: true,
-          pauseOnHover: true,
-          clickToClose: false,
-          clickIconToClose: true
-        });
-      });
-  }
-
-  updateStatus(status): void {
-    var s = {
-      status: status
-    }
-
-    this.coopService.updateStatus(s).subscribe(
-      (resp: string) => {
-        this.coopStatus = resp;
-        this.getStatus();
-      },
-      err => {
-       console.log(err)
-
-        // Notify
-        this.notificationService.error('Error while updating the status', err.error.error_description, {
           timeOut: 5000,
           showProgressBar: true,
           pauseOnHover: true,
