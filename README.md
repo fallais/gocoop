@@ -105,27 +105,30 @@ networks:
 
 ### Configuration
 
-The configuration file must be as follow :
+The configuration file must look like this below :
 
 ```yaml
 general:
   gui_username: admin
   gui_password: admin
-  private_key: myK3yIsAwesome!
+  private_key: keykey
   redis_host: localhost:6379
   redis_password: 
 coop:
-  latitude: 42.525776
-  longitude: 2.327727
+  latitude: 43.388352
+  longitude: 1.277914
   opening:
     mode: "time_based"
     value: "08h00"
   closing:
     mode: "sun_based"
-    value: "-30m"
+    value: "30m"
 door:
   openening_duration: "65s"
   closing_duration: "60s"
+cameras:
+  outdoor: http://185.39.101.26/mjpg/video.mjpg
+  indoor: http://187.157.229.132/mjpg/video.mjpg
 ```
 
 #### Modes and values
