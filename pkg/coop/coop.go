@@ -172,13 +172,10 @@ func (coop *Coop) Check() {
 	switch coop.status {
 	case Unknown:
 		logrus.Warningln("The status is unknown, skipping")
-		break
 	case Opening:
 		logrus.Infoln("The coop is opening, skipping")
-		break
 	case Closing:
 		logrus.Infoln("The coop is closing, skipping")
-		break
 	case Closed:
 		if coop.shouldBeOpened(time.Now()) {
 			logrus.WithFields(logrus.Fields{
@@ -196,8 +193,6 @@ func (coop *Coop) Check() {
 
 			logrus.Infoln("The coop has been opened")
 		}
-
-		break
 	case Opened:
 		if coop.shouldBeClosed(time.Now()) {
 			logrus.WithFields(logrus.Fields{
@@ -215,11 +210,8 @@ func (coop *Coop) Check() {
 
 			logrus.Infoln("The coop has been closed")
 		}
-
-		break
 	default:
 		logrus.Errorf("Wrong status for the coop : %s", coop.status)
-		break
 	}
 
 	logrus.WithFields(logrus.Fields{

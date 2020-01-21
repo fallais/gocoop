@@ -172,5 +172,8 @@ func Run(cmd *cobra.Command, args []string) {
 
 	// Serve
 	logrus.Infoln("Starting the Web server")
-	http.ListenAndServe(":8000", root)
+	err = http.ListenAndServe(":8000", root)
+	if err != nil {
+		logrus.WithError(err).Fatalln("Error while starting the Web server")
+	}
 }

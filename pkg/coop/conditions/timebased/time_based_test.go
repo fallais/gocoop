@@ -5,9 +5,6 @@ import (
 	"time"
 )
 
-const latitude = 43.525776
-const longitude = 1.327727
-
 func TestTimeBasedCondition(t *testing.T) {
 	_, err := NewTimeBasedCondition("0888h00")
 	if err == nil {

@@ -12,7 +12,6 @@ import (
 //------------------------------------------------------------------------------
 
 type timeBasedCondition struct {
-	mode    string
 	hours   int
 	minutes int
 }

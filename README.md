@@ -149,3 +149,10 @@ It is actually also used by a friend who have **160 chickens**. Below an overvie
 ## Licence
 
 I do not set any licence as of now. Please do not use code for commercial purpose, instead, contact me and we could work together. Chickens are against money problems..
+
+### Ideas
+
+- [ ] Use **kill switches** to get rid of opening and closing durations
+- [ ] **Water warming** in case of low temperature
+- [ ] Egg counting with **OpenCV**
+- [ ] Omelet maker (no, just joking)

@@ -8,7 +8,7 @@ import (
 
 // parseTime returns the hours and minutes with given string.
 func parseTime(t string) (int, int, error) {
-	r := regexp.MustCompile("^(\\d{2})h(\\d{2})$")
+	r := regexp.MustCompile(`^(\d{2})h(\d{2})$`)
 
 	if !r.MatchString(t) {
 		return 0, 0, fmt.Errorf("time format is incorrect: %s", t)
