@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"gocoop/internal/protocols"
-	"gocoop/internal/utils"
+
+	"github.com/alioygur/gores"
+	"github.com/spf13/viper"
 )
 
 //------------------------------------------------------------------------------
@@ -27,7 +29,7 @@ func NewMiscController() *MiscController {
 // Routes
 //------------------------------------------------------------------------------
 
-// Hello is the welcome message
+// Hello is the welcome message.
 func (ctrl *MiscController) Hello(w http.ResponseWriter, r *http.Request) {
 	// Prepare the data
 	data := protocols.HelloResponse{
@@ -36,5 +38,13 @@ func (ctrl *MiscController) Hello(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Execute the template
-	utils.JSONResponse(w, http.StatusOK, data)
+	gores.JSON(w, http.StatusOK, data)
+}
+
+// Cameras returns all the cameras.
+func (ctrl *MiscController) Cameras(w http.ResponseWriter, r *http.Request) {
+	cameras := viper.GetStringMapString("cameras")
+
+	// Execute the template
+	gores.JSON(w, http.StatusOK, cameras)
 }

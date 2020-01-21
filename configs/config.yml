@@ -16,3 +16,6 @@ coop:
 door:
   openening_duration: "65s"
   closing_duration: "60s"
+cameras:
+  outdoor: http://185.39.101.26/mjpg/video.mjpg
+  indoor: http://187.157.229.132/mjpg/video.mjpg

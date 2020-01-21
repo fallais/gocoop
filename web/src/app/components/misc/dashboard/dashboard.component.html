@@ -8,8 +8,7 @@
   </div>
 
   <div class="row mt-4">
-    <div class="card-columns">
-
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Status <i class="fa fa-sign-out pull-right" aria-hidden="true"></i></h5>
@@ -22,7 +21,9 @@
           </p>
         </div>
       </div>
+    </div>
 
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Position <i class="fa fa-map-marker pull-right" aria-hidden="true"></i></h5>
@@ -32,7 +33,9 @@
           <p class="text-center"><a href="https://www.google.com/maps/search/?api=1&query={{ coop.latitude }},{{ coop.longitude }}" target="_blank">See on Maps <i class="fa fa-external-link" aria-hidden="true"></i></a></p>
         </div>
       </div>
+    </div>
 
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Conditions <i class="fa fa-check-circle-o pull-right" aria-hidden="true"></i></h5>
@@ -46,7 +49,9 @@
           <p><b>Value</b> : {{ coop.closing_condition.value }}</p>
         </div>
       </div>
+    </div>
 
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Weather <i class="fa fa-cloud pull-right" aria-hidden="true"></i></h5>
@@ -58,6 +63,17 @@
           <p class="text-center text-large">
             {{ weather?.main.temp }} °C
           </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 mb-4 col-md-6 col-lg-4" *ngFor="let camera of cameras | keyvalue;">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Camera ({{camera.key}}) <i class="fa fa-camera pull-right" aria-hidden="true"></i></h5>
+        </div>
+        <div class="card-body">
+          <img class="img-fluid" [src]="camera.value" />
         </div>
       </div>
     </div>

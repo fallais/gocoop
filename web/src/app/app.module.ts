@@ -16,6 +16,10 @@ import { NavComponent } from './components/misc/nav/nav.component';
 // Services
 import { AuthService } from './services/auth.service';
 import { CoopService } from './services/coop.service';
+import { WeatherService } from './services/weather.service';
+
+// Pipes
+import { WeatherIconPipe } from './pipes/weather-icon.pipe';
 
 // Vendor
 import { LoadingBarModule } from '@ngx-loading-bar/core';
@@ -25,8 +29,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { JwtModule } from "@auth0/angular-jwt";
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { CoopGetComponent } from './components/coop/coop-get/coop-get.component';
-import { WeatherService } from './services/weather.service';
-import { WeatherIconPipe } from './pipes/weather-icon.pipe';
 import { WeatherIconsModule } from 'ngx-icons';
 
 export function tokenGetter() {

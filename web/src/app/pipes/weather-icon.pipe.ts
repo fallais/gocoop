@@ -14,14 +14,11 @@ export class WeatherIconPipe implements PipeTransform {
     switch(value.weather[0].main){
       case "Clear":
         return "day-sunny";
-        break;
       case "Rain":
       case "Drizzle":
         return "day-rain";
-        break;
       case "Thunderstorm":
         return "wi-day-thunderstorm";
-        break;
       case "Snow":
         return "day-snow";
       case "Clouds":

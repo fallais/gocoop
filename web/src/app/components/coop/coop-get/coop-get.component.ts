@@ -8,7 +8,6 @@ import { NotificationsService } from 'angular2-notifications';
   styleUrls: ['./coop-get.component.css']
 })
 export class CoopGetComponent implements OnInit {
-  coopStatus: string = ""
   coop: any;
 
   constructor(
@@ -27,11 +26,16 @@ export class CoopGetComponent implements OnInit {
 
     this.coopService.updateStatus(s).subscribe(
       (resp: string) => {
-        this.coopStatus = resp;
+        // Notify
+        this.notificationService.success('Successfully updated the status', '', {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
       },
       err => {
-       console.log(err)
-
         // Notify
         this.notificationService.error('Error while updating the status', err.error.error_description, {
           timeOut: 5000,

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CoopService } from '../../../services/coop.service';
 import { NotificationsService } from 'angular2-notifications';
 import { WeatherService } from '../../../services/weather.service';
+import { CameraService } from '../../../services/camera.service';
 import { Coop } from '../../../models/coop';
 import { WeatherResponse } from 'src/app/models/weather';
 
@@ -13,16 +14,25 @@ import { WeatherResponse } from 'src/app/models/weather';
 export class DashboardComponent implements OnInit {
   coop: Coop;
   weather: WeatherResponse;
+  cameras: Map<string, string>;
 
   constructor(
     private coopService: CoopService,
     private weatherService: WeatherService,
+    private cameraService: CameraService,
     private notificationService: NotificationsService
   ) { }
 
   ngOnInit() {
     this.get();
     this.getWeather();
+    this.listCameras();
+  }
+
+  listCameras(): void {
+    this.cameraService.list().subscribe(resp => {
+      this.cameras = resp;
+    });
   }
 
   getWeather(): void {

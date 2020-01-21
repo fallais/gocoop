@@ -137,6 +137,7 @@ func Run(cmd *cobra.Command, args []string) {
 	// Initialize Web controllers
 	logrus.Infoln("Initializing the Web controllers")
 	coopCtrl := routes.NewCoopController(coopService)
+	miscCtrl := routes.NewMiscController()
 	jwtCtrl := routes.NewJwtController(jwtService, viper.GetString("general.gui_username"), viper.GetString("general.gui_password"))
 	logrus.Infoln("Successfully initialized the Web controllers")
 
@@ -148,6 +149,7 @@ func Run(cmd *cobra.Command, args []string) {
 	root.Use(xRequestIDMiddleware)
 
 	// Unauthenticated route
+	root.HandleFunc(pat.Post("/api/v1"), miscCtrl.Hello)
 	root.HandleFunc(pat.Post("/api/v1/login"), jwtCtrl.Login)
 	root.HandleFunc(pat.Get("/api/v1/refresh"), jwtCtrl.Refresh)
 	root.HandleFunc(pat.Get("/api/v1/logout"), jwtCtrl.Logout)
@@ -155,6 +157,7 @@ func Run(cmd *cobra.Command, args []string) {
 	// Authenticated routes
 	authenticated := goji.SubMux()
 	authenticated.Use(jwtMiddleware)
+	authenticated.HandleFunc(pat.Get("/api/v1/cameras"), miscCtrl.Cameras)
 	authenticated.HandleFunc(pat.Get("/api/v1/coop"), coopCtrl.Get)
 	authenticated.HandleFunc(pat.Get("/api/v1/coop/status"), coopCtrl.GetStatus)
 	authenticated.HandleFunc(pat.Post("/api/v1/coop/status"), coopCtrl.UpdateStatus)
