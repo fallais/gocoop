@@ -8,10 +8,7 @@
   }
 
   rewrite {
+    if {path} not /api
     to {path} {path}/ /
-  }
-
-  expires {
-    match \.ico|css|js|gif|jpe?g|png$ 7d
   }
 }
