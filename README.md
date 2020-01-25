@@ -37,7 +37,7 @@ Here are the GPIO pins that are used :
 
 The GPIO of my **Raspberry 3 B+** are located as follow :
 
-![GPIO](https://github.com/fallais/gocoop/blob/master/assets/gpio.png)
+![GPIO](https://github.com/fallais/gocoop/blob/master/assets/gpios.png)
 
 ### The global schema
 
