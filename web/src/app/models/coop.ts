@@ -1,6 +1,6 @@
 export interface Coop {
-	opening_condition: Map<string,string>;
-	closing_condition:  Map<string,string>;
+	opening_condition: any;
+	closing_condition:  any;
 	latitude: number;
   longitude: number;
   status: string;
