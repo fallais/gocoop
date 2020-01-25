@@ -39,6 +39,12 @@ The GPIO of my **Raspberry 3 B+** are located as follow :
 
 ![GPIO](https://github.com/fallais/gocoop/blob/master/assets/gpio.png)
 
+### The global schema
+
+All compoents are now connected together with a breadboard.
+
+![Schema](https://github.com/fallais/gocoop/blob/master/assets/schema.png)
+
 ## Is it tested ?
 
 Sure, I tried to do my best to add package tests because chickens deserv the best ! Moreover, I have been using it for more than one year at home, it has never failed since the begining.
