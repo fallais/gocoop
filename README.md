@@ -27,10 +27,19 @@ I use the `L293D`. It is capable of handling two motors.
 
 ![L293D](https://github.com/fallais/gocoop/blob/master/assets/L293D.jpg)
 
+I will be using the following pins :
+
+- Enable 1 : To enable the motor, to make it turn.
+- Input 1 : To set the rotation way
+- Input 2 : To set the rotation way
+- All the GND
+
 ### The GPIO pins
 
 Here are the GPIO pins that are used :
 
+- 2 : Power (5V)
+- 6 : Ground
 - 23 : connected to the **Input 1** of the **L293D**
 - 24 : connected to the **Input 2** of the **L293D**
 - 25 : connected to the **Enable 1** of the **L293D**
