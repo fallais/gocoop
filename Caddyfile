@@ -4,11 +4,11 @@
   gzip
 
   proxy /api localhost:8000 {
-	  transparent
+    transparent
   }
 
   rewrite {
-    if {path} not /api
+    if {path} not_starts_with /api
     to {path} {path}/ /
   }
 }
