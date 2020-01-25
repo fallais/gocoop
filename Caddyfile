@@ -3,6 +3,10 @@
 
   gzip
 
+  proxy /api localhost:8000 {
+	  transparent
+  }
+
   rewrite {
     to {path} {path}/ /
   }
