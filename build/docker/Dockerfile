@@ -24,6 +24,8 @@ COPY Caddyfile /etc/Caddyfile
 RUN apt-get update && \
     apt-get install -y curl && \
     curl https://getcaddy.com | bash -s personal && \
-    chmod +x /entrypoint.sh
+    chmod +x /entrypoint.sh && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get install -y tzdata
 WORKDIR /
 ENTRYPOINT ["/entrypoint.sh"]
