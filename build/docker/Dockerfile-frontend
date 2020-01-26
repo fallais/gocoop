@@ -1,0 +1,14 @@
+# Build
+FROM node:latest as build
+WORKDIR /app
+COPY ./web /app/
+RUN npm install
+RUN $(npm bin)/ng build --prod --extract-css false
+
+# Setup
+FROM elswork/arm-caddy
+LABEL maintainer=francois.allais@hotmail.com
+COPY --from=build /app/dist/gocoop/ /srv/
+COPY ./Caddyfile /etc/Caddyfile
+EXPOSE 2015
+CMD ["--conf", "/etc/Caddyfile", "--log", "stdout"]

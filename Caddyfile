@@ -1,14 +1,8 @@
 :2015 {
   root /srv
-
   gzip
 
-  proxy /api localhost:8000 {
-    transparent
-  }
-
   rewrite {
-    if {path} not_starts_with /api
     to {path} {path}/ /
   }
 }

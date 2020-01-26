@@ -6,26 +6,14 @@ RUN env GOOS=linux GOARCH=arm GOARM=7
 RUN go get -d -v ./...
 RUN go build -o /go/bin/gocoop
 
-# Build (Angular)
-FROM node:latest as builder-angular
-LABEL maintainer="francois.allais@hotmail.com"
-WORKDIR /app
-COPY ./web/ /app/
-RUN npm install
-RUN $(npm bin)/ng build --prod --extract-css false
-
 # Ubuntu
 FROM arm32v7/ubuntu:latest
 LABEL maintainer="francois.allais@hotmail.com"
 COPY --from=builder-golang /go/bin/gocoop /usr/bin/gocoop
-COPY --from=builder-angular /app/dist/gocoop/ /srv/
-COPY entrypoint.sh /entrypoint.sh
-COPY Caddyfile /etc/Caddyfile
 RUN apt-get update && \
     apt-get install -y curl && \
-    curl https://getcaddy.com | bash -s personal && \
-    chmod +x /entrypoint.sh && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y tzdata
 WORKDIR /
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT [ "/usr/bin/gocoop" ]
+CMD [ "--help" ]
