@@ -15,9 +15,14 @@ import (
 // ErrAutomaticModeEnabled is raised when the automatic mode is enabled.
 var ErrAutomaticModeEnabled = errors.New("cannot close the coop because automatic mode is enabled")
 
+// ErrCoopAlreadyOpening ...
 var ErrCoopAlreadyOpening = errors.New("coop is already opening")
 
+// ErrCoopAlreadyClosing ...
 var ErrCoopAlreadyClosing = errors.New("coop is already closing")
+
+// CheckFrequency is the frequency for checking the coop.
+const CheckFrequency = 10 * time.Second
 
 //------------------------------------------------------------------------------
 // Structure
@@ -49,7 +54,7 @@ func New(opts Options) (*Coop, error) {
 		isAutomatic:      opts.IsAutomatic,
 		status:           Unknown,
 		door:             door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration")),
-		ticker:           time.NewTicker(5 * time.Second),
+		ticker:           time.NewTicker(CheckFrequency),
 	}
 
 	// Watch the clock
