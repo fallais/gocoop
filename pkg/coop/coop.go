@@ -1,6 +1,7 @@
 package coop
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -11,6 +12,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+// ErrAutomaticModeEnabled is raised when the automatic mode is enabled.
+var ErrAutomaticModeEnabled = errors.New("cannot close the coop because automatic mode is enabled")
+
+var ErrCoopAlreadyOpening = errors.New("coop is already opening")
+
+var ErrCoopAlreadyClosing = errors.New("coop is already closing")
+
 //------------------------------------------------------------------------------
 // Structure
 //------------------------------------------------------------------------------
@@ -20,6 +28,7 @@ type Coop struct {
 	openingCondition conditions.Condition
 	closingCondition conditions.Condition
 	door             *door.Door
+	isAutomatic      bool
 	status           Status
 	latitude         float64
 	longitude        float64
@@ -37,6 +46,7 @@ func New(opts Options) (*Coop, error) {
 		closingCondition: opts.ClosingCondition,
 		latitude:         opts.Latitude,
 		longitude:        opts.Longitude,
+		isAutomatic:      opts.IsAutomatic,
 		status:           Unknown,
 		door:             door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration")),
 		ticker:           time.NewTicker(5 * time.Second),
@@ -62,6 +72,11 @@ func (coop *Coop) watch() {
 // Status returns the status of the chicken coop.
 func (coop *Coop) Status() Status {
 	return coop.status
+}
+
+// IsAutomatic returns the automatic mode.
+func (coop *Coop) IsAutomatic() bool {
+	return coop.isAutomatic
 }
 
 // Latitude returns the latitude of the chicken coop.
@@ -100,15 +115,25 @@ func (coop *Coop) UpdateStatus(status string) error {
 
 // Open opens the chicken coop.
 func (coop *Coop) Open() error {
+	// Check the automatic mode
+	if coop.isAutomatic {
+		return ErrAutomaticModeEnabled
+	}
+
+	return coop.open()
+}
+
+func (coop *Coop) open() error {
+	// Check the incompatible statuses
 	switch coop.status {
 	case Unknown:
 		return fmt.Errorf("cannot open the coop because the status unknown")
 	case Opened:
 		return fmt.Errorf("coop is already opened")
 	case Opening:
-		return fmt.Errorf("coop is already opening")
+		return ErrCoopAlreadyOpening
 	case Closing:
-		return fmt.Errorf("coop is already closing")
+		return ErrCoopAlreadyClosing
 	}
 
 	// Update the status of the coop
@@ -131,6 +156,16 @@ func (coop *Coop) Open() error {
 
 // Close closes the chicken coop.
 func (coop *Coop) Close() error {
+	// Check the automatic mode
+	if coop.isAutomatic {
+		return fmt.Errorf("cannot close the coop because automatic mode is set")
+	}
+
+	return coop.close()
+}
+
+func (coop *Coop) close() error {
+	// Check the incompatible statuses
 	switch coop.status {
 	case Unknown:
 		return fmt.Errorf("cannot open the coop because the status unknown")
@@ -162,20 +197,28 @@ func (coop *Coop) Close() error {
 
 // Check performs a check of the door of the chicken coop.
 func (coop *Coop) Check() {
+	// Check the automatic mode
+	if !coop.isAutomatic {
+		logrus.WithFields(logrus.Fields{
+			"status": coop.status,
+		}).Warningln("Automatic mode is disabled")
+		return
+	}
+
 	logrus.WithFields(logrus.Fields{
 		"status":       coop.status,
 		"opening_time": coop.openingCondition.OpeningTime(),
 		"closing_time": coop.closingCondition.ClosingTime(),
-	}).Infoln("Checking the coop")
+	}).Debugln("Checking the coop")
 
 	// Process the status
 	switch coop.status {
 	case Unknown:
-		logrus.Warningln("The status is unknown, skipping")
+		logrus.Warningln("The status is unknown")
 	case Opening:
-		logrus.Infoln("The coop is opening, skipping")
+		logrus.Infoln("The coop is opening")
 	case Closing:
-		logrus.Infoln("The coop is closing, skipping")
+		logrus.Infoln("The coop is closing")
 	case Closed:
 		if coop.shouldBeOpened(time.Now()) {
 			logrus.WithFields(logrus.Fields{
@@ -185,7 +228,7 @@ func (coop *Coop) Check() {
 			}).Warnln("The coop should be opened")
 
 			// Open the coop
-			err := coop.Open()
+			err := coop.open()
 			if err != nil {
 				logrus.Errorf("error while opening the coop: %s", err)
 				return
@@ -202,7 +245,7 @@ func (coop *Coop) Check() {
 			}).Warnln("The coop should be closed")
 
 			// Close the coop
-			err := coop.Close()
+			err := coop.close()
 			if err != nil {
 				logrus.Errorf("Error when closing the coop: %s", err)
 				return
@@ -218,5 +261,5 @@ func (coop *Coop) Check() {
 		"status":       coop.status,
 		"opening_time": coop.openingCondition.OpeningTime(),
 		"closing_time": coop.closingCondition.ClosingTime(),
-	}).Infoln("Coop has been checked")
+	}).Debugln("Coop has been checked")
 }

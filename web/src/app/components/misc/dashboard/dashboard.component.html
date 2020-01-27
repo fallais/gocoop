@@ -15,10 +15,32 @@
         </div>
         <div class="card-body">
           <p class="text-center text-large text-capitalize">{{ coop?.status }}</p>
-          <p class="text-center">
-            <button class="btn btn-success mr-2" (click)="open()" [disabled]="coop.status == 'unknown'">Open</button>
-            <button class="btn btn-danger" (click)="close()" [disabled]="coop.status == 'unknown'">Close</button><br />
-          </p>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Automatic <i class="fa fa-bullseye pull-right" aria-hidden="true"></i></h5>
+        </div>
+        <div class="card-body">
+          <p class="text-center text-large text-capitalize"><i [ngClass]="{ 'fa': true, 'fa-check text-success': coop?.is_automatic, 'fa-close text-danger': !coop?.is_automatic}" aria-hidden="true"></i></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Usage <i class="fa fa-cog pull-right" aria-hidden="true"></i></h5>
+        </div>
+        <div class="card-body">
+          <p class="text-center" *ngIf="!coop?.is_automatic">
+            <button class="btn btn-success mr-2" (click)="open()" [disabled]="coop.status == 'unknown' || coop?.is_automatic">Open</button>
+            <button class="btn btn-danger" (click)="close()" [disabled]="coop.status == 'unknown' || coop?.is_automatic">Close</button>
+          <p class="text-center text-danger" *ngIf="coop?.is_automatic">*Automatic mode is enabled.</p>
         </div>
       </div>
     </div>

@@ -44,8 +44,9 @@ func Run(cmd *cobra.Command, args []string) {
 	}
 
 	opts := coop.Options{
-		Latitude:  viper.GetFloat64("coop.latitude"),
-		Longitude: viper.GetFloat64("coop.longitude"),
+		Latitude:    viper.GetFloat64("coop.latitude"),
+		Longitude:   viper.GetFloat64("coop.longitude"),
+		IsAutomatic: viper.GetBool("coop.is_automatic"),
 	}
 
 	// Create the opening condition
@@ -124,7 +125,6 @@ func Run(cmd *cobra.Command, args []string) {
 	// Initialize the middlewares
 	logrus.Infoln("Initializing the middlewares")
 	corsMiddleware := middleware.Cors()
-	xRequestIDMiddleware := middleware.XRequestID()
 	jwtMiddleware := middleware.JWT(store, viper.GetString("general.private_key"))
 	logrus.Infoln("Successfully initialized the middlewares")
 
@@ -146,7 +146,6 @@ func Run(cmd *cobra.Command, args []string) {
 
 	// Middlewares
 	root.Use(corsMiddleware)
-	root.Use(xRequestIDMiddleware)
 
 	// Unauthenticated route
 	root.HandleFunc(pat.Post("/api/v1"), miscCtrl.Hello)

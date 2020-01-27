@@ -11,6 +11,7 @@ type CoopResponse struct {
 	Latitude         float64           `json:"latitude"`
 	Longitude        float64           `json:"longitude"`
 	Status           string            `json:"status"`
+	IsAutomatic      bool              `json:"is_automatic"`
 }
 
 // APIControllerResponse is the response for API.

@@ -10,7 +10,6 @@ import (
 
 	"github.com/alioygur/gores"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 )
 
@@ -22,10 +21,6 @@ import (
 func JWT(store *cache.RedisCache, privateKey string) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
-			logrus.WithFields(logrus.Fields{
-				"middleware": "JWT",
-			}).Debugln("Entering middleware")
-
 			// Read the Authorization header
 			header := r.Header.Get("Authorization")
 			if header == "" {
@@ -37,7 +32,6 @@ func JWT(store *cache.RedisCache, privateKey string) func(h http.Handler) http.H
 				gores.JSON(w, http.StatusUnauthorized, response)
 				return
 			}
-			logrus.Debugln("Header is :", header)
 
 			// Split header into two parts
 			headerParts := strings.Split(header, " ")
@@ -53,7 +47,6 @@ func JWT(store *cache.RedisCache, privateKey string) func(h http.Handler) http.H
 
 			// Get the token
 			tokenRaw := headerParts[1]
-			logrus.Debugln("Token is :", tokenRaw)
 
 			// Parse the token
 			token, err := jwt.Parse(tokenRaw, func(token *jwt.Token) (interface{}, error) {
@@ -75,7 +68,6 @@ func JWT(store *cache.RedisCache, privateKey string) func(h http.Handler) http.H
 			}
 
 			// Get the token from the database
-			logrus.Debugln("Searching the token in cache")
 			_, err = store.Get(tokenRaw)
 			if err != nil {
 				response := &protocols.APIControllerResponse{
@@ -106,10 +98,6 @@ func JWT(store *cache.RedisCache, privateKey string) func(h http.Handler) http.H
 func Cors() func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
-			logrus.WithFields(logrus.Fields{
-				"middleware": "CORS",
-			}).Debugln("Entering middleware")
-
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
@@ -120,45 +108,6 @@ func Cors() func(h http.Handler) http.Handler {
 			}
 
 			// Serve
-			h.ServeHTTP(w, r)
-		}
-
-		return http.HandlerFunc(fn)
-	}
-}
-
-// XRequestID is a goji middleware to track requestID (from the great Zenithar)
-func XRequestID() func(h http.Handler) http.Handler {
-	return func(h http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
-			logrus.WithFields(logrus.Fields{
-				"middleware": "XRequestID",
-			}).Debugln("Entering middleware")
-
-			if len(r.Header.Get("X-Request-ID")) > 0 {
-				// Prepare the context
-				ctx := context.WithValue(r.Context(), "reqID", r.Header.Get("X-Request-ID"))
-
-				// Serve
-				h.ServeHTTP(w, r.WithContext(ctx))
-			} else {
-				// Serve
-				h.ServeHTTP(w, r)
-			}
-		}
-
-		return http.HandlerFunc(fn)
-	}
-}
-
-// Metrics is a GOJI middleware to provide Prometheus metrics
-func Metrics() func(h http.Handler) http.Handler {
-	return func(h http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
-			logrus.WithFields(logrus.Fields{
-				"middleware": "Metrics",
-			}).Debugln("Entering middleware")
-
 			h.ServeHTTP(w, r)
 		}
 

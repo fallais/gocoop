@@ -4,30 +4,87 @@
       <h4>Configuration</h4>
     </div>
 
-    <div class="col-12 mt-4">
+    <div class="col-12 col-lg-4  mt-4">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Coop</h5>
         </div>
         <div class="card-body">
-          <p>Opening : {{ coop?.opening_condition.mode }} ({{ coop?.opening_condition.value }})</p>
-          <p>Closing : {{ coop?.closing_condition.mode }} ({{ coop?.closing_condition.value }})</p>
-          <p>Latitude : {{ coop?.latitude }}</p>
-          <p>Longitude : {{ coop?.longitude }}</p>
+          <form [formGroup]="coopForm">
+            <fieldset formGroupName="opening_condition">
+              <legend>Opening</legend>
+            
+              <div class="form-group">
+                <label>Mode</label>
+                <input class="form-control" type="text" formControlName="mode" >
+              </div>
+              
+              <div class="form-group">
+                <label>Value</label>
+                <input class="form-control" type="text" formControlName="value" >
+              </div>
+            </fieldset>
+
+            <fieldset formGroupName="closing_condition">
+              <legend>Closing</legend>
+            
+              <div class="form-group">
+                <label>Mode</label>
+                <input class="form-control" type="text" formControlName="mode" >
+              </div>
+              <div class="form-group">
+                <label>Value</label>
+                <input class="form-control" type="text" formControlName="value" >
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Location</legend>
+              
+              <div class="form-group">
+                <label>Latitude</label>
+                <input class="form-control" type="number" formControlName="longitude" >
+              </div>
+
+              <div class="form-group">
+                <label>Longitude</label>
+                <input class="form-control" type="number" formControlName="latitude" >
+              </div>
+            </fieldset>
+
+            <p class="text-center mt-3">
+              <button class="btn btn-warning" (click)="onSubmit()">Update</button>
+            </p>
+          </form>
         </div>
       </div>
     </div>
     
-    <div class="col-12 mt-4">
+    <div class="col-12 col-lg-4  mt-4">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Status</h5>
         </div>
         <div class="card-body">
-          <p>Status : {{ coop.status }}</p>
+          <p class="text-center">Status : {{ coop.status }}</p>
           <p class="text-center" *ngIf="coop.status == 'unknown'">
-            <button class="btn btn-secondary mr-2" (click)="updateStatus('opened')">Set as opened</button>
+            <button class="btn btn-dark mr-2" (click)="updateStatus('opened')">Set as opened</button>
             <button class="btn btn-secondary" (click)="updateStatus('closed')">Set as closed</button>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4 mt-4">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Automatic mode</h5>
+        </div>
+        <div class="card-body">
+          <p>Mode : {{ coop.is_automatic }}</p>
+          <p class="text-center" *ngIf="coop.status == 'unknown'">
+            <button class="btn btn-dark mr-2" (click)="enableAutomaticMode()">Enable</button>
+            <button class="btn btn-secondary" (click)="disableAutomaticMode()">Disable</button>
           </p>
         </div>
       </div>
