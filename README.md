@@ -32,7 +32,9 @@ I will be using the following pins :
 - Enable 1 : To enable the motor, to make it turn.
 - Input 1 : To set the rotation way
 - Input 2 : To set the rotation way
-- All the GND
+- Output 1 : To motor
+- Output 2 : To motor
+- All the GND pins
 
 ### The GPIO pins
 
@@ -128,7 +130,7 @@ general:
   gui_password: admin
   private_key: keykey
   redis_host: localhost:6379
-  redis_password: 
+  redis_password:  
 coop:
   latitude: 43.388352
   longitude: 1.277914
