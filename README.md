@@ -105,10 +105,21 @@ services:
     volumes:
       - /data/docker/config.yml:/usr/bin/config.yml
       - /sys:/sys
+    environment:
+      - TZ=Europe/Paris
     networks:
       main:
         aliases:
           - gocoop
+  
+  gocoop-frontend:
+    image: fallais/gocoop-frontend
+    container_name: gocoop-frontend
+    restart: always
+    networks:
+      main:
+        aliases:
+          - gocoop-frontend
     
     caddy:
 
