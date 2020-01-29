@@ -87,10 +87,11 @@ Deploy with a `docker-compose`.
 
 ```yaml
 version: "3"
+
 services:
   redis:
-    image: redis
-    container_image: redis
+    image: redis:alpine
+    container_name: redis
     restart: always
     networks:
       main:
@@ -99,16 +100,18 @@ services:
 
   gocoop:
     image: fallais/gocoop
-    container_image: gocoop
+    container_name: gocoop
     restart: always
     volumes:
-      - ./config.yml:/usr/bin/config.yml
-    ports:
-      - 80:2015
+      - /data/docker/config.yml:/usr/bin/config.yml
+      - /sys:/sys
     networks:
       main:
         aliases:
           - gocoop
+    
+    caddy:
+
 
 networks:
   main:
