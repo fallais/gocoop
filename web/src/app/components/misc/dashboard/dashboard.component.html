@@ -14,8 +14,7 @@
           <h5 class="card-title">Status <i class="fa fa-sign-out pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
-          <p class="text-center text-large text-capitalize">{{ coop?.status }}</p>
-          
+          <p class="text-center text-large text-capitalize"><i class="fa fa-spinner fa-spin mr-2" *ngIf="coop.status == 'opening' || coop.status == 'closing'" aria-hidden="true"></i> {{ coop?.status }}</p>
         </div>
       </div>
     </div>
@@ -60,34 +59,6 @@
     <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
         <div class="card-header">
-          <h5 class="card-title">Position <i class="fa fa-map-marker pull-right" aria-hidden="true"></i></h5>
-        </div>
-        <div class="card-body">
-          <p class="text-center"><b>Lat.</b> {{ coop.latitude }} | <b>Long.</b> {{ coop.longitude }}</p>
-          <p class="text-center"><a href="https://www.google.com/maps/search/?api=1&query={{ coop.latitude }},{{ coop.longitude }}" target="_blank">See on Maps <i class="fa fa-external-link" aria-hidden="true"></i></a></p>
-        </div>
-      </div>
-    </div>
-
-<!--     <div class="col-12 mb-4 col-md-6 col-lg-4">
-      <div class="card bg-light">
-        <div class="card-header">
-          <h5 class="card-title">Conditions <i class="fa fa-check-circle-o pull-right" aria-hidden="true"></i></h5>
-        </div>
-        <div class="card-body">
-          <h5>Opening</h5>
-          <p><b>Mode</b> : {{ coop.opening_condition.mode }}</p>
-          <p><b>Value</b> : {{ coop.opening_condition.value }}</p>
-          <h5 class="mt-4">Closing</h5>
-          <p><b>Mode</b> : {{ coop.closing_condition.mode }}</p>
-          <p><b>Value</b> : {{ coop.closing_condition.value }}</p>
-        </div>
-      </div>
-    </div> -->
-
-    <div class="col-12 mb-4 col-md-6 col-lg-4">
-      <div class="card bg-light">
-        <div class="card-header">
           <h5 class="card-title">Weather <i class="fa fa-cloud pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
@@ -99,13 +70,25 @@
             </div>
             <div class="col-6 mt-0">
               <p class="text-center text-large mb-0">
-                {{ weather?.main.temp }} °C<br />
+                {{ weather?.main.temp | number:'1.0-1' }} °C
               </p>
               <p class="text-center">
                 {{ weather?.main.humidity }} %
               </p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h5 class="card-title">Position <i class="fa fa-map-marker pull-right" aria-hidden="true"></i></h5>
+        </div>
+        <div class="card-body">
+          <p class="text-center"><b>Lat.</b> {{ coop.latitude }} | <b>Long.</b> {{ coop.longitude }}</p>
+          <p class="text-center"><a href="https://www.google.com/maps/search/?api=1&query={{ coop.latitude }},{{ coop.longitude }}" target="_blank">See on Maps <i class="fa fa-external-link" aria-hidden="true"></i></a></p>
         </div>
       </div>
     </div>

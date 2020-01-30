@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
   coop: Coop;
   weather: WeatherResponse;
   cameras: Map<string, string>;
+  hasData: boolean = false;
 
   constructor(
     private coopService: CoopService,
