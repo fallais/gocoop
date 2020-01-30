@@ -104,6 +104,16 @@ func (coop *Coop) ClosingCondition() conditions.Condition {
 	return coop.closingCondition
 }
 
+// OpeningTime returns the opening time of the chicken coop.
+func (coop *Coop) OpeningTime() time.Time {
+	return coop.openingCondition.OpeningTime()
+}
+
+// ClosingTime returns the opening time of the chicken coop.
+func (coop *Coop) ClosingTime() time.Time {
+	return coop.closingCondition.ClosingTime()
+}
+
 // UpdateStatus updates the status of the chicken coop.
 func (coop *Coop) UpdateStatus(status string) error {
 	switch status {

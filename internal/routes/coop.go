@@ -50,6 +50,8 @@ func (ctrl *CoopController) Get(w http.ResponseWriter, r *http.Request) {
 			"mode":  coop.ClosingCondition().Mode(),
 			"value": coop.ClosingCondition().Value(),
 		},
+		OpeningTime: coop.OpeningTime(),
+		ClosingTime: coop.ClosingTime(),
 		Latitude:    coop.Latitude(),
 		Longitude:   coop.Longitude(),
 		Status:      string(coop.Status()),

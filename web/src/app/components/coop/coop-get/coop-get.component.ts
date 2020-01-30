@@ -32,8 +32,6 @@ export class CoopGetComponent implements OnInit {
             mode: [this.coop.closing_condition.mode, [Validators.required]],
             value: [this.coop.closing_condition.value, [Validators.required]]
           }),
-          latitude: [this.coop.latitude, Validators.required],
-          longitude: [this.coop.longitude, Validators.required],
         });
       },
       err => {

@@ -38,20 +38,6 @@
               </div>
             </fieldset>
 
-            <fieldset>
-              <legend>Location</legend>
-              
-              <div class="form-group">
-                <label>Latitude</label>
-                <input class="form-control" type="number" formControlName="longitude" >
-              </div>
-
-              <div class="form-group">
-                <label>Longitude</label>
-                <input class="form-control" type="number" formControlName="latitude" >
-              </div>
-            </fieldset>
-
             <p class="text-center mt-3">
               <button class="btn btn-warning" (click)="onSubmit()">Update</button>
             </p>
@@ -66,11 +52,11 @@
           <h5 class="card-title">Status</h5>
         </div>
         <div class="card-body">
-          <p class="text-center">Status : {{ coop.status }}</p>
-          <p class="text-center" *ngIf="coop.status == 'unknown'">
+          <p class="text-center">
             <button class="btn btn-dark mr-2" (click)="updateStatus('opened')">Set as opened</button>
             <button class="btn btn-secondary" (click)="updateStatus('closed')">Set as closed</button>
           </p>
+          <p class="text-center text-danger">*Be careful with this.</p>
         </div>
       </div>
     </div>
@@ -81,10 +67,9 @@
           <h5 class="card-title">Automatic mode</h5>
         </div>
         <div class="card-body">
-          <p>Mode : {{ coop.is_automatic }}</p>
-          <p class="text-center" *ngIf="coop.status == 'unknown'">
-            <button class="btn btn-dark mr-2" (click)="enableAutomaticMode()">Enable</button>
-            <button class="btn btn-secondary" (click)="disableAutomaticMode()">Disable</button>
+          <p class="text-center">
+            <button class="btn btn-success mr-2" (click)="enableAutomaticMode()" [disabled]="coop.is_automatic">Enable</button>
+            <button class="btn btn-danger" (click)="disableAutomaticMode()" [disabled]="!coop.is_automatic">Disable</button>
           </p>
         </div>
       </div>

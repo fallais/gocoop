@@ -23,6 +23,18 @@
     <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
         <div class="card-header">
+          <h5 class="card-title">Schedule <i class="fa fa-clock-o pull-right" aria-hidden="true"></i></h5>
+        </div>
+        <div class="card-body">
+          <p class="text-center"><i class="fa fa-sun-o" aria-hidden="true"></i> Opening : {{ coop.opening_time | date:'HH:mm' }}</p>
+          <p class="text-center"><i class="fa fa-moon-o" aria-hidden="true"></i> Closing : {{ coop.closing_time | date:'HH:mm' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
+      <div class="card bg-light">
+        <div class="card-header">
           <h5 class="card-title">Automatic <i class="fa fa-bullseye pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
@@ -34,13 +46,13 @@
     <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
         <div class="card-header">
-          <h5 class="card-title">Usage <i class="fa fa-cog pull-right" aria-hidden="true"></i></h5>
+          <h5 class="card-title">Use <i class="fa fa-cog pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
           <p class="text-center" *ngIf="!coop?.is_automatic">
             <button class="btn btn-success mr-2" (click)="open()" [disabled]="coop.status == 'unknown' || coop?.is_automatic">Open</button>
             <button class="btn btn-danger" (click)="close()" [disabled]="coop.status == 'unknown' || coop?.is_automatic">Close</button>
-          <p class="text-center text-danger" *ngIf="coop?.is_automatic">*Automatic mode is enabled.</p>
+          <p class="text-center text-danger" *ngIf="coop?.is_automatic">*Automatic mode is enabled.<br />Cannot use the coop.</p>
         </div>
       </div>
     </div>
@@ -57,7 +69,7 @@
       </div>
     </div>
 
-    <div class="col-12 mb-4 col-md-6 col-lg-4">
+<!--     <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
         <div class="card-header">
           <h5 class="card-title">Conditions <i class="fa fa-check-circle-o pull-right" aria-hidden="true"></i></h5>
@@ -71,7 +83,7 @@
           <p><b>Value</b> : {{ coop.closing_condition.value }}</p>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
@@ -79,12 +91,21 @@
           <h5 class="card-title">Weather <i class="fa fa-cloud pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
-          <p class="text-center text-very-large mb-0">
-            <wi name="{{ weather | weatherIcon }}"></wi>
-          </p>
-          <p class="text-center text-large">
-            {{ weather?.main.temp }} °C
-          </p>
+          <div class="row mt-1">
+            <div class="col-6 mt-0">
+                <p class="text-center display-4">
+                  <wi name="{{ weather | weatherIcon }}"></wi>
+                </p>
+            </div>
+            <div class="col-6 mt-0">
+              <p class="text-center text-large mb-0">
+                {{ weather?.main.temp }} °C<br />
+              </p>
+              <p class="text-center">
+                {{ weather?.main.humidity }} %
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

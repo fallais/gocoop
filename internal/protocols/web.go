@@ -1,5 +1,7 @@
 package protocols
 
+import "time"
+
 type Status struct {
 	Status string `json:"status"`
 }
@@ -12,6 +14,8 @@ type CoopResponse struct {
 	Longitude        float64           `json:"longitude"`
 	Status           string            `json:"status"`
 	IsAutomatic      bool              `json:"is_automatic"`
+	OpeningTime      time.Time         `json:"opening_time"`
+	ClosingTime      time.Time         `json:"closing_time"`
 }
 
 // APIControllerResponse is the response for API.
