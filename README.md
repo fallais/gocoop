@@ -32,7 +32,9 @@ I will be using the following pins :
 - Enable 1 : To enable the motor, to make it turn.
 - Input 1 : To set the rotation way
 - Input 2 : To set the rotation way
-- All the GND
+- Output 1 : To motor
+- Output 2 : To motor
+- All the GND pins
 
 ### The GPIO pins
 
@@ -85,10 +87,11 @@ Deploy with a `docker-compose`.
 
 ```yaml
 version: "3"
+
 services:
   redis:
-    image: redis
-    container_image: redis
+    image: redis:alpine
+    container_name: redis
     restart: always
     networks:
       main:
@@ -97,16 +100,29 @@ services:
 
   gocoop:
     image: fallais/gocoop
-    container_image: gocoop
+    container_name: gocoop
     restart: always
     volumes:
-      - ./config.yml:/usr/bin/config.yml
-    ports:
-      - 80:2015
+      - /data/docker/config.yml:/usr/bin/config.yml
+      - /sys:/sys
+    environment:
+      - TZ=Europe/Paris
     networks:
       main:
         aliases:
           - gocoop
+  
+  gocoop-frontend:
+    image: fallais/gocoop-frontend
+    container_name: gocoop-frontend
+    restart: always
+    networks:
+      main:
+        aliases:
+          - gocoop-frontend
+    
+    caddy:
+
 
 networks:
   main:
@@ -128,7 +144,7 @@ general:
   gui_password: admin
   private_key: keykey
   redis_host: localhost:6379
-  redis_password: 
+  redis_password:  
 coop:
   latitude: 43.388352
   longitude: 1.277914
