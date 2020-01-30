@@ -36,6 +36,10 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.isSubmitted = true;
 
+    if (this.form.invalid) {
+      return;
+    }
+
     this.authService.login(this.form.value).subscribe(
       res => {
         this.authService.setToken(res['access_token'].toString());

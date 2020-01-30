@@ -9,14 +9,17 @@
     
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="from-group">
-              <input type="text" formControlName="username" class="form-control form-control-lg mb-2" placeholder="Username" />
-              <div *ngIf="isSubmitted && formControls.username.errors" class="invalid-feedback">
-                  <div *ngIf="formControls.username.errors.required">Cannot be blank.</div>
-                </div>
+              <input type="text" formControlName="username" class="form-control form-control-lg" placeholder="Username" />
+              <div *ngIf="isSubmitted && formControls.username.errors" class="text-danger">
+                <div *ngIf="formControls.username.errors.required">Cannot be blank.</div>
+              </div>
             </div>
             
-            <div class="form-group">
+            <div class="form-group mt-2">
               <input type="password" formControlName="password" class="form-control form-control-lg" placeholder="Password" />
+              <div *ngIf="isSubmitted && formControls.password.errors" class="text-danger">
+                <div *ngIf="formControls.password.errors.required">Cannot be blank.</div>
+              </div>
             </div>
             
             <button class="btn btn-md btn-success btn-block" type="submit">Log in</button>
