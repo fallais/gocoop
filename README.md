@@ -52,7 +52,7 @@ The GPIO of my **Raspberry 3 B+** are located as follow :
 
 ### The global schema
 
-All compoents are now connected together with a breadboard.
+All components are now connected together with a breadboard.
 
 ![Schema](https://github.com/fallais/gocoop/blob/master/assets/schema.png)
 
