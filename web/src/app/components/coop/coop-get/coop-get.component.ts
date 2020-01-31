@@ -35,7 +35,14 @@ export class CoopGetComponent implements OnInit {
         });
       },
       err => {
-        console.log(err)
+        // Notify
+        this.notificationService.error('Error while getting the coop', err.error.error_description, {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
       });
   }
 
