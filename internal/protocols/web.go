@@ -2,10 +2,6 @@ package protocols
 
 import "time"
 
-type Status struct {
-	Status string `json:"status"`
-}
-
 // CoopResponse is the response for coop.
 type CoopResponse struct {
 	OpeningCondition map[string]string `json:"opening_condition"`

@@ -158,8 +158,7 @@ func Run(cmd *cobra.Command, args []string) {
 	authenticated.Use(jwtMiddleware)
 	authenticated.HandleFunc(pat.Get("/api/v1/cameras"), miscCtrl.Cameras)
 	authenticated.HandleFunc(pat.Get("/api/v1/coop"), coopCtrl.Get)
-	authenticated.HandleFunc(pat.Get("/api/v1/coop/status"), coopCtrl.GetStatus)
-	authenticated.HandleFunc(pat.Post("/api/v1/coop/status"), coopCtrl.UpdateStatus)
+	authenticated.HandleFunc(pat.Post("/api/v1/coop"), coopCtrl.Update)
 	authenticated.HandleFunc(pat.Post("/api/v1/coop/open"), coopCtrl.Open)
 	authenticated.HandleFunc(pat.Post("/api/v1/coop/close"), coopCtrl.Close)
 

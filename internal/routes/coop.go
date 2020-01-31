@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strings"
 
 	"gocoop/internal/protocols"
 	"gocoop/internal/services"
@@ -10,6 +11,9 @@ import (
 	"github.com/alioygur/gores"
 	"github.com/sirupsen/logrus"
 )
+
+// ErrParseRequest is raised when the request parsing fails.
+const ErrParseRequest = "Error while parsing the request"
 
 //------------------------------------------------------------------------------
 // Structure
@@ -62,36 +66,67 @@ func (ctrl *CoopController) Get(w http.ResponseWriter, r *http.Request) {
 	gores.JSON(w, http.StatusOK, response)
 }
 
-// GetStatus returns the status of the coop
-func (ctrl *CoopController) GetStatus(w http.ResponseWriter, r *http.Request) {
-	// Get the status of the coop
-	status := ctrl.coopService.GetStatus()
+// Update updates the settings of the coop.
+func (ctrl *CoopController) Update(w http.ResponseWriter, r *http.Request) {
+	var input protocols.CoopUpdateRequestController
 
-	// Response
-	gores.JSON(w, http.StatusOK, status)
-}
-
-// UpdateStatus updates of the coop
-func (ctrl *CoopController) UpdateStatus(w http.ResponseWriter, r *http.Request) {
-	var input protocols.Status
-
-	// Parse the request
+	// Decode the request
 	err := utils.ParseRequest(r, &input)
 	if err != nil {
-		response := &protocols.APIControllerResponse{
-			ErrorMessage: "Unable to parse the request",
+		logrus.WithFields(logrus.Fields{
+			"input": input,
+		}).WithError(err).Errorln(ErrParseRequest)
+
+		// Prepare the template
+		response := protocols.APIControllerResponse{
+			ErrorMessage:     ErrParseRequest,
+			ErrorDescription: err.Error(),
 		}
 
-		// Publish the respons
+		// Execute the template
 		gores.JSON(w, http.StatusNotAcceptable, response)
 		return
 	}
 
-	// Update the status of the coop
-	err = ctrl.coopService.UpdateStatus(input.Status)
+	// Check the status
+	if len(strings.TrimSpace(input.Status)) == 0 {
+		response := &protocols.APIControllerResponse{
+			ErrorMessage: "Status cannot be blank",
+		}
+
+		// Execute the template
+		gores.JSON(w, http.StatusPreconditionFailed, response)
+		return
+	}
+
+	// Check the opening condition mode
+	if len(strings.TrimSpace(input.OpeningCondition.Mode)) == 0 {
+		response := &protocols.APIControllerResponse{
+			ErrorMessage: "Opening condition mode cannot be blank",
+		}
+
+		// Execute the template
+		gores.JSON(w, http.StatusPreconditionFailed, response)
+		return
+	}
+
+	// Check the opening condition value
+	if len(strings.TrimSpace(input.OpeningCondition.Value)) == 0 {
+		response := &protocols.APIControllerResponse{
+			ErrorMessage: "Opening condition value cannot be blank",
+		}
+
+		// Execute the template
+		gores.JSON(w, http.StatusPreconditionFailed, response)
+		return
+	}
+
+	// Update the the coop
+	err = ctrl.coopService.Update(input)
 	if err != nil {
 		response := &protocols.APIControllerResponse{
-			ErrorMessage: "Unable to update the status",
+			ErrorMessage:     "Unable to update the coop",
+			ErrorDescription: err.Error(),
 		}
 
 		// Publish the respons

@@ -3,6 +3,7 @@ package coop
 import (
 	"errors"
 	"fmt"
+	"gocoop/internal/protocols"
 	"time"
 
 	"gocoop/pkg/coop/conditions"
@@ -114,16 +115,26 @@ func (coop *Coop) ClosingTime() time.Time {
 	return coop.closingCondition.ClosingTime()
 }
 
-// UpdateStatus updates the status of the chicken coop.
-func (coop *Coop) UpdateStatus(status string) error {
-	switch status {
+// Update updates the chicken coop.
+func (coop *Coop) Update(input protocols.CoopUpdateRequestService) error {
+	// Update the status
+	switch input.Status {
 	case "opened":
 		coop.status = Opened
 	case "closed":
 		coop.status = Closed
 	default:
-		return fmt.Errorf("bad status")
+		return fmt.Errorf("status is incorrect")
 	}
+
+	// Update the automatic mode
+	coop.isAutomatic = input.IsAutomatic
+
+	// Update the opening condition
+	coop.openingCondition = input.OpeningCondition
+
+	// Update the closing condition
+	coop.closingCondition = input.ClosingCondition
 
 	return nil
 }

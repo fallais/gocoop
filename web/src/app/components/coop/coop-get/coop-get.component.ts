@@ -41,15 +41,95 @@ export class CoopGetComponent implements OnInit {
 
   get formControls() { return this.coopForm.controls; }
 
-  updateStatus(status): void {
-    var s = {
-      status: status
-    }
-
-    this.coopService.updateStatus(s).subscribe(
+  setOpened(): void {
+    var input = this.coop;
+    input.status = "opened"
+    
+    this.coopService.update(input).subscribe(
       (resp: string) => {
         // Notify
-        this.notificationService.success('Successfully updated the status', '', {
+        this.notificationService.success('Successfully updated the coop', '', {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      },
+      err => {
+        // Notify
+        this.notificationService.error('Error while updating the status', err.error.error_description, {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      });
+  }
+
+  setClosed(): void {
+    var input = this.coop;
+    input.status = "closed"
+    
+    this.coopService.update(input).subscribe(
+      (resp: string) => {
+        // Notify
+        this.notificationService.success('Successfully updated the coop', '', {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      },
+      err => {
+        // Notify
+        this.notificationService.error('Error while updating the status', err.error.error_description, {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      });
+  }
+
+  enableAutomaticMode(): void {
+    var input = this.coop;
+    input.is_automatic = true
+    
+    this.coopService.update(input).subscribe(
+      (resp: string) => {
+        // Notify
+        this.notificationService.success('Successfully updated the coop', '', {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      },
+      err => {
+        // Notify
+        this.notificationService.error('Error while updating the status', err.error.error_description, {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      });
+  }
+
+  disableAutomaticMode(): void {
+    var input = this.coop;
+    input.is_automatic = false
+    
+    this.coopService.update(input).subscribe(
+      (resp: string) => {
+        // Notify
+        this.notificationService.success('Successfully updated the coop', '', {
           timeOut: 5000,
           showProgressBar: true,
           pauseOnHover: true,
@@ -70,9 +150,30 @@ export class CoopGetComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.coopForm.invalid) {
-      return;
-    }
+    // Add the status
+    this.coopForm.value.status = this.coop.status;
+
+    this.coopService.update(this.coopForm.value).subscribe(
+      (resp: string) => {
+        // Notify
+        this.notificationService.success('Successfully updated the coop', '', {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      },
+      err => {
+        // Notify
+        this.notificationService.error('Error while updating the coop', err.error.error_description, {
+          timeOut: 5000,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: false,
+          clickIconToClose: true
+        });
+      });
 
     console.log(this.coopForm.value)
   }

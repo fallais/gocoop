@@ -18,12 +18,8 @@ export class CoopService {
     return this.http.get<Coop>(this.coopURL);
   }
 
-  getStatus(): Observable<string> {
-    return this.http.get<string>(this.coopURL + '/status');
-  }
-
-  updateStatus(status: any): Observable<string> {
-    return this.http.post<string>(this.coopURL + '/status', status);
+  update(input: any): Observable<string> {
+    return this.http.post<string>(this.coopURL, input);
   }
 
   open(): Observable<undefined> {

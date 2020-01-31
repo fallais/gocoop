@@ -3,7 +3,12 @@ package services
 import (
 	"fmt"
 
+	"gocoop/internal/protocols"
 	"gocoop/pkg/coop"
+	"gocoop/pkg/coop/conditions/sunbased"
+	"gocoop/pkg/coop/conditions/timebased"
+
+	"github.com/spf13/viper"
 )
 
 //------------------------------------------------------------------------------
@@ -44,14 +49,54 @@ func (service *coopService) Get() *coop.Coop {
 	return service.coop
 }
 
-// GetStatus returns the status of the coop.
-func (service *coopService) GetStatus() coop.Status {
-	return service.coop.Status()
-}
+// Update updates the coop.
+func (service *coopService) Update(input protocols.CoopUpdateRequestController) error {
+	var inputService protocols.CoopUpdateRequestService
 
-// UpdateStatus updates the status of the coop.
-func (service *coopService) UpdateStatus(status string) error {
-	return service.coop.UpdateStatus(status)
+	// Create the opening condition
+	switch input.OpeningCondition.Mode {
+	case "time_based":
+		openingCondition, err := timebased.NewTimeBasedCondition(input.OpeningCondition.Value)
+		if err != nil {
+			return fmt.Errorf("Error while creating the opening condition: %s", err)
+		}
+
+		inputService.OpeningCondition = openingCondition
+	case "sun_based":
+		openingCondition, err := sunbased.NewSunBasedCondition(input.OpeningCondition.Value, viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
+		if err != nil {
+			return fmt.Errorf("Error while creating the opening condition")
+		}
+
+		inputService.OpeningCondition = openingCondition
+	default:
+		return fmt.Errorf("opening mode is incorrect: %s", input.OpeningCondition.Mode)
+	}
+
+	// Create the closing condition
+	switch input.ClosingCondition.Mode {
+	case "time_based":
+		closingCondition, err := timebased.NewTimeBasedCondition(input.ClosingCondition.Value)
+		if err != nil {
+			return fmt.Errorf("Error when creating the closing condition")
+		}
+
+		inputService.ClosingCondition = closingCondition
+	case "sun_based":
+		closingCondition, err := sunbased.NewSunBasedCondition(input.ClosingCondition.Value, viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
+		if err != nil {
+			return fmt.Errorf("Error when creating the closing condition")
+		}
+
+		inputService.ClosingCondition = closingCondition
+	default:
+		return fmt.Errorf("closing mode is incorrect: %s", input.ClosingCondition.Mode)
+	}
+
+	inputService.Status = input.Status
+	inputService.IsAutomatic = input.IsAutomatic
+
+	return service.coop.Update(inputService)
 }
 
 // Open the Coop

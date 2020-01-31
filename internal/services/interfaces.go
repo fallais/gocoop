@@ -1,6 +1,7 @@
 package services
 
 import (
+	"gocoop/internal/protocols"
 	"gocoop/pkg/coop"
 )
 
@@ -10,9 +11,8 @@ import (
 
 // CoopService is the interface
 type CoopService interface {
-	GetStatus() coop.Status
 	Get() *coop.Coop
-	UpdateStatus(string) error
+	Update(protocols.CoopUpdateRequestController) error
 	Open() error
 	Close() error
 }
