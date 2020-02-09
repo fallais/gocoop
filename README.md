@@ -56,7 +56,7 @@ All components are now connected together with a breadboard.
 
 ![Schema](https://github.com/fallais/gocoop/blob/master/assets/schema.png)
 
-## Is it tested ?
+## Is it tested
 
 Sure, I tried to do my best to add package tests because chickens deserv the best ! Moreover, I have been using it for more than one year at home, it has never failed since the begining.
 
@@ -123,18 +123,12 @@ services:
 
     caddy:
 
-
 networks:
   main:
     driver: bridge
 ```
 
 **Notes** : `/sys` must be mapped for the container to access the GPIO pins.
-
-#### Parameters
-
-- config.yml : mandtory
-- port : mandatory
 
 ### Configuration
 
