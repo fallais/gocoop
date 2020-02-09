@@ -120,7 +120,7 @@ services:
       main:
         aliases:
           - gocoop-frontend
-    
+
     caddy:
 
 
@@ -157,6 +157,9 @@ coop:
 door:
   openening_duration: "65s"
   closing_duration: "60s"
+  pin_1A: 23
+  pin_1B: 24
+  pin_enable1: 25
 cameras:
   outdoor: http://185.39.101.26/mjpg/video.mjpg
   indoor: http://187.157.229.132/mjpg/video.mjpg

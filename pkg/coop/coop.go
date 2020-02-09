@@ -10,7 +10,6 @@ import (
 	"gocoop/pkg/door"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 // ErrAutomaticModeEnabled is raised when the automatic mode is enabled.
@@ -54,7 +53,7 @@ func New(opts Options) (*Coop, error) {
 		longitude:        opts.Longitude,
 		isAutomatic:      opts.IsAutomatic,
 		status:           Unknown,
-		door:             door.NewDoor(viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration")),
+		door:             opts.Door,
 		ticker:           time.NewTicker(CheckFrequency),
 	}
 

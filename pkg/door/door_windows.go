@@ -21,7 +21,7 @@ type Door struct {
 //------------------------------------------------------------------------------
 
 // NewDoor returns a new Door.
-func NewDoor(openingDuration, closingDuration time.Duration) *Door {
+func NewDoor(pin1A, pin1B, pin1Enable int, openingDuration, closingDuration time.Duration) *Door {
 	return &Door{}
 }
 
