@@ -129,6 +129,8 @@ networks:
     driver: bridge
 ```
 
+**Notes** : `/sys` must be mapped for the container to access the GPIO pins.
+
 #### Parameters
 
 - config.yml : mandtory
