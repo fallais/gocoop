@@ -24,6 +24,12 @@ var ErrCoopAlreadyClosing = errors.New("coop is already closing")
 // CheckFrequency is the frequency for checking the coop.
 const CheckFrequency = 10 * time.Second
 
+// DefaultLatitude is the default latitude.
+const DefaultLatitude = 43.6043
+
+// DefaultLongitude is the default longitude.
+const DefaultLongitude = 1.4437
+
 //------------------------------------------------------------------------------
 // Structure
 //------------------------------------------------------------------------------
@@ -55,6 +61,16 @@ func New(opts Options) (*Coop, error) {
 		status:           Unknown,
 		door:             opts.Door,
 		ticker:           time.NewTicker(CheckFrequency),
+	}
+
+	// Check latitude
+	if opts.Latitude == 0 {
+		c.latitude = DefaultLatitude
+	}
+
+	// Check longitude
+	if opts.Longitude == 0 {
+		c.longitude = DefaultLongitude
 	}
 
 	// Watch the clock
