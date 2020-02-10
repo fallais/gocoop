@@ -25,7 +25,7 @@ import (
 // Run is a convenient function for Cobra.
 func Run(cmd *cobra.Command, args []string) {
 	// Flags
-	configFile, err := cmd.Flags().GetString("config_file")
+	configFile, err := cmd.Flags().GetString("config")
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error while getting the flag for configuration data")
 	}

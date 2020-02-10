@@ -96,10 +96,12 @@
     <div class="col-12 mb-4 col-md-6 col-lg-4" *ngFor="let camera of cameras | keyvalue;">
       <div class="card bg-light">
         <div class="card-header">
-          <h5 class="card-title">Camera ({{camera.key}}) <i class="fa fa-camera pull-right" aria-hidden="true"></i></h5>
+          <h5 class="card-title">Camera <i class="fa fa-camera pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
-          <img class="img-fluid" [src]="camera.value" />
+          <p class="text-left"><b>Name</b> : {{camera.key}}</p>
+          <p><img class="img-fluid" [src]="camera.value" /></p>
+          <p class="text-center"><a target="_blank" href="{{ camera.value }}"><button class="btn btn-info"><i class="fa fa-search-plus" aria-hidden="true"></i> Larger view</button></a></p>
         </div>
       </div>
     </div>

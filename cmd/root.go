@@ -41,7 +41,7 @@ func persistentPreRunE(cmd *cobra.Command, args []string) error {
 
 func init() {
 	rootCmd.PersistentFlags().StringP("logging", "l", "info", "Logging level")
-	rootCmd.Flags().String("config_file", "config.yml", "Configuration file")
+	rootCmd.Flags().StringP("config", "c", "config.yml", "Configuration file")
 }
 
 func Execute() {
