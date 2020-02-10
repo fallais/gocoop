@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription, timer, Observable } from 'rxjs';
 import { CoopService } from '../../../services/coop.service';
 import { NotificationsService } from 'angular2-notifications';
 import { WeatherService } from '../../../services/weather.service';
@@ -12,6 +13,9 @@ import { WeatherResponse } from 'src/app/models/weather';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  private timer$: Observable<number> = timer(0, 10000);
+  private subscription: Subscription = new Subscription();
+
   coop: Coop;
   weather: WeatherResponse;
   cameras: Map<string, string>;

@@ -10,9 +10,7 @@
   <div class="row mt-4">
     <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
-        <div class="card-header">
-          <h5 class="card-title">Status <i class="fa fa-sign-out pull-right" aria-hidden="true"></i></h5>
-        </div>
+        <h5 class="card-header">Status <i class="fa fa-sign-out pull-right" aria-hidden="true"></i></h5>
         <div class="card-body">
           <p class="text-center text-large text-capitalize"><i class="fa fa-spinner fa-spin mr-2" *ngIf="coop.status == 'opening' || coop.status == 'closing'" aria-hidden="true"></i> {{ coop?.status }}</p>
         </div>
@@ -37,16 +35,25 @@
           <h5 class="card-title">Automatic <i class="fa fa-bullseye pull-right" aria-hidden="true"></i></h5>
         </div>
         <div class="card-body">
-          <p class="text-center text-large text-capitalize"><i [ngClass]="{ 'fa': true, 'fa-check text-success': coop?.is_automatic, 'fa-close text-danger': !coop?.is_automatic}" aria-hidden="true"></i></p>
+          <p class="text-center text-large text-capitalize"><i [ngClass]="{ 'fa': true, 'fa-check-circle-o text-success': coop?.is_automatic, 'fa-times-circle-o text-danger': !coop?.is_automatic}" aria-hidden="true"></i></p>
         </div>
       </div>
     </div>
 
     <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
-        <div class="card-header">
-          <h5 class="card-title">Use <i class="fa fa-cog pull-right" aria-hidden="true"></i></h5>
+        <h5 class="card-header">Position <i class="fa fa-map-marker pull-right" aria-hidden="true"></i></h5>
+        <div class="card-body">
+          <p class="text-center"><b>Lat.</b> {{ coop.latitude }}</p>
+          <p class="text-center"><b>Long.</b> {{ coop.longitude }}</p>
+          <p class="text-center"><a href="https://www.google.com/maps/search/?api=1&query={{ coop.latitude }},{{ coop.longitude }}" target="_blank">See on Maps <i class="fa fa-external-link" aria-hidden="true"></i></a></p>
         </div>
+      </div>
+    </div>
+
+    <div class="col-12 mb-4 col-md-6 col-lg-4">
+      <div class="card bg-light">
+        <h5 class="card-header">Use <i class="fa fa-cog pull-right" aria-hidden="true"></i></h5>
         <div class="card-body">
           <p class="text-center" *ngIf="!coop?.is_automatic">
             <button class="btn btn-success mr-2" (click)="open()" [disabled]="coop.status == 'unknown' || coop?.is_automatic">Open</button>
@@ -58,9 +65,7 @@
 
     <div class="col-12 mb-4 col-md-6 col-lg-4">
       <div class="card bg-light">
-        <div class="card-header">
-          <h5 class="card-title">Weather <i class="fa fa-cloud pull-right" aria-hidden="true"></i></h5>
-        </div>
+        <h5 class="card-header">Weather <i class="fa fa-cloud pull-right" aria-hidden="true"></i></h5>
         <div class="card-body">
           <div class="row mt-1">
             <div class="col-6 mt-0">
@@ -81,26 +86,11 @@
       </div>
     </div>
 
-    <div class="col-12 mb-4 col-md-6 col-lg-4">
+    <div class="col-12 mb-4 col-md-6 col-lg-6" *ngFor="let camera of cameras | keyvalue;">
       <div class="card bg-light">
-        <div class="card-header">
-          <h5 class="card-title">Position <i class="fa fa-map-marker pull-right" aria-hidden="true"></i></h5>
-        </div>
+        <h5 class="card-header">Camera <i class="fa fa-camera pull-right" aria-hidden="true"></i></h5>
         <div class="card-body">
-          <p class="text-center"><b>Lat.</b> {{ coop.latitude }} | <b>Long.</b> {{ coop.longitude }}</p>
-          <p class="text-center"><a href="https://www.google.com/maps/search/?api=1&query={{ coop.latitude }},{{ coop.longitude }}" target="_blank">See on Maps <i class="fa fa-external-link" aria-hidden="true"></i></a></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 mb-4 col-md-6 col-lg-4" *ngFor="let camera of cameras | keyvalue;">
-      <div class="card bg-light">
-        <div class="card-header">
-          <h5 class="card-title">Camera <i class="fa fa-camera pull-right" aria-hidden="true"></i></h5>
-        </div>
-        <div class="card-body">
-          <p class="text-left"><b>Name</b> : {{camera.key}}</p>
-          <p><img class="img-fluid" [src]="camera.value" /></p>
+          <p class="card-text"><img class="img-fluid" [src]="camera.value" /></p>
           <p class="text-center"><a target="_blank" href="{{ camera.value }}"><button class="btn btn-info"><i class="fa fa-search-plus" aria-hidden="true"></i> Larger view</button></a></p>
         </div>
       </div>
