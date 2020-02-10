@@ -32,6 +32,13 @@ export class DashboardComponent implements OnInit {
     this.get();
     this.getWeather();
     this.listCameras();
+
+    // Add the subscription
+    this.subscription.add(this.timer$.subscribe(t => this.get()));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   listCameras(): void {
