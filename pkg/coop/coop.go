@@ -17,12 +17,14 @@ import (
 
 // Coop represents a chicken coop.
 type Coop struct {
-	door      door.Door
-	opts      options
-	status    Status
-	latitude  float64
-	longitude float64
-	ticker    *time.Ticker
+	door             door.Door
+	openingCondition conditions.Condition
+	closingCondition conditions.Condition
+	opts             options
+	status           Status
+	latitude         float64
+	longitude        float64
+	ticker           *time.Ticker
 }
 
 //------------------------------------------------------------------------------
@@ -30,17 +32,20 @@ type Coop struct {
 //------------------------------------------------------------------------------
 
 // New returns a new Coop with given latitude and longitude, a door, and options.
-func New(latitude, longitude float64, door door.Door, opts ...Option) (*Coop, error) {
+func New(latitude, longitude float64, door door.Door, openingCondition, closingCondition conditions.Condition, opts ...Option) (*Coop, error) {
 	// Check latitude and longtitude
 	if latitude == 0 && longitude == 0 {
 		return nil, ErrIncorrectPosition
 	}
 
 	c := &Coop{
-		latitude:  latitude,
-		longitude: longitude,
-		ticker:    time.NewTicker(CheckFrequency),
-		status:    Unknown,
+		door:             door,
+		openingCondition: openingCondition,
+		closingCondition: closingCondition,
+		latitude:         latitude,
+		longitude:        longitude,
+		ticker:           time.NewTicker(CheckFrequency),
+		status:           Unknown,
 	}
 
 	// Set options
@@ -71,9 +76,11 @@ func (coop *Coop) watch() {
 func (coop *Coop) notify() {
 	logrus.Infoln("Notifying")
 	for _, notifier := range coop.opts.notifiers {
-		notifier.Notify("The status of the coop is unknown.")
+		err := notifier.Notify(NotificationMessage)
+		if err != nil {
+			logrus.Errorf("error while notifying: %s", err)
+		}
 	}
-	logrus.Infoln("Successfully notified")
 }
 
 // Status returns the status of the chicken coop.
@@ -98,22 +105,22 @@ func (coop *Coop) Longitude() float64 {
 
 // OpeningCondition returns the opening condition of the chicken coop.
 func (coop *Coop) OpeningCondition() conditions.Condition {
-	return coop.opts.openingCondition
+	return coop.openingCondition
 }
 
 // ClosingCondition returns the closing condition of the chicken coop.
 func (coop *Coop) ClosingCondition() conditions.Condition {
-	return coop.opts.closingCondition
+	return coop.closingCondition
 }
 
 // OpeningTime returns the opening time of the chicken coop.
 func (coop *Coop) OpeningTime() time.Time {
-	return coop.opts.openingCondition.OpeningTime()
+	return coop.openingCondition.OpeningTime()
 }
 
 // ClosingTime returns the opening time of the chicken coop.
 func (coop *Coop) ClosingTime() time.Time {
-	return coop.opts.closingCondition.ClosingTime()
+	return coop.closingCondition.ClosingTime()
 }
 
 // Update updates the chicken coop.
@@ -132,10 +139,10 @@ func (coop *Coop) Update(input protocols.CoopUpdateRequestService) error {
 	coop.opts.isAutomatic = input.IsAutomatic
 
 	// Update the opening condition
-	coop.opts.openingCondition = input.OpeningCondition
+	coop.openingCondition = input.OpeningCondition
 
 	// Update the closing condition
-	coop.opts.closingCondition = input.ClosingCondition
+	coop.closingCondition = input.ClosingCondition
 
 	return nil
 }
@@ -234,8 +241,8 @@ func (coop *Coop) Check() {
 
 	logrus.WithFields(logrus.Fields{
 		"status":       coop.status,
-		"opening_time": coop.opts.openingCondition.OpeningTime(),
-		"closing_time": coop.opts.closingCondition.ClosingTime(),
+		"opening_time": coop.openingCondition.OpeningTime(),
+		"closing_time": coop.closingCondition.ClosingTime(),
 	}).Debugln("Checking the coop")
 
 	// Process the status
@@ -250,8 +257,8 @@ func (coop *Coop) Check() {
 		if coop.shouldBeOpened(time.Now()) {
 			logrus.WithFields(logrus.Fields{
 				"status":       coop.status,
-				"opening_time": coop.opts.openingCondition.OpeningTime(),
-				"closing_time": coop.opts.closingCondition.ClosingTime(),
+				"opening_time": coop.openingCondition.OpeningTime(),
+				"closing_time": coop.closingCondition.ClosingTime(),
 			}).Warnln("The coop should be opened")
 
 			// Open the coop
@@ -267,8 +274,8 @@ func (coop *Coop) Check() {
 		if coop.shouldBeClosed(time.Now()) {
 			logrus.WithFields(logrus.Fields{
 				"status":       coop.status,
-				"opening_time": coop.opts.openingCondition.OpeningTime(),
-				"closing_time": coop.opts.closingCondition.ClosingTime(),
+				"opening_time": coop.openingCondition.OpeningTime(),
+				"closing_time": coop.closingCondition.ClosingTime(),
 			}).Warnln("The coop should be closed")
 
 			// Close the coop
@@ -286,7 +293,7 @@ func (coop *Coop) Check() {
 
 	logrus.WithFields(logrus.Fields{
 		"status":       coop.status,
-		"opening_time": coop.opts.openingCondition.OpeningTime(),
-		"closing_time": coop.opts.closingCondition.ClosingTime(),
+		"opening_time": coop.openingCondition.OpeningTime(),
+		"closing_time": coop.closingCondition.ClosingTime(),
 	}).Debugln("Coop has been checked")
 }

@@ -6,13 +6,13 @@ import (
 
 func (coop *Coop) shouldBeClosed(date time.Time) bool {
 	// Check if the date if before the opening time (it is the morning)
-	openingTime := coop.opts.openingCondition.OpeningTime()
+	openingTime := coop.openingCondition.OpeningTime()
 	if date.Before(openingTime) {
 		return true
 	}
 
 	// Check if the date is after the closing time (it is the evening)
-	closingTime := coop.opts.closingCondition.ClosingTime()
+	closingTime := coop.closingCondition.ClosingTime()
 	if date.After(closingTime) {
 		return true
 	}
@@ -22,13 +22,13 @@ func (coop *Coop) shouldBeClosed(date time.Time) bool {
 
 func (coop *Coop) shouldBeOpened(date time.Time) bool {
 	// Check if the date is before the opening time
-	openingTime := coop.opts.openingCondition.OpeningTime()
+	openingTime := coop.openingCondition.OpeningTime()
 	if date.Before(openingTime) {
 		return false
 	}
 
 	// Check if the date is after the closing time
-	closingTime := coop.opts.closingCondition.ClosingTime()
+	closingTime := coop.closingCondition.ClosingTime()
 	if date.After(closingTime) {
 		return false
 	}

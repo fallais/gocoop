@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 	"time"
 
-	"gobirthday/models"
-	"gobirthday/providers"
+	"github.com/fallais/gocoop/pkg/notifiers"
 
 	"github.com/sirupsen/logrus"
 )
@@ -18,10 +16,10 @@ import (
 // Structure
 //------------------------------------------------------------------------------
 
-// Type is the type of the provider.
+// Type is the type of the notifier.
 const Type = "SMS"
 
-// Vendor is the vendor of the provider.
+// Vendor is the vendor of the notifier.
 const Vendor = "Orange"
 
 type orange struct {
@@ -35,8 +33,8 @@ type orange struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// NewProvider returns a new provider for Free.
-func NewProvider(settings map[string]interface{}) providers.Provider {
+// NewNotifier returns a new notifier for Free.
+func NewNotifier(settings map[string]interface{}) notifiers.Notifier {
 	// Set HTTP transport
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{
@@ -84,16 +82,8 @@ func NewProvider(settings map[string]interface{}) providers.Provider {
 // Functions
 //------------------------------------------------------------------------------
 
-// SendNotification sends a notification.
-func (s *orange) SendNotification(contact *models.Contact) error {
-	// Craft the message body
-	var body string
-	if contact.GetAge() == 0 {
-		body = "This is the birthday of " + contact.Firstname + " " + contact.Lastname + " !"
-	} else {
-		body = "This is the birthday of " + contact.Firstname + " " + contact.Lastname + " ! " + strconv.Itoa(contact.GetAge()) + " years old !"
-	}
-
+// Notify sends a notification.
+func (s *orange) Notify(msg string) error {
 	// Prepare the URL
 	var reqURL *url.URL
 	reqURL, err := url.Parse(s.url)
@@ -104,7 +94,7 @@ func (s *orange) SendNotification(contact *models.Contact) error {
 	parameters := url.Values{}
 	parameters.Add("grant_type", "client_credentials")
 	parameters.Add("pass", s.pass)
-	parameters.Add("msg", body)
+	parameters.Add("msg", msg)
 	reqURL.RawQuery = parameters.Encode()
 
 	// Create the request

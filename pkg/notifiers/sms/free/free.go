@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	"gocoop/pkg/notifiers"
+	"github.com/fallais/gocoop/pkg/notifiers"
 
 	"github.com/sirupsen/logrus"
 )

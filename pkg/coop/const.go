@@ -19,3 +19,6 @@ var ErrIncorrectPosition = errors.New("incorrect latitude and longitude")
 
 // CheckFrequency is the frequency for checking the coop.
 const CheckFrequency = 10 * time.Second
+
+// NotificationMessage is the notification message.
+const NotificationMessage = "The status of the coop is unknown."

@@ -9,11 +9,9 @@ import (
 	"github.com/fallais/gocoop/internal/cache"
 	"github.com/fallais/gocoop/internal/routes"
 	"github.com/fallais/gocoop/internal/services"
+	"github.com/fallais/gocoop/internal/system"
 	"github.com/fallais/gocoop/internal/system/middleware"
 	"github.com/fallais/gocoop/pkg/coop"
-	"github.com/fallais/gocoop/pkg/coop/conditions"
-	"github.com/fallais/gocoop/pkg/coop/conditions/sunbased"
-	"github.com/fallais/gocoop/pkg/coop/conditions/timebased"
 	"github.com/fallais/gocoop/pkg/door"
 
 	"github.com/sirupsen/logrus"
@@ -45,59 +43,12 @@ func Run(cmd *cobra.Command, args []string) {
 	}
 
 	// Create the opening condition
-	logrus.WithFields(logrus.Fields{
-		"mode":  viper.GetString("coop.opening.mode"),
-		"value": viper.GetString("coop.opening.value"),
-	}).Infoln("Creating the opening condition")
-	var openingCondition conditions.Condition
-	switch viper.GetString("coop.opening.mode") {
-	case "time_based":
-		openingCondition, err = timebased.NewTimeBasedCondition(viper.GetString("coop.opening.value"))
-		if err != nil {
-			logrus.WithError(err).Fatalln("Error while creating the opening condition")
-		}
-	case "sun_based":
-		openingCondition, err = sunbased.NewSunBasedCondition(viper.GetString("coop.opening.value"), viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
-		if err != nil {
-			logrus.WithError(err).Fatalln("Error while creating the opening condition")
-		}
-	default:
-		logrus.WithError(err).Errorf("error with the opening mode: %s", viper.GetString("coop.opening.mode"))
-		openingCondition, err = timebased.NewTimeBasedCondition("08h00")
-		if err != nil {
-			logrus.WithError(err).Fatalln("Error while creating the opening condition")
-		}
+	logrus.Infoln("Creating the opening and closing conditions")
+	openingCondition, closingCondition, err := system.SetupConditions()
+	if err != nil {
+		logrus.WithError(err).Fatalln("Error while creating the opening and closing conditions")
 	}
-	logrus.WithFields(logrus.Fields{
-		"mode":  viper.GetString("coop.opening.mode"),
-		"value": viper.GetString("coop.opening.value"),
-	}).Infoln("Successfully created the opening condition")
-
-	// Create the closing condition
-	logrus.WithFields(logrus.Fields{
-		"mode":  viper.GetString("coop.closing.mode"),
-		"value": viper.GetString("coop.closing.value"),
-	}).Infoln("Creating the closing condition")
-	var closingCondition conditions.Condition
-	switch viper.GetString("coop.closing.mode") {
-	case "time_based":
-		closingCondition, err = timebased.NewTimeBasedCondition(viper.GetString("coop.closing.value"))
-		if err != nil {
-			logrus.WithError(err).Fatalln("Error when creating the closing condition")
-		}
-	case "sun_based":
-		closingCondition, err = sunbased.NewSunBasedCondition(viper.GetString("coop.closing.value"), viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"))
-		if err != nil {
-			logrus.WithError(err).Fatalln("Error when creating the closing condition")
-		}
-	default:
-		logrus.WithError(err).Fatalf("error with the closing mode: %s", viper.GetString("coop.closing.mode"))
-		closingCondition, err = timebased.NewTimeBasedCondition("18h00")
-		if err != nil {
-			logrus.WithError(err).Fatalln("Error while creating the opening condition")
-		}
-	}
-	logrus.Infoln("Successfully created the closing condition")
+	logrus.Infoln("Successfully created the opening and closing conditions")
 
 	// Door
 	logrus.WithFields(logrus.Fields{
@@ -108,8 +59,11 @@ func Run(cmd *cobra.Command, args []string) {
 	d := door.NewDoor(viper.GetInt("door.pin_1A"), viper.GetInt("door.pin_1B"), viper.GetInt("door.pin_enable1"), viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration"))
 	logrus.Infoln("Successfully created the door")
 
+	// Notifiers
+	notifs := system.SetupNotifiers()
+
 	// Create the coop instance
-	c, err := coop.New(viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"), d, coop.WithAutomatic(), coop.WithOpeningCondition(openingCondition), coop.WithClosingCondition(closingCondition))
+	c, err := coop.New(viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"), d, openingCondition, closingCondition, coop.WithAutomatic(), coop.WithNotifiers(notifs))
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error while creating the coop instance")
 	}
