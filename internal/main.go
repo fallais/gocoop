@@ -92,7 +92,7 @@ func Run(cmd *cobra.Command, args []string) {
 		}
 	default:
 		logrus.WithError(err).Fatalf("error with the closing mode: %s", viper.GetString("coop.closing.mode"))
-		closingCondition, err = timebased.NewTimeBasedCondition("08h00")
+		closingCondition, err = timebased.NewTimeBasedCondition("18h00")
 		if err != nil {
 			logrus.WithError(err).Fatalln("Error while creating the opening condition")
 		}
@@ -101,9 +101,9 @@ func Run(cmd *cobra.Command, args []string) {
 
 	// Door
 	logrus.WithFields(logrus.Fields{
-		"pin_1A":      viper.GetString("coop.pin_1A"),
-		"pin_1B":      viper.GetString("coop.pin_1B"),
-		"pin_enable1": viper.GetString("coop.pin_enable1"),
+		"pin_1A":      viper.GetString("door.pin_1A"),
+		"pin_1B":      viper.GetString("door.pin_1B"),
+		"pin_enable1": viper.GetString("door.pin_enable1"),
 	}).Infoln("Creating the door")
 	d := door.NewDoor(viper.GetInt("door.pin_1A"), viper.GetInt("door.pin_1B"), viper.GetInt("door.pin_enable1"), viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration"))
 	logrus.Infoln("Successfully created the door")

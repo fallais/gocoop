@@ -1,7 +1,6 @@
 package coop
 
 import (
-	"errors"
 	"fmt"
 	"gocoop/internal/protocols"
 	"time"
@@ -11,24 +10,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 )
-
-// ErrAutomaticModeEnabled is raised when the automatic mode is enabled.
-var ErrAutomaticModeEnabled = errors.New("cannot close the coop because automatic mode is enabled")
-
-// ErrCoopAlreadyOpening ...
-var ErrCoopAlreadyOpening = errors.New("coop is already opening")
-
-// ErrCoopAlreadyClosing ...
-var ErrCoopAlreadyClosing = errors.New("coop is already closing")
-
-// CheckFrequency is the frequency for checking the coop.
-const CheckFrequency = 10 * time.Second
-
-// DefaultLatitude is the default latitude.
-const DefaultLatitude = 43.6043
-
-// DefaultLongitude is the default longitude.
-const DefaultLongitude = 1.4437
 
 //------------------------------------------------------------------------------
 // Structure
@@ -48,27 +29,23 @@ type Coop struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// New returns a new Coop.
+// New returns a new Coop with given latitude and longitude, a door, and options.
 func New(latitude, longitude float64, door *door.Door, opts ...Option) (*Coop, error) {
+	// Check latitude and longtitude
+	if latitude == 0 && longitude == 0 {
+		return nil, ErrIncorrectPosition
+	}
+
 	c := &Coop{
 		latitude:  latitude,
 		longitude: longitude,
-		ticker:    time.NewTicker(10 * time.Second),
+		ticker:    time.NewTicker(CheckFrequency),
 		status:    Unknown,
 	}
 
+	// Set options
 	for _, opt := range opts {
 		opt(&c.opts)
-	}
-
-	// Check latitude
-	if latitude == 0 {
-		c.latitude = DefaultLatitude
-	}
-
-	// Check longitude
-	if longitude == 0 {
-		c.longitude = DefaultLongitude
 	}
 
 	// Watch the clock
