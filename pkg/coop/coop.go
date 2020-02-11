@@ -132,7 +132,7 @@ func (coop *Coop) Update(input protocols.CoopUpdateRequestService) error {
 	case "closed":
 		coop.status = Closed
 	default:
-		return fmt.Errorf("status is incorrect")
+		return ErrIncorrectStatus
 	}
 
 	// Update the automatic mode
@@ -158,12 +158,12 @@ func (coop *Coop) Open() error {
 }
 
 func (coop *Coop) open() error {
-	// Check the incompatible statuses
+	// Check the incompatible status
 	switch coop.status {
 	case Unknown:
 		return fmt.Errorf("cannot open the coop because the status unknown")
 	case Opened:
-		return fmt.Errorf("coop is already opened")
+		return ErrCoopAlreadyOpened
 	case Opening:
 		return ErrCoopAlreadyOpening
 	case Closing:

@@ -14,4 +14,5 @@ require (
 	github.com/spf13/viper v1.6.2
 	goji.io v2.0.2+incompatible
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )

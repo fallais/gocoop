@@ -22,3 +22,9 @@ const CheckFrequency = 10 * time.Second
 
 // NotificationMessage is the notification message.
 const NotificationMessage = "The status of the coop is unknown."
+
+// ErrIncorrectStatus is raised when status of the coop is incorrect.
+var ErrIncorrectStatus = errors.New("status is incorrect")
+
+// ErrCoopAlreadyOpened is raised when the coop is already opened.
+var ErrCoopAlreadyOpened = errors.New("coop is already opened")
