@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/fallais/gocoop/internal/protocols"
-
 	"github.com/fallais/gocoop/pkg/coop/conditions"
 	"github.com/fallais/gocoop/pkg/door"
 
