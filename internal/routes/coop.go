@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"gocoop/internal/protocols"
-	"gocoop/internal/services"
-	"gocoop/internal/utils"
+	"github.com/fallais/gocoop/internal/protocols"
+	"github.com/fallais/gocoop/internal/services"
+	"github.com/fallais/gocoop/internal/utils"
 
 	"github.com/alioygur/gores"
 	"github.com/sirupsen/logrus"

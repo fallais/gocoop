@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"gocoop/pkg/coop/conditions"
+	"github.com/fallais/gocoop/pkg/coop/conditions"
 )
 
 //------------------------------------------------------------------------------

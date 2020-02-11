@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"gocoop/internal/protocols"
+	"github.com/fallais/gocoop/internal/protocols"
 
 	"github.com/alioygur/gores"
 	"github.com/spf13/viper"

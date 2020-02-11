@@ -1,9 +1,9 @@
 package coop
 
 import (
-	"gocoop/pkg/coop/conditions"
-	"gocoop/pkg/door"
-	"gocoop/pkg/notifiers"
+	"github.com/fallais/gocoop/pkg/coop/conditions"
+	"github.com/fallais/gocoop/pkg/door"
+	"github.com/fallais/gocoop/pkg/notifiers"
 )
 
 // options are the options for the coop.

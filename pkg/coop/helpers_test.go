@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"gocoop/pkg/coop/conditions/timebased"
+	"github.com/fallais/gocoop/pkg/coop/conditions/timebased"
 )
 
 const latitude = 43.525776

@@ -2,11 +2,12 @@ package coop
 
 import (
 	"fmt"
-	"gocoop/internal/protocols"
 	"time"
 
-	"gocoop/pkg/coop/conditions"
-	"gocoop/pkg/door"
+	"github.com/fallais/gocoop/internal/protocols"
+
+	"github.com/fallais/gocoop/pkg/coop/conditions"
+	"github.com/fallais/gocoop/pkg/door"
 
 	"github.com/sirupsen/logrus"
 )
@@ -17,7 +18,7 @@ import (
 
 // Coop represents a chicken coop.
 type Coop struct {
-	door      *door.Door
+	door      door.Door
 	opts      options
 	status    Status
 	latitude  float64
@@ -30,7 +31,7 @@ type Coop struct {
 //------------------------------------------------------------------------------
 
 // New returns a new Coop with given latitude and longitude, a door, and options.
-func New(latitude, longitude float64, door *door.Door, opts ...Option) (*Coop, error) {
+func New(latitude, longitude float64, door door.Door, opts ...Option) (*Coop, error) {
 	// Check latitude and longtitude
 	if latitude == 0 && longitude == 0 {
 		return nil, ErrIncorrectPosition

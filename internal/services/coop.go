@@ -3,10 +3,10 @@ package services
 import (
 	"fmt"
 
-	"gocoop/internal/protocols"
-	"gocoop/pkg/coop"
-	"gocoop/pkg/coop/conditions/sunbased"
-	"gocoop/pkg/coop/conditions/timebased"
+	"github.com/fallais/gocoop/internal/protocols"
+	"github.com/fallais/gocoop/pkg/coop"
+	"github.com/fallais/gocoop/pkg/coop/conditions/sunbased"
+	"github.com/fallais/gocoop/pkg/coop/conditions/timebased"
 
 	"github.com/spf13/viper"
 )

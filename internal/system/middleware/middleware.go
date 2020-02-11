@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"gocoop/internal/cache"
-	"gocoop/internal/protocols"
+	"github.com/fallais/gocoop/internal/cache"
+	"github.com/fallais/gocoop/internal/protocols"
 
 	"github.com/alioygur/gores"
 	jwt "github.com/dgrijalva/jwt-go"

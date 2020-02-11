@@ -3,7 +3,7 @@ package services
 import (
 	"time"
 
-	"gocoop/internal/cache"
+	"github.com/fallais/gocoop/internal/cache"
 
 	"github.com/dgrijalva/jwt-go"
 )
