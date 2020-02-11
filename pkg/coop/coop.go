@@ -36,14 +36,12 @@ const DefaultLongitude = 1.4437
 
 // Coop represents a chicken coop.
 type Coop struct {
-	openingCondition conditions.Condition
-	closingCondition conditions.Condition
-	door             *door.Door
-	isAutomatic      bool
-	status           Status
-	latitude         float64
-	longitude        float64
-	ticker           *time.Ticker
+	door      *door.Door
+	opts      options
+	status    Status
+	latitude  float64
+	longitude float64
+	ticker    *time.Ticker
 }
 
 //------------------------------------------------------------------------------
@@ -51,30 +49,32 @@ type Coop struct {
 //------------------------------------------------------------------------------
 
 // New returns a new Coop.
-func New(opts Options) (*Coop, error) {
+func New(latitude, longitude float64, door *door.Door, opts ...Option) (*Coop, error) {
 	c := &Coop{
-		openingCondition: opts.OpeningCondition,
-		closingCondition: opts.ClosingCondition,
-		latitude:         opts.Latitude,
-		longitude:        opts.Longitude,
-		isAutomatic:      opts.IsAutomatic,
-		status:           Unknown,
-		door:             opts.Door,
-		ticker:           time.NewTicker(CheckFrequency),
+		latitude:  latitude,
+		longitude: longitude,
+		ticker:    time.NewTicker(10 * time.Second),
+	}
+
+	for _, opt := range opts {
+		opt(&c.opts)
 	}
 
 	// Check latitude
-	if opts.Latitude == 0 {
+	if latitude == 0 {
 		c.latitude = DefaultLatitude
 	}
 
 	// Check longitude
-	if opts.Longitude == 0 {
+	if longitude == 0 {
 		c.longitude = DefaultLongitude
 	}
 
 	// Watch the clock
 	go c.watch()
+
+	// Notify that the status is unknown
+	go c.notify()
 
 	return c, nil
 
@@ -90,6 +90,14 @@ func (coop *Coop) watch() {
 	}
 }
 
+func (coop *Coop) notify() {
+	logrus.Infoln("Notifying")
+	for _, notifier := range coop.opts.notifiers {
+		notifier.Notify("The status of the coop is unknown.")
+	}
+	logrus.Infoln("Successfully notified")
+}
+
 // Status returns the status of the chicken coop.
 func (coop *Coop) Status() Status {
 	return coop.status
@@ -97,7 +105,7 @@ func (coop *Coop) Status() Status {
 
 // IsAutomatic returns the automatic mode.
 func (coop *Coop) IsAutomatic() bool {
-	return coop.isAutomatic
+	return coop.opts.isAutomatic
 }
 
 // Latitude returns the latitude of the chicken coop.
@@ -112,22 +120,22 @@ func (coop *Coop) Longitude() float64 {
 
 // OpeningCondition returns the opening condition of the chicken coop.
 func (coop *Coop) OpeningCondition() conditions.Condition {
-	return coop.openingCondition
+	return coop.opts.openingCondition
 }
 
 // ClosingCondition returns the closing condition of the chicken coop.
 func (coop *Coop) ClosingCondition() conditions.Condition {
-	return coop.closingCondition
+	return coop.opts.closingCondition
 }
 
 // OpeningTime returns the opening time of the chicken coop.
 func (coop *Coop) OpeningTime() time.Time {
-	return coop.openingCondition.OpeningTime()
+	return coop.opts.openingCondition.OpeningTime()
 }
 
 // ClosingTime returns the opening time of the chicken coop.
 func (coop *Coop) ClosingTime() time.Time {
-	return coop.closingCondition.ClosingTime()
+	return coop.opts.closingCondition.ClosingTime()
 }
 
 // Update updates the chicken coop.
@@ -143,13 +151,13 @@ func (coop *Coop) Update(input protocols.CoopUpdateRequestService) error {
 	}
 
 	// Update the automatic mode
-	coop.isAutomatic = input.IsAutomatic
+	coop.opts.isAutomatic = input.IsAutomatic
 
 	// Update the opening condition
-	coop.openingCondition = input.OpeningCondition
+	coop.opts.openingCondition = input.OpeningCondition
 
 	// Update the closing condition
-	coop.closingCondition = input.ClosingCondition
+	coop.opts.closingCondition = input.ClosingCondition
 
 	return nil
 }
@@ -157,7 +165,7 @@ func (coop *Coop) Update(input protocols.CoopUpdateRequestService) error {
 // Open opens the chicken coop.
 func (coop *Coop) Open() error {
 	// Check the automatic mode
-	if coop.isAutomatic {
+	if coop.opts.isAutomatic {
 		return ErrAutomaticModeEnabled
 	}
 
@@ -198,7 +206,7 @@ func (coop *Coop) open() error {
 // Close closes the chicken coop.
 func (coop *Coop) Close() error {
 	// Check the automatic mode
-	if coop.isAutomatic {
+	if coop.opts.isAutomatic {
 		return fmt.Errorf("cannot close the coop because automatic mode is set")
 	}
 
@@ -239,7 +247,7 @@ func (coop *Coop) close() error {
 // Check performs a check of the door of the chicken coop.
 func (coop *Coop) Check() {
 	// Check the automatic mode
-	if !coop.isAutomatic {
+	if !coop.opts.isAutomatic {
 		logrus.WithFields(logrus.Fields{
 			"status": coop.status,
 		}).Warningln("Automatic mode is disabled")
@@ -248,8 +256,8 @@ func (coop *Coop) Check() {
 
 	logrus.WithFields(logrus.Fields{
 		"status":       coop.status,
-		"opening_time": coop.openingCondition.OpeningTime(),
-		"closing_time": coop.closingCondition.ClosingTime(),
+		"opening_time": coop.opts.openingCondition.OpeningTime(),
+		"closing_time": coop.opts.closingCondition.ClosingTime(),
 	}).Debugln("Checking the coop")
 
 	// Process the status
@@ -264,8 +272,8 @@ func (coop *Coop) Check() {
 		if coop.shouldBeOpened(time.Now()) {
 			logrus.WithFields(logrus.Fields{
 				"status":       coop.status,
-				"opening_time": coop.openingCondition.OpeningTime(),
-				"closing_time": coop.closingCondition.ClosingTime(),
+				"opening_time": coop.opts.openingCondition.OpeningTime(),
+				"closing_time": coop.opts.closingCondition.ClosingTime(),
 			}).Warnln("The coop should be opened")
 
 			// Open the coop
@@ -281,8 +289,8 @@ func (coop *Coop) Check() {
 		if coop.shouldBeClosed(time.Now()) {
 			logrus.WithFields(logrus.Fields{
 				"status":       coop.status,
-				"opening_time": coop.openingCondition.OpeningTime(),
-				"closing_time": coop.closingCondition.ClosingTime(),
+				"opening_time": coop.opts.openingCondition.OpeningTime(),
+				"closing_time": coop.opts.closingCondition.ClosingTime(),
 			}).Warnln("The coop should be closed")
 
 			// Close the coop
@@ -300,7 +308,7 @@ func (coop *Coop) Check() {
 
 	logrus.WithFields(logrus.Fields{
 		"status":       coop.status,
-		"opening_time": coop.openingCondition.OpeningTime(),
-		"closing_time": coop.closingCondition.ClosingTime(),
+		"opening_time": coop.opts.openingCondition.OpeningTime(),
+		"closing_time": coop.opts.closingCondition.ClosingTime(),
 	}).Debugln("Coop has been checked")
 }
