@@ -1,4 +1,4 @@
-// +build windows
+// +build darwin
 
 package door
 
@@ -31,18 +31,18 @@ func NewDoor(pin1A, pin1B, pin1Enable int, openingDuration, closingDuration time
 
 // Open the door
 func (d *door) Open() error {
-	logrus.Warningln("Coop cannot work on Windows")
+	logrus.Warningln("Coop cannot work on MacOS")
 	return nil
 }
 
 // Close the door
 func (d *door) Close() error {
-	logrus.Warningln("Coop cannot work on Windows")
+	logrus.Warningln("Coop cannot work on MacOS")
 	return nil
 }
 
 // Close the door
 func (d *door) Stop() error {
-	logrus.Warningln("Coop cannot work on Windows")
+	logrus.Warningln("Coop cannot work on MacOS")
 	return nil
 }
