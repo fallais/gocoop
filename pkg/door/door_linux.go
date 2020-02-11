@@ -14,7 +14,7 @@ import (
 //------------------------------------------------------------------------------
 
 // Door is a physical door manipulated with a motor.
-type Door struct {
+type door struct {
 	motor1A         int
 	motor1B         int
 	motor1Enable    int
@@ -27,7 +27,7 @@ type Door struct {
 //------------------------------------------------------------------------------
 
 // NewDoor returns a new Door.
-func NewDoor(pin1A, pin1B, pin1Enable int, openingDuration, closingDuration time.Duration) *Door {
+func NewDoor(pin1A, pin1B, pin1Enable int, openingDuration, closingDuration time.Duration) Door {
 	return &Door{
 		motor1A:         pin1A,
 		motor1B:         pin1B,
@@ -42,7 +42,7 @@ func NewDoor(pin1A, pin1B, pin1Enable int, openingDuration, closingDuration time
 //------------------------------------------------------------------------------
 
 // Open the door
-func (d *Door) Open() error {
+func (d *door) Open() error {
 	logrus.Infoln("Opening the door")
 
 	// Open the pinMotor1A
@@ -109,7 +109,7 @@ func (d *Door) Open() error {
 }
 
 // Close the door
-func (d *Door) Close() error {
+func (d *door) Close() error {
 	logrus.Infoln("Closing the door")
 
 	// Open the pinMotor1A
@@ -164,7 +164,7 @@ func (d *Door) Close() error {
 }
 
 // Stop the door
-func (d *Door) Stop() error {
+func (d *door) Stop() error {
 	logrus.Infoln("Stopping the door")
 
 	// Open the pinMotor1A

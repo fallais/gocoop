@@ -1,8 +1,8 @@
 package services
 
 import (
-	"gocoop/internal/protocols"
-	"gocoop/pkg/coop"
+	"github.com/fallais/gocoop/internal/protocols"
+	"github.com/fallais/gocoop/pkg/coop"
 )
 
 //------------------------------------------------------------------------------

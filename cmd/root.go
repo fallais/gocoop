@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"gocoop/internal"
+	"github.com/fallais/gocoop/internal"
 	"os"
 
 	"github.com/sirupsen/logrus"

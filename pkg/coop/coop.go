@@ -3,11 +3,12 @@ package coop
 import (
 	"errors"
 	"fmt"
-	"gocoop/internal/protocols"
 	"time"
 
-	"gocoop/pkg/coop/conditions"
-	"gocoop/pkg/door"
+	"github.com/fallais/gocoop/internal/protocols"
+
+	"github.com/fallais/gocoop/pkg/coop/conditions"
+	"github.com/fallais/gocoop/pkg/door"
 
 	"github.com/sirupsen/logrus"
 )
@@ -38,7 +39,7 @@ const DefaultLongitude = 1.4437
 type Coop struct {
 	openingCondition conditions.Condition
 	closingCondition conditions.Condition
-	door             *door.Door
+	door             door.Door
 	isAutomatic      bool
 	status           Status
 	latitude         float64

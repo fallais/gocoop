@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gocoop/cmd"
+	"github.com/fallais/gocoop/cmd"
 )
 
 func main() {
