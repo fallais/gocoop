@@ -54,6 +54,7 @@ func New(latitude, longitude float64, door *door.Door, opts ...Option) (*Coop, e
 		latitude:  latitude,
 		longitude: longitude,
 		ticker:    time.NewTicker(10 * time.Second),
+		status:    Unknown,
 	}
 
 	for _, opt := range opts {
