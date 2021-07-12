@@ -1,7 +1,7 @@
 package email
 
 import (
-	"gocoop/pkg/notifiers"
+	"github.com/fallais/gocoop/pkg/notifiers"
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/gomail.v2"
