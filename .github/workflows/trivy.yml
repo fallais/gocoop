@@ -16,7 +16,7 @@ jobs:
 
       - name: Build an image from Dockerfile
         run: |
-          docker build -t fallais/gocoop -f build/Dockerfile-backend .
+          docker build -t fallais/gocoop -f build/docker/Dockerfile-backend .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
