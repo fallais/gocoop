@@ -1,4 +1,5 @@
 // +build linux
+
 package door
 
 import (
@@ -28,7 +29,7 @@ type door struct {
 
 // NewDoor returns a new Door.
 func NewDoor(pin1A, pin1B, pin1Enable int, openingDuration, closingDuration time.Duration) Door {
-	return &Door{
+	return &door{
 		motor1A:         pin1A,
 		motor1B:         pin1B,
 		motor1Enable:    pin1Enable,
