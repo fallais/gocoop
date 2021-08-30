@@ -1,6 +1,6 @@
 module github.com/fallais/gocoop
 
-go 1.13
+go 1.17
 
 require (
 	github.com/alioygur/gores v1.2.1
