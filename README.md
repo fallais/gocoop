@@ -73,7 +73,7 @@ It also comes with an smooth interface built with **Bootstrap** to manage the co
 
 ### Ubuntu
 
-Create a file `/etc/systemd/system/foo.service` :
+Create a file `/etc/systemd/system/gocoop.service` :
 
 ```txt
 [Unit]
@@ -84,6 +84,32 @@ ExecStart=/etc/goccop/goccop -c /etc/gocoop/config.yml
 
 [Install]
 WantedBy=multi-user.target
+```
+
+Then download the last binary on Github (TODO : automatic release, need help on this) and place it here in `/etc/goccop/goccop`.
+
+Then reload the daemon.
+
+```
+sudo systemctl daemon-reload
+```
+
+Start the service with:
+
+```
+sudo systemctl start gocoop.service
+```
+
+And enable it during startup with:
+
+```
+sudo systemctl enable gocoop.service
+```
+
+You can check the status of the service with:
+
+```
+systemctl status gocoop.service
 ```
 
 ### Configuration
