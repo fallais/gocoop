@@ -64,83 +64,49 @@ Sure, I tried to do my best to add package tests because chickens deserv the bes
 
 It also comes with an interface built with **Angular** to manage the coop.
 
-Protected by a login.  
+Protected by a login.
 ![Login](https://github.com/fallais/gocoop/blob/master/assets/login.png)
 
-With a dashboard.  
+With a dashboard.
 ![dashboard](https://github.com/fallais/gocoop/blob/master/assets/dashboard.png)
 
 ## Installation
 
-First, I installed **raspbian-lite** on the Raspberry.  
-Then, I updated all the packages.  
-Finally, I installed **docker** with the convenience script.  
+First, I installed **raspbian-lite** on the Raspberry.
+Then, I updated all the packages.
+Finally, I installed **docker** with the convenience script.
 And, a basic **logrotate** configuration.
 
 The Raspberry is ready to run the Docker container.
 
-## Usage
+## Deployment
 
-### Docker
+> Note : I used to work with Docker but I recently removed it from the project as I did not think it was really relevant for a demploy on RaspberryPi.
 
-Deploy with a `docker-compose`.
+### Ubuntu
 
-```yaml
-version: "3"
+Create a file `/etc/systemd/system/foo.service` :
 
-services:
-  redis:
-    image: redis:alpine
-    container_name: redis
-    restart: always
-    networks:
-      main:
-        aliases:
-          - redis
+```txt
+[Unit]
+Description=GoCoop
 
-  gocoop:
-    image: fallais/gocoop
-    container_name: gocoop
-    restart: always
-    volumes:
-      - /data/docker/config.yml:/usr/bin/config.yml
-      - /sys:/sys
-    environment:
-      - TZ=Europe/Paris
-    networks:
-      main:
-        aliases:
-          - gocoop
-  
-  gocoop-frontend:
-    image: fallais/gocoop-frontend
-    container_name: gocoop-frontend
-    restart: always
-    networks:
-      main:
-        aliases:
-          - gocoop-frontend
+[Service]
+ExecStart=/etc/goccop/goccop -c /etc/gocoop/config.yml
 
-    caddy:
-
-networks:
-  main:
-    driver: bridge
+[Install]
+WantedBy=multi-user.target
 ```
-
-**Notes** : `/sys` must be mapped for the container to access the GPIO pins.
 
 ### Configuration
 
-The configuration file must look like this below :
+The configuration file located in `/etc/gocoop/config.yml` must look like this below :
 
 ```yaml
 general:
   gui_username: admin
   gui_password: admin
   private_key: keykey
-  redis_host: localhost:6379
-  redis_password:  
 coop:
   latitude: 43.388352
   longitude: 1.277914
