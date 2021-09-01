@@ -2,7 +2,7 @@
 
 ![Coop](https://github.com/fallais/gocoop/blob/master/assets/coop.png)
 
-**GoCoop** is a tool written in **Go** and **Angular** that helps you to manage your chicken coop !
+**GoCoop** is a tool written in **Go** that helps you to manage your chicken coop !
 
 ## Objectives
 
@@ -62,22 +62,10 @@ Sure, I tried to do my best to add package tests because chickens deserv the bes
 
 ## Interface
 
-It also comes with an interface built with **Angular** to manage the coop.
+It also comes with an smooth interface built with **Bootstrap** to manage the coop.
 
-Protected by a login.
-![Login](https://github.com/fallais/gocoop/blob/master/assets/login.png)
-
-With a dashboard.
 ![dashboard](https://github.com/fallais/gocoop/blob/master/assets/dashboard.png)
 
-## Installation
-
-First, I installed **raspbian-lite** on the Raspberry.
-Then, I updated all the packages.
-Finally, I installed **docker** with the convenience script.
-And, a basic **logrotate** configuration.
-
-The Raspberry is ready to run the Docker container.
 
 ## Deployment
 
