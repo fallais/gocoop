@@ -2,24 +2,23 @@ package internal
 
 import (
 	"bytes"
+	"embed"
 	"io/ioutil"
 	"net/http"
-	"time"
 
-	"github.com/fallais/gocoop/internal/cache"
 	"github.com/fallais/gocoop/internal/routes"
 	"github.com/fallais/gocoop/internal/services"
 	"github.com/fallais/gocoop/internal/system"
-	"github.com/fallais/gocoop/internal/system/middleware"
 	"github.com/fallais/gocoop/pkg/coop"
 	"github.com/fallais/gocoop/pkg/door"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"goji.io"
-	"goji.io/pat"
 )
+
+// StaticFS is the embed for the static files.
+var StaticFS embed.FS
 
 // Run is a convenient function for Cobra.
 func Run(cmd *cobra.Command, args []string) {
@@ -68,63 +67,30 @@ func Run(cmd *cobra.Command, args []string) {
 		logrus.WithError(err).Fatalln("Error while creating the coop instance")
 	}
 
-	// Initialize cache
-	logrus.Infoln("Initializing the Redis cache")
-	store, err := cache.NewRedisCache(viper.GetString("general.redis_host"), viper.GetString("general.redis_password"), 12*time.Hour)
-	if err != nil {
-		logrus.WithError(err).Fatalln("Error when initializing connection to Redis cache")
-	}
-	logrus.Infoln("Successfully initialized the Redis cache")
-
-	// Initialize the middlewares
-	logrus.Infoln("Initializing the middlewares")
-	corsMiddleware := middleware.Cors()
-	jwtMiddleware := middleware.JWT(store, viper.GetString("general.private_key"))
-	logrus.Infoln("Successfully initialized the middlewares")
-
 	// Initialize Web controllers
 	logrus.Infoln("Initializing the services")
 	coopService := services.NewCoopService(c)
-	jwtService := services.NewJwtService(store, viper.GetString("general.private_key"))
 	logrus.Infoln("Successfully initialized the services")
 
 	// Initialize Web controllers
 	logrus.Infoln("Initializing the Web controllers")
-	coopCtrl := routes.NewCoopController(coopService)
-	miscCtrl := routes.NewMiscController()
-	jwtCtrl := routes.NewJwtController(jwtService, viper.GetString("general.gui_username"), viper.GetString("general.gui_password"))
+	//coopCtrl := routes.NewCoopController(coopService)
+	miscCtrl := routes.NewMiscController(coopService)
+	//securityCtrl := routes.NewSecurityController(viper.GetString("general.gui_username"), viper.GetString("general.gui_password"))
 	logrus.Infoln("Successfully initialized the Web controllers")
 
-	// Create a new Goji multiplexer
-	root := goji.NewMux()
-
-	// Middlewares
-	root.Use(corsMiddleware)
-
-	// Unauthenticated route
-	root.HandleFunc(pat.Post("/api/v1"), miscCtrl.Hello)
-	root.HandleFunc(pat.Post("/api/v1/login"), jwtCtrl.Login)
-	root.HandleFunc(pat.Get("/api/v1/refresh"), jwtCtrl.Refresh)
-	root.HandleFunc(pat.Get("/api/v1/logout"), jwtCtrl.Logout)
-
-	// Authenticated routes
-	authenticated := goji.SubMux()
-	authenticated.Use(jwtMiddleware)
-	authenticated.HandleFunc(pat.Get("/api/v1/cameras"), miscCtrl.Cameras)
-	authenticated.HandleFunc(pat.Get("/api/v1/coop"), coopCtrl.Get)
-	authenticated.HandleFunc(pat.Post("/api/v1/coop"), coopCtrl.Update)
-	authenticated.HandleFunc(pat.Post("/api/v1/coop/open"), coopCtrl.Open)
-	authenticated.HandleFunc(pat.Post("/api/v1/coop/close"), coopCtrl.Close)
-
-	// Merge the muxes
-	root.Handle(pat.New("/*"), authenticated)
+	// Static files
+	var staticFS = http.FS(StaticFS)
+	fs := http.FileServer(staticFS)
 
 	// Handlers
-	http.Handle("/", root)
+	http.Handle("/static/", fs)
+	http.HandleFunc("/", miscCtrl.Index)
+	http.HandleFunc("/configuration", miscCtrl.Configuration)
 
 	// Serve
 	logrus.Infoln("Starting the Web server")
-	err = http.ListenAndServe(":8000", root)
+	err = http.ListenAndServe(":8000", nil)
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error while starting the Web server")
 	}

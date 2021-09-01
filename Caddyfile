@@ -1,8 +1,0 @@
-:2015 {
-  root /srv
-  gzip
-
-  rewrite {
-    to {path} {path}/ /
-  }
-}
