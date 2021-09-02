@@ -53,6 +53,16 @@ func (c *sunBasedCondition) ClosingTime() time.Time {
 	return astrotime.CalcSunset(time.Now(), c.latitude, c.longitude).Add(c.offset)
 }
 
+// NextOpeningTime
+func (c *sunBasedCondition) NextOpeningTime() time.Time {
+	return astrotime.NextSunrise(time.Now(), c.latitude, c.longitude).Add(c.offset)
+}
+
+// NextClosingTime
+func (c *sunBasedCondition) NextClosingTime() time.Time {
+	return astrotime.NextSunset(time.Now(), c.latitude, c.longitude).Add(c.offset)
+}
+
 // Mode returns the mode of the condition.
 func (c *sunBasedCondition) Mode() string {
 	return "sun_based"

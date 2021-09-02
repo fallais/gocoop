@@ -131,12 +131,12 @@ func (coop *Coop) notify() {
 
 // NextOpeningTime returns the next opening time of the chicken coop.
 func (coop *Coop) NextOpeningTime() time.Time {
-	return coop.OpeningCondition.OpeningTime()
+	return coop.OpeningCondition.NextOpeningTime()
 }
 
 // NextClosingTime returns the next closing time of the chicken coop.
 func (coop *Coop) NextClosingTime() time.Time {
-	return coop.ClosingCondition.ClosingTime()
+	return coop.ClosingCondition.NextClosingTime()
 }
 
 // Open opens the chicken coop.

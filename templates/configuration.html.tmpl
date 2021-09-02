@@ -45,8 +45,8 @@
         </div>
         <div class="col-12 mt-4">
             <form method="POST" action="">
-                <fieldset>
-                    <legend>Status</legend>
+                <fieldset class="border p-2">
+                    <legend class="w-auto">Status</legend>
 
                     <div class="form-group">
                         <div class="custom-control custom-radio custom-control-inline">
@@ -59,7 +59,7 @@
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="statusUnknown" value="unknown" name="status" class="custom-control-input" {{ if eq .Status "unknown" }} checked="checked" {{ end }}>
-                            <label class="custom-control-label" for="statusUnknown">Unknown</label>
+                            <label class="custom-control-label text-warning" for="statusUnknown">Unknown</label>
                         </div>
                     </div>
                     <div class="text-danger">
@@ -67,8 +67,8 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="mt-4">
-                    <legend>Opening</legend>
+                <fieldset class="border p-2 mt-4">
+                    <legend class="w-auto">Opening</legend>
 
                     <div class="form-group">
                         <label>Mode</label>
@@ -85,8 +85,8 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="mt-4">
-                    <legend>Closing</legend>
+                <fieldset class="border p-2 mt-4">
+                    <legend class="w-auto">Closing</legend>
 
                     <div class="form-group">
                         <select name="closing_mode" class="custom-select">
@@ -101,8 +101,8 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="mt-4">
-                    <legend>Position</legend>
+                <fieldset class="border p-2 mt-4">
+                    <legend class="w-auto">Position</legend>
 
                     <div class="form-group">
                         <label>Latitude</label>
@@ -114,8 +114,8 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="mt-4">
-                    <legend>Automatic mode</legend>
+                <fieldset class="border p-2 mt-4">
+                    <legend class="w-auto">Automatic mode</legend>
 
                     <div class="form-group">
                         <div class="custom-control custom-radio custom-control-inline">
