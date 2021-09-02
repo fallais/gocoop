@@ -15,10 +15,10 @@ func TestShouldBeClosed(t *testing.T) {
 	closingCondition, _ := timebased.NewTimeBasedCondition("18h30")
 
 	c := &Coop{
-		openingCondition: openingCondition,
-		closingCondition: closingCondition,
-		latitude:         latitude,
-		longitude:        longitude,
+		OpeningCondition: openingCondition,
+		ClosingCondition: closingCondition,
+		Latitude:         latitude,
+		Longitude:        longitude,
 	}
 
 	if c.shouldBeClosed(time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 9, 0, 0, 0, time.Local)) {
@@ -42,10 +42,10 @@ func TestShouldBeOpened(t *testing.T) {
 	closingCondition, _ := timebased.NewTimeBasedCondition("18h30")
 
 	c := &Coop{
-		openingCondition: openingCondition,
-		closingCondition: closingCondition,
-		latitude:         latitude,
-		longitude:        longitude,
+		OpeningCondition: openingCondition,
+		ClosingCondition: closingCondition,
+		Latitude:         latitude,
+		Longitude:        longitude,
 	}
 
 	if !c.shouldBeOpened(time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 14, 0, 0, 0, time.Local)) {

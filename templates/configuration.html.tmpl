@@ -74,14 +74,14 @@
                         <label>Mode</label>
                         <select name="opening_mode" class="custom-select">
                             <option>Choose an opening mode</option>
-                            <option value="sun_based" {{ if eq .OpeningCondition.mode "sun_based" }} selected {{ end }}>Sun based</option>
-                            <option value="time_based" {{ if eq .OpeningCondition.mode "time_based" }} selected {{ end }}>Time based</option>
+                            <option value="sun_based" {{ if eq .OpeningCondition.Mode "sun_based" }} selected {{ end }}>Sun based</option>
+                            <option value="time_based" {{ if eq .OpeningCondition.Mode "time_based" }} selected {{ end }}>Time based</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label>Value</label>
-                        <input class="form-control" type="text" name="opening_value" value="{{ .OpeningCondition.value }}" >
+                        <input class="form-control" type="text" name="opening_value" value="{{ .OpeningCondition.Value }}" >
                     </div>
                 </fieldset>
 
@@ -91,13 +91,13 @@
                     <div class="form-group">
                         <select name="closing_mode" class="custom-select">
                             <option>Choose a closing mode</option>
-                            <option value="sun_based" {{ if eq .ClosingCondition.mode "sun_based" }} selected {{ end }}>Sun based</option>
-                            <option value="time_based" {{ if eq .ClosingCondition.mode "time_based" }} selected {{ end }}>Time based</option>
+                            <option value="sun_based" {{ if eq .ClosingCondition.Mode "sun_based" }} selected {{ end }}>Sun based</option>
+                            <option value="time_based" {{ if eq .ClosingCondition.Mode "time_based" }} selected {{ end }}>Time based</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Value</label>
-                        <input class="form-control" type="text" name="closing_value" value="{{ .ClosingCondition.value }}" />
+                        <input class="form-control" type="text" name="closing_value" value="{{ .ClosingCondition.Value }}" />
                     </div>
                 </fieldset>
 

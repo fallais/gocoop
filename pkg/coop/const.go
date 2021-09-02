@@ -28,3 +28,6 @@ var ErrIncorrectStatus = errors.New("status is incorrect")
 
 // ErrCoopAlreadyOpened is raised when the coop is already opened.
 var ErrCoopAlreadyOpened = errors.New("coop is already opened")
+
+// DefaultStatus is the default status
+const DefaultStatus = Unknown

@@ -8,9 +8,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/alioygur/gores"
-	"github.com/fallais/gocoop/internal/protocols"
+	auth "github.com/abbot/go-http-auth"
 	"github.com/fallais/gocoop/internal/services"
+	"github.com/fallais/gocoop/pkg/coop"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -43,26 +43,27 @@ func NewMiscController(coopService services.CoopService) *MiscController {
 //------------------------------------------------------------------------------
 
 // Index is the index page.
-func (ctrl *MiscController) Index(w http.ResponseWriter, r *http.Request) {
+func (ctrl *MiscController) Index(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	// Get the coop
 	coop := ctrl.coopService.Get()
 
 	// Prepare the response
-	response := protocols.CoopResponse{
-		OpeningCondition: map[string]string{
-			"mode":  coop.OpeningCondition().Mode(),
-			"value": coop.OpeningCondition().Value(),
+	response := CoopResponse{
+		OpeningCondition: ConditionResponse{
+			Mode:  coop.OpeningCondition.Mode(),
+			Value: coop.OpeningCondition.Value(),
 		},
-		ClosingCondition: map[string]string{
-			"mode":  coop.ClosingCondition().Mode(),
-			"value": coop.ClosingCondition().Value(),
+		ClosingCondition: ConditionResponse{
+			Mode:  coop.ClosingCondition.Mode(),
+			Value: coop.ClosingCondition.Value(),
 		},
-		OpeningTime: coop.OpeningTime(),
-		ClosingTime: coop.ClosingTime(),
-		Latitude:    coop.Latitude(),
-		Longitude:   coop.Longitude(),
-		Status:      string(coop.Status()),
-		IsAutomatic: coop.IsAutomatic(),
+		NextOpeningTime: coop.NextOpeningTime(),
+		NextClosingTime: coop.NextClosingTime(),
+		Latitude:        coop.Latitude,
+		Longitude:       coop.Longitude,
+		Status:          string(coop.Status),
+		IsAutomatic:     coop.IsAutomatic,
+		Cameras:         viper.GetStringMapString("cameras"),
 	}
 
 	// Note the call to ParseFS instead of Parse
@@ -79,7 +80,7 @@ func (ctrl *MiscController) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 // Configuration is the configuration page.
-func (ctrl *MiscController) Configuration(w http.ResponseWriter, r *http.Request) {
+func (ctrl *MiscController) Configuration(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	switch r.Method {
 	case "GET":
 		ctrl.getConfiguration(w, r)
@@ -89,26 +90,27 @@ func (ctrl *MiscController) Configuration(w http.ResponseWriter, r *http.Request
 	}
 }
 
-func (ctrl *MiscController) getConfiguration(w http.ResponseWriter, r *http.Request) {
+func (ctrl *MiscController) getConfiguration(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	// Get the coop
 	coop := ctrl.coopService.Get()
 
 	// Prepare the response
-	response := protocols.CoopResponse{
-		OpeningCondition: map[string]string{
-			"mode":  coop.OpeningCondition().Mode(),
-			"value": coop.OpeningCondition().Value(),
+	response := CoopResponse{
+		OpeningCondition: ConditionResponse{
+			Mode:  coop.OpeningCondition.Mode(),
+			Value: coop.OpeningCondition.Value(),
 		},
-		ClosingCondition: map[string]string{
-			"mode":  coop.ClosingCondition().Mode(),
-			"value": coop.ClosingCondition().Value(),
+		ClosingCondition: ConditionResponse{
+			Mode:  coop.ClosingCondition.Mode(),
+			Value: coop.ClosingCondition.Value(),
 		},
-		OpeningTime: coop.OpeningTime(),
-		ClosingTime: coop.ClosingTime(),
-		Latitude:    coop.Latitude(),
-		Longitude:   coop.Longitude(),
-		Status:      string(coop.Status()),
-		IsAutomatic: coop.IsAutomatic(),
+		NextOpeningTime: coop.NextOpeningTime(),
+		NextClosingTime: coop.NextClosingTime(),
+		Latitude:        coop.Latitude,
+		Longitude:       coop.Longitude,
+		Status:          string(coop.Status),
+		IsAutomatic:     coop.IsAutomatic,
+		Cameras:         viper.GetStringMapString("cameras"),
 	}
 
 	// Note the call to ParseFS instead of Parse
@@ -124,7 +126,7 @@ func (ctrl *MiscController) getConfiguration(w http.ResponseWriter, r *http.Requ
 	t.Execute(w, response)
 }
 
-func (ctrl *MiscController) updateConfiguration(w http.ResponseWriter, r *http.Request) {
+func (ctrl *MiscController) updateConfiguration(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	// Parse the form
 	err := r.ParseForm()
 	if err != nil {
@@ -139,17 +141,30 @@ func (ctrl *MiscController) updateConfiguration(w http.ResponseWriter, r *http.R
 	latitude, _ := strconv.ParseFloat(strings.TrimSpace(r.FormValue("latitude")), 64)
 	longitude, _ := strconv.ParseFloat(strings.TrimSpace(r.FormValue("longitude")), 64)
 
+	// Parse the status
+	var status coop.Status
+	switch r.FormValue("status") {
+	case "opened":
+		status = coop.Opened
+	case "closed":
+		status = coop.Closed
+	case "unknown":
+		status = coop.Unknown
+	default:
+		return
+	}
+
 	// Create the request
-	update := protocols.CoopUpdateRequestController{
-		Status:      r.FormValue("status"),
+	update := services.CoopUpdateRequest{
+		Status:      status,
 		Latitude:    latitude,
 		Longitude:   longitude,
 		IsAutomatic: isAutomatic,
-		OpeningCondition: protocols.Condition{
+		OpeningCondition: services.ConditionUpdateRequest{
 			Mode:  r.FormValue("opening_mode"),
 			Value: r.FormValue("opening_value"),
 		},
-		ClosingCondition: protocols.Condition{
+		ClosingCondition: services.ConditionUpdateRequest{
 			Mode:  r.FormValue("closing_mode"),
 			Value: r.FormValue("closing_value"),
 		},
@@ -166,21 +181,22 @@ func (ctrl *MiscController) updateConfiguration(w http.ResponseWriter, r *http.R
 	coop := ctrl.coopService.Get()
 
 	// Prepare the response
-	response := protocols.CoopResponse{
-		OpeningCondition: map[string]string{
-			"mode":  coop.OpeningCondition().Mode(),
-			"value": coop.OpeningCondition().Value(),
+	response := CoopResponse{
+		OpeningCondition: ConditionResponse{
+			Mode:  coop.OpeningCondition.Mode(),
+			Value: coop.OpeningCondition.Value(),
 		},
-		ClosingCondition: map[string]string{
-			"mode":  coop.ClosingCondition().Mode(),
-			"value": coop.ClosingCondition().Value(),
+		ClosingCondition: ConditionResponse{
+			Mode:  coop.ClosingCondition.Mode(),
+			Value: coop.ClosingCondition.Value(),
 		},
-		OpeningTime: coop.OpeningTime(),
-		ClosingTime: coop.ClosingTime(),
-		Latitude:    coop.Latitude(),
-		Longitude:   coop.Longitude(),
-		Status:      string(coop.Status()),
-		IsAutomatic: coop.IsAutomatic(),
+		NextOpeningTime: coop.NextOpeningTime(),
+		NextClosingTime: coop.NextClosingTime(),
+		Latitude:        coop.Latitude,
+		Longitude:       coop.Longitude,
+		Status:          string(coop.Status),
+		IsAutomatic:     coop.IsAutomatic,
+		Cameras:         viper.GetStringMapString("cameras"),
 	}
 
 	// Note the call to ParseFS instead of Parse
@@ -194,12 +210,4 @@ func (ctrl *MiscController) updateConfiguration(w http.ResponseWriter, r *http.R
 
 	// Execute
 	t.Execute(w, response)
-}
-
-// Cameras returns all the cameras.
-func (ctrl *MiscController) Cameras(w http.ResponseWriter, r *http.Request) {
-	cameras := viper.GetStringMapString("cameras")
-
-	// Execute the template
-	gores.JSON(w, http.StatusOK, cameras)
 }

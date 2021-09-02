@@ -62,7 +62,7 @@ Sure, I tried to do my best to add package tests because chickens deserv the bes
 
 ## Interface
 
-It also comes with an smooth interface built with **Bootstrap** to manage the coop.
+It also comes with an smooth interface built with **Bootstrap** to manage the coop. It is protected by Basic Auth with `github.com/abbot/go-http-auth`.
 
 ![dashboard](https://github.com/fallais/gocoop/blob/master/assets/dashboard.png)
 

@@ -6,11 +6,13 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	auth "github.com/abbot/go-http-auth"
 	"github.com/fallais/gocoop/internal/routes"
 	"github.com/fallais/gocoop/internal/services"
 	"github.com/fallais/gocoop/internal/system"
 	"github.com/fallais/gocoop/pkg/coop"
 	"github.com/fallais/gocoop/pkg/door"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -41,14 +43,6 @@ func Run(cmd *cobra.Command, args []string) {
 		logrus.WithError(err).Fatalln("Error when reading configuration data")
 	}
 
-	// Create the opening condition
-	logrus.Infoln("Creating the opening and closing conditions")
-	openingCondition, closingCondition, err := system.SetupConditions()
-	if err != nil {
-		logrus.WithError(err).Fatalln("Error while creating the opening and closing conditions")
-	}
-	logrus.Infoln("Successfully created the opening and closing conditions")
-
 	// Door
 	logrus.WithFields(logrus.Fields{
 		"pin_1A":      viper.GetString("door.pin_1A"),
@@ -59,10 +53,10 @@ func Run(cmd *cobra.Command, args []string) {
 	logrus.Infoln("Successfully created the door")
 
 	// Notifiers
-	notifs := system.SetupNotifiers()
+	notifiers := system.SetupNotifiers()
 
 	// Create the coop instance
-	c, err := coop.New(viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"), d, openingCondition, closingCondition, coop.WithAutomatic(), coop.WithNotifiers(notifs))
+	c, err := coop.New(viper.GetFloat64("coop.latitude"), viper.GetFloat64("coop.longitude"), d, viper.GetString("coop.opening.mode"), viper.GetString("coop.opening.value"), viper.GetString("coop.closing.mode"), viper.GetString("coop.closing.value"), notifiers, true, false)
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error while creating the coop instance")
 	}
@@ -79,14 +73,17 @@ func Run(cmd *cobra.Command, args []string) {
 	//securityCtrl := routes.NewSecurityController(viper.GetString("general.gui_username"), viper.GetString("general.gui_password"))
 	logrus.Infoln("Successfully initialized the Web controllers")
 
+	// Set the Basic authenticator
+	authenticator := auth.NewBasicAuthenticator("example.com", Secret)
+
 	// Static files
 	var staticFS = http.FS(StaticFS)
 	fs := http.FileServer(staticFS)
 
 	// Handlers
 	http.Handle("/static/", fs)
-	http.HandleFunc("/", miscCtrl.Index)
-	http.HandleFunc("/configuration", miscCtrl.Configuration)
+	http.HandleFunc("/", authenticator.Wrap(miscCtrl.Index))
+	http.HandleFunc("/configuration", authenticator.Wrap(miscCtrl.Configuration))
 
 	// Serve
 	logrus.Infoln("Starting the Web server")
@@ -94,4 +91,16 @@ func Run(cmd *cobra.Command, args []string) {
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error while starting the Web server")
 	}
+}
+
+// Secret holds the secret password.
+func Secret(user, realm string) string {
+	if user == viper.GetString("general.gui_username") {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(viper.GetString("general.gui_username")), bcrypt.DefaultCost)
+		if err == nil {
+			return string(hashedPassword)
+		}
+	}
+
+	return ""
 }
