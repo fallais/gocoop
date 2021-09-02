@@ -86,7 +86,16 @@ ExecStart=/etc/goccop/goccop -c /etc/gocoop/config.yml
 WantedBy=multi-user.target
 ```
 
-Then download the last binary on Github (TODO : automatic release, need help on this) and place it here in `/etc/goccop/goccop`.
+Then download the last binary on Github (TODO : automatic release, need help on this) and place it here in `/etc/goccop/goccop`. For example :
+
+```
+mkdir /etc/gocoop
+wget https://github.com/fallais/gocoop/releases/download/v2.0.2/gocoop_2.0.2_linux_arm64.tar.gz
+tar -xvzf gocoop_2.0.2_linux_arm64.tar.gz
+mv gocoop /etc/gocoop/gocoop
+rm gocoop_2.0.2_linux_arm64.tar.gz
+touch /etc/gocoop/config.yml
+```
 
 Then reload the daemon.
 
