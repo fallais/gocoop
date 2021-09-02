@@ -1,7 +1,2 @@
 *.exe
 configs/
-web/dist
-web/tmp
-web/out-tsc
-web/bazel-out
-web/node_modules
