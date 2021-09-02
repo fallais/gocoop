@@ -86,7 +86,7 @@ ExecStart=/etc/goccop/goccop -c /etc/gocoop/config.yml
 WantedBy=multi-user.target
 ```
 
-Then download the last binary on Github (TODO : automatic release, need help on this) and place it here in `/etc/goccop/goccop`. For example :
+Then download the last binary on Github and place it here in `/etc/goccop/goccop`. For example :
 
 ```
 mkdir /etc/gocoop
