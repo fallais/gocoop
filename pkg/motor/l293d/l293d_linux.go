@@ -1,50 +1,21 @@
+//go:build linux
 // +build linux
 
-package door
+package l293d
 
 import (
+	"context"
 	"fmt"
-	"time"
+
+	"github.com/fallais/gocoop/pkg/motor"
 
 	rpi "github.com/nathan-osman/go-rpigpio"
 	"github.com/sirupsen/logrus"
 )
 
-//------------------------------------------------------------------------------
-// Structure
-//------------------------------------------------------------------------------
-
-// Door is a physical door manipulated with a motor.
-type door struct {
-	motor1A         int
-	motor1B         int
-	motor1Enable    int
-	openingDuration time.Duration
-	closingDuration time.Duration
-}
-
-//------------------------------------------------------------------------------
-// Factory
-//------------------------------------------------------------------------------
-
-// NewDoor returns a new Door.
-func NewDoor(pin1A, pin1B, pin1Enable int, openingDuration, closingDuration time.Duration) Door {
-	return &door{
-		motor1A:         pin1A,
-		motor1B:         pin1B,
-		motor1Enable:    pin1Enable,
-		openingDuration: openingDuration,
-		closingDuration: closingDuration,
-	}
-}
-
-//------------------------------------------------------------------------------
-// Functions
-//------------------------------------------------------------------------------
-
-// Open the door
-func (d *door) Open() error {
-	logrus.Infoln("Opening the door")
+// Forward makes the motor work in the forward way.
+func (d *l293d) Forward(ctx context.Context) error {
+	logrus.Infoln("Running forward")
 
 	// Open the pinMotor1A
 	logrus.WithFields(logrus.Fields{
@@ -88,15 +59,16 @@ func (d *door) Open() error {
 	pinMotor1B.Write(rpi.LOW)
 
 	// Enable the motor
-	logrus.Infoln("Enable the motor")
+	logrus.Infoln("Start the motor")
 	pinMotor1Enable.Write(rpi.HIGH)
 
 	// Wait
-	logrus.Infoln("Wait for", d.openingDuration)
-	time.Sleep(d.openingDuration)
+	until, _ := ctx.Deadline()
+	logrus.Infoln("Wait until", until)
+	<-ctx.Done()
 
 	// Disable the motor
-	logrus.Infoln("Disable the motor")
+	logrus.Infoln("Stop the motor")
 	pinMotor1Enable.Write(rpi.LOW)
 
 	// Close all the pins
@@ -104,14 +76,14 @@ func (d *door) Open() error {
 	pinMotor1A.Close()
 	pinMotor1B.Close()
 
-	logrus.Infoln("Door has been opened")
+	logrus.Infoln("Door has been stopped")
 
 	return nil
 }
 
-// Close the door
-func (d *door) Close() error {
-	logrus.Infoln("Closing the door")
+// Backward makes the motor work in the backward way.
+func (d *l293d) Backward(ctx context.Context) error {
+	logrus.Infoln("Running backward")
 
 	// Open the pinMotor1A
 	logrus.Infoln("Open the pin", d.motor1A, "in OUT mode")
@@ -143,15 +115,16 @@ func (d *door) Close() error {
 	pinMotor1B.Write(rpi.HIGH)
 
 	// Enable the motor
-	logrus.Infoln("Enable the motor")
+	logrus.Infoln("Start the motor")
 	pinMotor1Enable.Write(rpi.HIGH)
 
 	// Wait
-	logrus.Infoln("Wait for", d.closingDuration)
-	time.Sleep(d.closingDuration)
+	until, _ := ctx.Deadline()
+	logrus.Infoln("Wait until", until)
+	<-ctx.Done()
 
 	// Disable the motor
-	logrus.Infoln("Disable the motor")
+	logrus.Infoln("Stop the motor")
 	pinMotor1Enable.Write(rpi.LOW)
 
 	// Close all the pins
@@ -159,14 +132,14 @@ func (d *door) Close() error {
 	pinMotor1A.Close()
 	pinMotor1B.Close()
 
-	logrus.Infoln("Door has been closed")
+	logrus.Infoln("Motor is stopped")
 
 	return nil
 }
 
-// Stop the door
-func (d *door) Stop() error {
-	logrus.Infoln("Stopping the door")
+// Stop the motor.
+func (d *l293d) Stop() error {
+	logrus.Infoln("Stopping the motor")
 
 	// Open the pinMotor1A
 	logrus.Infoln("Open the pin", d.motor1A, "in OUT mode")
@@ -193,7 +166,7 @@ func (d *door) Stop() error {
 	defer pinMotor1Enable.Close()
 
 	// Disable all the pins
-	logrus.Infoln("Disable the motor")
+	logrus.Infoln("Stop the motor")
 	pinMotor1Enable.Write(rpi.LOW)
 	pinMotor1A.Write(rpi.LOW)
 	pinMotor1B.Write(rpi.LOW)
@@ -203,7 +176,7 @@ func (d *door) Stop() error {
 	pinMotor1A.Close()
 	pinMotor1B.Close()
 
-	logrus.Infoln("Door has been stopped")
+	logrus.Infoln("Motor has been stopped")
 
 	return nil
 }
