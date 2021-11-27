@@ -7,8 +7,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/fallais/gocoop/pkg/motor"
-
 	rpi "github.com/nathan-osman/go-rpigpio"
 	"github.com/sirupsen/logrus"
 )
