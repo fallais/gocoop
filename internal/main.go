@@ -11,6 +11,8 @@ import (
 	"github.com/fallais/gocoop/internal/system"
 	"github.com/fallais/gocoop/pkg/coop"
 	"github.com/fallais/gocoop/pkg/door"
+	"github.com/fallais/gocoop/pkg/motor"
+	"github.com/fallais/gocoop/pkg/motor/bts7960"
 	"github.com/fallais/gocoop/pkg/motor/l293d"
 
 	auth "github.com/abbot/go-http-auth"
@@ -45,20 +47,20 @@ func Run(cmd *cobra.Command, args []string) {
 	}
 
 	// Motor
+	var motor motor.Motor
 	logrus.WithFields(logrus.Fields{
-		"pin_1A":      viper.GetString("door.pin_1A"),
-		"pin_1B":      viper.GetString("door.pin_1B"),
-		"pin_enable1": viper.GetString("door.pin_enable1"),
+		"type": viper.GetString("door.motor.type"),
 	}).Infoln("Creating the motor")
-	motor := l293d.NewL293D(viper.GetInt("door.pin_1A"), viper.GetInt("door.pin_1B"), viper.GetInt("door.pin_enable1"))
-	logrus.Infoln("Successfully created the door")
+	switch viper.GetString("door.motor.type") {
+	case "l293d":
+		motor = l293d.NewL293D(viper.GetInt("door.motor.pin_1A"), viper.GetInt("door.motor.pin_1B"), viper.GetInt("door.motor.pin_enable1"))
+	case "bts7960":
+		motor = bts7960.NewBTS7960(viper.GetInt("door.motor.pin_1A"), viper.GetInt("door.motor.pin_1B"), viper.GetInt("door.motor.pin_enable1"))
+	}
+	logrus.Infoln("Successfully created the motor")
 
 	// Door
-	logrus.WithFields(logrus.Fields{
-		"pin_1A":      viper.GetString("door.pin_1A"),
-		"pin_1B":      viper.GetString("door.pin_1B"),
-		"pin_enable1": viper.GetString("door.pin_enable1"),
-	}).Infoln("Creating the door")
+	logrus.Infoln("Creating the door")
 	d := door.NewDoor(motor, viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration"))
 	logrus.Infoln("Successfully created the door")
 

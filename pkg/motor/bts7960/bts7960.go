@@ -19,8 +19,8 @@ type bts7960 struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// NewL293D returns a new L293D.
-func NewL293D(pin1A, pin1B, pin1Enable int) motor.Motor {
+// NewBTS7960 returns a new BTS7960.
+func NewBTS7960(pin1A, pin1B, pin1Enable int) motor.Motor {
 	return &bts7960{
 		motor1A:      pin1A,
 		motor1B:      pin1B,
