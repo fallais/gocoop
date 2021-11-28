@@ -27,16 +27,16 @@ func (d *bts7960) Forward(ctx context.Context) error {
 		"pin_number": d.forwardPWM,
 		"mode":       "out",
 	}).Infoln("Open the pin")
-	forwardPWM, err := rpio.Pin(d.forwardPWM)
-	forwardPWM.Out()
+	forwardPWM := rpio.Pin(d.forwardPWM)
+	forwardPWM.Ouput()
 
 	// Open the forwardEnable and set OUT mode
 	logrus.WithFields(logrus.Fields{
 		"pin_number": d.forwardEnable,
 		"mode":       "out",
 	}).Infoln("Open the pin")
-	forwardEnable := rpio.Pin(d.motor1B)
-	forwardEnable.Out()
+	forwardEnable := rpio.Pin(d.forwardEnable)
+	forwardEnable.Ouput()
 
 	// Set the motor rotation
 	logrus.Infoln("Set the motor rotation")
@@ -70,29 +70,29 @@ func (d *bts7960) Backward(ctx context.Context) error {
 	}
 	defer rpio.Close()
 
-	// Open the backwardPWM and set OUT mode
+	// Open the reversePWM and set OUT mode
 	logrus.WithFields(logrus.Fields{
-		"pin_number": d.backwardPWM,
+		"pin_number": d.reversePWM,
 		"mode":       "out",
 	}).Infoln("Open the pin")
-	backwardPWM, err := rpio.Pin(d.backwardPWM)
-	backwardPWM.Out()
+	reversePWM, err := rpio.Pin(d.reversePWM)
+	reversePWM.Ouput()
 
-	// Open the backwardEnable and set OUT mode
+	// Open the reverseEnable and set OUT mode
 	logrus.WithFields(logrus.Fields{
-		"pin_number": d.backwardEnable,
+		"pin_number": d.reverseEnable,
 		"mode":       "out",
 	}).Infoln("Open the pin")
-	backwardEnable := rpio.Pin(d.backwardEnable)
-	backwardEnable.Out()
+	reverseEnable := rpio.Pin(d.reverseEnable)
+	reverseEnable.Ouput()
 
 	// Set the motor rotation
 	logrus.Infoln("Set the motor rotation")
-	backwardPWM.High()
+	reversePWM.High()
 
 	// Enable the motor
 	logrus.Infoln("Start the motor")
-	backwardEnable.High()
+	reverseEnable.High()
 
 	// Wait
 	until, _ := ctx.Deadline()
@@ -101,7 +101,7 @@ func (d *bts7960) Backward(ctx context.Context) error {
 
 	// Disable the motor
 	logrus.Infoln("Stop the motor")
-	pinMotor1Enable.Write(rpi.LOW)
+	pinMotor1Enable.Low()
 	logrus.Infoln("Motor has been stopped")
 
 	return nil
@@ -124,7 +124,7 @@ func (d *bts7960) Stop() error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	forwardEnable := rpio.Pin(d.motor1B)
-	forwardEnable.Out()
+	forwardEnable.Ouput()
 
 	// Open the backwardEnable and set OUT mode
 	logrus.WithFields(logrus.Fields{
@@ -132,7 +132,7 @@ func (d *bts7960) Stop() error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	backwardEnable := rpio.Pin(d.backwardEnable)
-	backwardEnable.Out()
+	backwardEnable.Ouput()
 
 	// Set to LOW
 	logrus.Infoln("Stop the motor")
