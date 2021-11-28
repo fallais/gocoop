@@ -1,7 +1,7 @@
-//go:build windows
-// +build windows
+//go:build darwin
+// +build darwin
 
-package l293d
+package bts7960
 
 import (
 	"context"
@@ -10,8 +10,8 @@ import (
 )
 
 // Forward makes the motor work in the forward way.
-func (motor *l293d) Forward(ctx context.Context) error {
-	logrus.Warningln("We are on Windows, no action")
+func (d *bts7960) Forward(ctx context.Context) error {
+	logrus.Warningln("We are on MAC OS, no action")
 
 	// Wait
 	until, _ := ctx.Deadline()
@@ -22,8 +22,8 @@ func (motor *l293d) Forward(ctx context.Context) error {
 }
 
 // Backward makes the motor work in the backward way.
-func (motor *l293d) Backward(ctx context.Context) error {
-	logrus.Warningln("We are on Windows, no action")
+func (d *bts7960) Backward(ctx context.Context) error {
+	logrus.Warningln("We are on MAC OS, no action")
 
 	// Wait
 	until, _ := ctx.Deadline()
@@ -34,8 +34,8 @@ func (motor *l293d) Backward(ctx context.Context) error {
 }
 
 // Stop the motor.
-func (motor *l293d) Stop() error {
-	logrus.Warningln("We are on Windows, no action")
+func (d *bts7960) Stop() error {
+	logrus.Warningln("We are on MAC OS, no action")
 
 	return nil
 }
