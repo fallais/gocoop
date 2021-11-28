@@ -123,7 +123,7 @@ func (d *bts7960) Stop() error {
 		"pin_number": d.forwardEnable,
 		"mode":       "out",
 	}).Infoln("Open the pin")
-	forwardEnable := rpio.Pin(d.motor1B)
+	forwardEnable := rpio.Pin(d.forwardEnable)
 	forwardEnable.Output()
 
 	// Open the reverseEnable and set OUT mode
