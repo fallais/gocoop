@@ -6,7 +6,6 @@ require (
 	github.com/abbot/go-http-auth v0.4.0
 	github.com/cpucycle/astrotime v0.0.0-20120927164819-9c7d514efdb5
 	github.com/gorilla/schema v1.1.0
-	github.com/nathan-osman/go-rpigpio v0.0.0-20160701025123-bce6190607da
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.6.2
