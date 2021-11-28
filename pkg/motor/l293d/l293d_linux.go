@@ -28,7 +28,7 @@ func (motor *l293d) Forward(ctx context.Context) error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	pinInput1 := rpio.Pin(motor.pinInput1)
-	pinInput1.Ouput()
+	pinInput1.Output()
 
 	// Open the pinInput2 and set OUT mode
 	logrus.WithFields(logrus.Fields{
@@ -36,7 +36,7 @@ func (motor *l293d) Forward(ctx context.Context) error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	pinInput2 := rpio.Pin(motor.pinInput2)
-	pinInput2.Ouput()
+	pinInput2.Output()
 
 	// Open the pinEnable1 and set OUT mode
 	logrus.WithFields(logrus.Fields{
@@ -44,7 +44,7 @@ func (motor *l293d) Forward(ctx context.Context) error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	pinEnable1 := rpio.Pin(motor.pinEnable1)
-	pinEnable1.Ouput()
+	pinEnable1.Output()
 
 	// Set the motor rotation
 	logrus.Infoln("Set the motor rotation")
@@ -86,7 +86,7 @@ func (motor *l293d) Backward(ctx context.Context) error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	pinInput1 := rpio.Pin(motor.pinInput1)
-	pinInput1.Ouput()
+	pinInput1.Output()
 
 	// Open the pinInput2 and set OUT mode
 	logrus.WithFields(logrus.Fields{
@@ -94,7 +94,7 @@ func (motor *l293d) Backward(ctx context.Context) error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	pinInput2 := rpio.Pin(motor.pinInput2)
-	pinInput2.Ouput()
+	pinInput2.Output()
 
 	// Open the pinEnable1 and set OUT mode
 	logrus.WithFields(logrus.Fields{
@@ -102,16 +102,16 @@ func (motor *l293d) Backward(ctx context.Context) error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	pinEnable1 := rpio.Pin(motor.pinEnable1)
-	pinEnable1.Ouput()
+	pinEnable1.Output()
 
 	// Set the motor rotation
 	logrus.Infoln("Set the motor rotation")
-	pinEnable1.Low()
-	pinEnable2.Low()
+	pinInput1.Low()
+	pinInput2.Low()
 
 	// Enable the motor
 	logrus.Infoln("Start the motor")
-	pinMotor1Enable.High()
+	pinEnable1.High()
 
 	// Wait
 	until, _ := ctx.Deadline()
@@ -144,7 +144,7 @@ func (d *l293d) Stop() error {
 		"mode":       "out",
 	}).Infoln("Open the pin")
 	pinEnable1 := rpio.Pin(motor.pinEnable1)
-	pinEnable1.Ouput()
+	pinEnable1.Output()
 
 	// Set pinEnable1 to LOW
 	logrus.Infoln("Stop the motor")
