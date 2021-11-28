@@ -55,7 +55,7 @@ func Run(cmd *cobra.Command, args []string) {
 	case "l293d":
 		motor = l293d.NewL293D(viper.GetInt("door.motor.pin_1A"), viper.GetInt("door.motor.pin_1B"), viper.GetInt("door.motor.pin_enable1"))
 	case "bts7960":
-		motor = bts7960.NewBTS7960(viper.GetInt("door.motor.pin_1A"), viper.GetInt("door.motor.pin_1B"), viper.GetInt("door.motor.pin_enable1"))
+		motor = bts7960.NewBTS7960(viper.GetInt("door.motor.forward_PWM"), viper.GetInt("door.motor.backward_PWM"), viper.GetInt("door.motor.forward_enable"), viper.GetInt("door.motor.backward_enable"))
 	}
 	logrus.Infoln("Successfully created the motor")
 

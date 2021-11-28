@@ -1,5 +1,4 @@
 //go:build windows
-// +build windows
 
 package l293d
 
@@ -10,7 +9,7 @@ import (
 )
 
 // Forward makes the motor work in the forward way.
-func (d *l293d) Forward(ctx context.Context) error {
+func (motor *l293d) Forward(ctx context.Context) error {
 	logrus.Warningln("We are on Windows, no action")
 
 	// Wait
@@ -22,7 +21,7 @@ func (d *l293d) Forward(ctx context.Context) error {
 }
 
 // Backward makes the motor work in the backward way.
-func (d *l293d) Backward(ctx context.Context) error {
+func (motor *l293d) Backward(ctx context.Context) error {
 	logrus.Warningln("We are on Windows, no action")
 
 	// Wait
@@ -34,7 +33,7 @@ func (d *l293d) Backward(ctx context.Context) error {
 }
 
 // Stop the motor.
-func (d *l293d) Stop() error {
+func (motor *l293d) Stop() error {
 	logrus.Warningln("We are on Windows, no action")
 
 	return nil

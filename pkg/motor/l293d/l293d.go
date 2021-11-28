@@ -10,9 +10,12 @@ import (
 
 // l293d is a motor driver.
 type l293d struct {
-	motor1A      int
-	motor1B      int
-	motor1Enable int
+	pinInput1  int
+	pinInput2  int
+	pinEnable1 int
+	pinInput3  int
+	pinInput4  int
+	pinEnable2 int
 }
 
 //------------------------------------------------------------------------------
@@ -20,10 +23,10 @@ type l293d struct {
 //------------------------------------------------------------------------------
 
 // NewL293D returns a new L293D.
-func NewL293D(pin1A, pin1B, pin1Enable int) motor.Motor {
+func NewL293D(pinInput1, pinInput2, pinEnable1 int) motor.Motor {
 	return &l293d{
-		motor1A:      pin1A,
-		motor1B:      pin1B,
-		motor1Enable: pin1Enable,
+		pinInput1:  pinInput1,
+		pinInput2:  pinInput2,
+		pinEnable1: pinEnable1,
 	}
 }

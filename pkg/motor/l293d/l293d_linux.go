@@ -1,5 +1,4 @@
 //go:build linux
-// +build linux
 
 package l293d
 
@@ -7,58 +6,53 @@ import (
 	"context"
 	"fmt"
 
-	rpi "github.com/nathan-osman/go-rpigpio"
 	"github.com/sirupsen/logrus"
+	"github.com/stianeikeland/go-rpio/v4"
 )
 
-// Forward makes the motor work in the forward way.
-func (d *l293d) Forward(ctx context.Context) error {
-	logrus.Infoln("Running forward")
+// Forward turns the motor forward.
+func (motor *l293d) Forward(ctx context.Context) error {
+	logrus.Infoln("Turn motor forward")
 
-	// Open the pinMotor1A
+	// Access the pins
+	err := rpio.Open()
+	if err != nil {
+		return fmt.Errorf("error while accessing the pins: %s", err)
+	}
+	defer rpio.Close()
+
+	// Open the pinInput1 and set OUT mode
 	logrus.WithFields(logrus.Fields{
-		"pin_number": d.motor1A,
-		"pin_name":   "1A",
+		"pin_number": motor.pinInput1,
 		"mode":       "out",
 	}).Infoln("Open the pin")
-	pinMotor1A, err := rpi.OpenPin(d.motor1A, rpi.OUT)
-	if err != nil {
-		return fmt.Errorf("error while opening the pin: %s", err)
-	}
-	defer pinMotor1A.Close()
+	pinInput1 := rpio.Pin(motor.pinInput1)
+	pinInput1.Out()
 
-	// Open the pinMotor1B
+	// Open the pinInput2 and set OUT mode
 	logrus.WithFields(logrus.Fields{
-		"pin_number": d.motor1B,
-		"pin_name":   "1B",
+		"pin_number": motor.pinInput2,
 		"mode":       "out",
 	}).Infoln("Open the pin")
-	pinMotor1B, err := rpi.OpenPin(d.motor1B, rpi.OUT)
-	if err != nil {
-		return fmt.Errorf("error while opening the pin: %s", err)
-	}
-	defer pinMotor1B.Close()
+	pinInput2 := rpio.Pin(motor.pinInput2)
+	pinInput2.Out()
 
-	// Open the pinMotor1Enable
+	// Open the pinEnable1 and set OUT mode
 	logrus.WithFields(logrus.Fields{
-		"pin_number": d.motor1Enable,
-		"pin_name":   "1Enable",
+		"pin_number": motor.pinEnable1,
 		"mode":       "out",
 	}).Infoln("Open the pin")
-	pinMotor1Enable, err := rpi.OpenPin(d.motor1Enable, rpi.OUT)
-	if err != nil {
-		return fmt.Errorf("error while opening the pin: %s", err)
-	}
-	defer pinMotor1Enable.Close()
+	pinEnable1, err := rpio.Pin(motor.pinEnable1)
+	pinEnable1.Out()
 
 	// Set the motor rotation
 	logrus.Infoln("Set the motor rotation")
-	pinMotor1A.Write(rpi.HIGH)
-	pinMotor1B.Write(rpi.LOW)
+	pinInput1.High()
+	pinInput2.Low()
 
 	// Enable the motor
 	logrus.Infoln("Start the motor")
-	pinMotor1Enable.Write(rpi.HIGH)
+	pinEnable1.High()
 
 	// Wait
 	until, _ := ctx.Deadline()
@@ -67,54 +61,56 @@ func (d *l293d) Forward(ctx context.Context) error {
 
 	// Disable the motor
 	logrus.Infoln("Stop the motor")
-	pinMotor1Enable.Write(rpi.LOW)
-
-	// Close all the pins
-	pinMotor1Enable.Close()
-	pinMotor1A.Close()
-	pinMotor1B.Close()
+	pinEnable1.Low()
 
 	logrus.Infoln("Door has been stopped")
 
 	return nil
 }
 
-// Backward makes the motor work in the backward way.
-func (d *l293d) Backward(ctx context.Context) error {
-	logrus.Infoln("Running backward")
+// Backward turns the motor backward.
+func (motor *l293d) Backward(ctx context.Context) error {
+	logrus.Infoln("Turn motor backward")
 
-	// Open the pinMotor1A
-	logrus.Infoln("Open the pin", d.motor1A, "in OUT mode")
-	pinMotor1A, err := rpi.OpenPin(d.motor1A, rpi.OUT)
+	// Access the pins
+	err := rpio.Open()
 	if err != nil {
-		return fmt.Errorf("error while opening the pin: %s", err)
+		return fmt.Errorf("error while accessing the pins: %s", err)
 	}
-	defer pinMotor1A.Close()
+	defer rpio.Close()
 
-	// Open the pinMotor1B
-	logrus.Infoln("Open the pin", d.motor1B, "in OUT mode")
-	pinMotor1B, err := rpi.OpenPin(d.motor1B, rpi.OUT)
-	if err != nil {
-		return fmt.Errorf("error while opening the pin: %s", err)
-	}
-	defer pinMotor1B.Close()
+	// Open the pinInput1 and set OUT mode
+	logrus.WithFields(logrus.Fields{
+		"pin_number": motor.pinInput1,
+		"mode":       "out",
+	}).Infoln("Open the pin")
+	pinInput1 := rpi.OpenPin(motor.pinInput1)
+	pinInput1.Out()
 
-	// Open the pinMotor1Enable
-	logrus.Infoln("Open the pin", d.motor1Enable, "in OUT mode")
-	pinMotor1Enable, err := rpi.OpenPin(d.motor1Enable, rpi.OUT)
-	if err != nil {
-		return fmt.Errorf("error while opening the pin: %s", err)
-	}
-	defer pinMotor1Enable.Close()
+	// Open the pinInput2 and set OUT mode
+	logrus.WithFields(logrus.Fields{
+		"pin_number": motor.pinInput2,
+		"mode":       "out",
+	}).Infoln("Open the pin")
+	pinInput2 := rpi.OpenPin(motor.pinInput2)
+	pinInput2.Out()
+
+	// Open the pinEnable1 and set OUT mode
+	logrus.WithFields(logrus.Fields{
+		"pin_number": motor.pinEnable1,
+		"mode":       "out",
+	}).Infoln("Open the pin")
+	pinEnable1 := rpi.OpenPin(motor.pinEnable1)
+	pinEnable1.Out()
 
 	// Set the motor rotation
 	logrus.Infoln("Set the motor rotation")
-	pinMotor1A.Write(rpi.LOW)
-	pinMotor1B.Write(rpi.HIGH)
+	pinEnable1.Low()
+	pinEnable2.Low()
 
 	// Enable the motor
 	logrus.Infoln("Start the motor")
-	pinMotor1Enable.Write(rpi.HIGH)
+	pinMotor1Enable.High()
 
 	// Wait
 	until, _ := ctx.Deadline()
@@ -123,12 +119,7 @@ func (d *l293d) Backward(ctx context.Context) error {
 
 	// Disable the motor
 	logrus.Infoln("Stop the motor")
-	pinMotor1Enable.Write(rpi.LOW)
-
-	// Close all the pins
-	pinMotor1Enable.Close()
-	pinMotor1A.Close()
-	pinMotor1B.Close()
+	pinMotor1Enable.Low()
 
 	logrus.Infoln("Motor is stopped")
 
@@ -139,40 +130,24 @@ func (d *l293d) Backward(ctx context.Context) error {
 func (d *l293d) Stop() error {
 	logrus.Infoln("Stopping the motor")
 
-	// Open the pinMotor1A
-	logrus.Infoln("Open the pin", d.motor1A, "in OUT mode")
-	pinMotor1A, err := rpi.OpenPin(d.motor1A, rpi.OUT)
+	// Access the pins
+	err := rpio.Open()
 	if err != nil {
-		return err
+		return fmt.Errorf("error while accessing the pins: %s", err)
 	}
-	defer pinMotor1A.Close()
+	defer rpio.Close()
 
-	// Open the pinMotor1B
-	logrus.Infoln("Open the pin", d.motor1B, "in OUT mode")
-	pinMotor1B, err := rpi.OpenPin(d.motor1B, rpi.OUT)
-	if err != nil {
-		return err
-	}
-	defer pinMotor1B.Close()
+	// Open the pinEnable1 and set OUT mode
+	logrus.WithFields(logrus.Fields{
+		"pin_number": motor.pinEnable1,
+		"mode":       "out",
+	}).Infoln("Open the pin")
+	pinEnable1 := rpi.OpenPin(motor.pinEnable1)
+	pinEnable1.Out()
 
-	// Open the pinMotor1Enable
-	logrus.Infoln("Open the pin", d.motor1Enable, "in OUT mode")
-	pinMotor1Enable, err := rpi.OpenPin(d.motor1Enable, rpi.OUT)
-	if err != nil {
-		return err
-	}
-	defer pinMotor1Enable.Close()
-
-	// Disable all the pins
+	// Set pinEnable1 to LOW
 	logrus.Infoln("Stop the motor")
-	pinMotor1Enable.Write(rpi.LOW)
-	pinMotor1A.Write(rpi.LOW)
-	pinMotor1B.Write(rpi.LOW)
-
-	// Close all the pins
-	pinMotor1Enable.Close()
-	pinMotor1A.Close()
-	pinMotor1B.Close()
+	pinEnable1.Low()
 
 	logrus.Infoln("Motor has been stopped")
 

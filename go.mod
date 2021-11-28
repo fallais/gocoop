@@ -10,6 +10,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.6.2
+	github.com/stianeikeland/go-rpio/v4 v4.5.1
 	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
