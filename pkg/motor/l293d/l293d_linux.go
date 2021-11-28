@@ -120,7 +120,7 @@ func (motor *l293d) Backward(ctx context.Context) error {
 
 	// Disable the motor
 	logrus.Infoln("Stop the motor")
-	pinMotor1Enable.Low()
+	pinEnable1.Low()
 
 	logrus.Infoln("Motor is stopped")
 
@@ -128,7 +128,7 @@ func (motor *l293d) Backward(ctx context.Context) error {
 }
 
 // Stop the motor.
-func (d *l293d) Stop() error {
+func (motor *l293d) Stop() error {
 	logrus.Infoln("Stopping the motor")
 
 	// Access the pins
