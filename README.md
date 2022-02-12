@@ -142,12 +142,41 @@ coop:
 door:
   openening_duration: "65s"
   closing_duration: "60s"
-  pin_1A: 23
-  pin_1B: 24
-  pin_enable1: 25
+  motor:
+    type: l293d
+    pin_1A: 23
+    pin_1B: 24
+    pin_enable1: 25
 cameras:
   outdoor: http://185.39.101.26/mjpg/video.mjpg
   indoor: http://187.157.229.132/mjpg/video.mjpg
+```
+
+#### Motor types
+
+Actually, two types of motor can be used :
+
+```yaml
+door:
+  openening_duration: "65s"
+  closing_duration: "60s"
+  motor:
+    type: l293d
+    pin_1A: 23
+    pin_1B: 24
+    pin_enable1: 2
+```
+
+```yaml
+door:
+  openening_duration: "65s"
+  closing_duration: "60s"
+  motor:
+    type: bts7960
+    forward_PWM: 23
+    backward_PWM: 24
+    forward_enable: 2
+    backward_enable: 3
 ```
 
 #### Modes and values
