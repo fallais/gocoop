@@ -69,7 +69,7 @@ func (ctrl *MiscController) Index(w http.ResponseWriter, r *auth.AuthenticatedRe
 	// Note the call to ParseFS instead of Parse
 	t, err := template.ParseFS(TemplatesFS, "templates/index.html.tmpl")
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatalln(err)
 	}
 
 	// Header
@@ -116,7 +116,7 @@ func (ctrl *MiscController) getConfiguration(w http.ResponseWriter, r *auth.Auth
 	// Note the call to ParseFS instead of Parse
 	t, err := template.ParseFS(TemplatesFS, "templates/configuration.html.tmpl")
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatalln(err)
 	}
 
 	// Header

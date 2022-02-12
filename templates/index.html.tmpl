@@ -111,12 +111,12 @@
             </div>
 
             {{ range $key, $value := .Cameras }}
-            <div class="col-12 mb-4 col-md-6 col-lg-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="card bg-light">
-                    <h5 class="card-header">Camera <i class="fa fa-camera pull-right" aria-hidden="true"></i></h5>
+                    <h5 class="card-header">Camera <small class="text-capitalize">({{ $key }})</small></h5>
                     <div class="card-body">
-                    <p class="card-text"><img class="img-fluid" [src]="camera.value" /></p>
-                    <p class="text-center"><a target="_blank" href="{{ .camera.value }}"><button class="btn btn-info"><i class="fa fa-search-plus" aria-hidden="true"></i> Larger view</button></a></p>
+                    <p class="card-text"><img class="img-fluid" src="{{ $value }}" /></p>
+                    <p class="text-center"><a target="_blank" href="{{ $value }}"><button class="btn btn-info"><i class="fa fa-search-plus" aria-hidden="true"></i> Larger view</button></a></p>
                     </div>
                 </div>
             </div>
