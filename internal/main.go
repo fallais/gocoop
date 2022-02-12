@@ -6,17 +6,20 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	auth "github.com/abbot/go-http-auth"
 	"github.com/fallais/gocoop/internal/routes"
 	"github.com/fallais/gocoop/internal/services"
 	"github.com/fallais/gocoop/internal/system"
 	"github.com/fallais/gocoop/pkg/coop"
 	"github.com/fallais/gocoop/pkg/door"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/fallais/gocoop/pkg/motor"
+	"github.com/fallais/gocoop/pkg/motor/bts7960"
+	"github.com/fallais/gocoop/pkg/motor/l293d"
 
+	auth "github.com/abbot/go-http-auth"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // StaticFS is the embed for the static files.
@@ -43,13 +46,22 @@ func Run(cmd *cobra.Command, args []string) {
 		logrus.WithError(err).Fatalln("Error when reading configuration data")
 	}
 
-	// Door
+	// Motor
+	var motor motor.Motor
 	logrus.WithFields(logrus.Fields{
-		"pin_1A":      viper.GetString("door.pin_1A"),
-		"pin_1B":      viper.GetString("door.pin_1B"),
-		"pin_enable1": viper.GetString("door.pin_enable1"),
-	}).Infoln("Creating the door")
-	d := door.NewDoor(viper.GetInt("door.pin_1A"), viper.GetInt("door.pin_1B"), viper.GetInt("door.pin_enable1"), viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration"))
+		"type": viper.GetString("door.motor.type"),
+	}).Infoln("Creating the motor")
+	switch viper.GetString("door.motor.type") {
+	case "l293d":
+		motor = l293d.NewL293D(viper.GetInt("door.motor.pin_1A"), viper.GetInt("door.motor.pin_1B"), viper.GetInt("door.motor.pin_enable1"))
+	case "bts7960":
+		motor = bts7960.NewBTS7960(viper.GetInt("door.motor.forward_PWM"), viper.GetInt("door.motor.backward_PWM"), viper.GetInt("door.motor.forward_enable"), viper.GetInt("door.motor.backward_enable"))
+	}
+	logrus.Infoln("Successfully created the motor")
+
+	// Door
+	logrus.Infoln("Creating the door")
+	d := door.NewDoor(motor, viper.GetDuration("door.opening_duration"), viper.GetDuration("door.closing_duration"))
 	logrus.Infoln("Successfully created the door")
 
 	// Notifiers
