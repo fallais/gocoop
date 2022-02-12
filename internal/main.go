@@ -86,7 +86,9 @@ func Run(cmd *cobra.Command, args []string) {
 	http.HandleFunc("/configuration", authenticator.Wrap(miscCtrl.Configuration))
 
 	// Serve
-	logrus.Infoln("Starting the Web server")
+	logrus.WithFields(logrus.Fields{
+		"port": ":8000",
+	}).Infoln("Starting the Web server")
 	err = http.ListenAndServe(":8000", nil)
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error while starting the Web server")
