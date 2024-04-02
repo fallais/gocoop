@@ -1,0 +1,10 @@
+builds:
+  - id: "gocoop"
+    binary: gocoop
+    goos:
+      - freebsd
+      - windows
+    goarch:
+      - amd64
+      - arm
+      - arm64
