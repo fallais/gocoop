@@ -2,6 +2,7 @@ package door
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/fallais/gocoop/pkg/motor"
@@ -46,7 +47,10 @@ func (d *door) Open() error {
 	defer cancel()
 
 	// Run the motor in forward
-	d.motor.Forward(ctx)
+	err := d.motor.Forward(ctx)
+	if err != nil {
+		return fmt.Errorf("error while opening door: %v", err)
+	}
 
 	logrus.Infoln("Door has been opened")
 

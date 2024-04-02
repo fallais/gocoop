@@ -140,7 +140,7 @@ coop:
     mode: "sun_based"
     value: "30m"
 door:
-  openening_duration: "65s"
+  opening_duration: "65s"
   closing_duration: "60s"
   motor:
     type: l293d
