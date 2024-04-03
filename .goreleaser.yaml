@@ -17,8 +17,6 @@ builds:
       - linux
     goarch:
       - amd64
-    ldflags:
-      - "{{ .Env.LDFLAGS }}"
     no_unique_dist_dir: true
 
   - id: linux-arm64
@@ -29,6 +27,4 @@ builds:
     goarch:
       - arm
       - arm64
-    ldflags:
-      - "{{ .Env.LDFLAGS }}"
     no_unique_dist_dir: true
